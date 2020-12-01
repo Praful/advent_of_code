@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+//Find two numbers that add to 2020 and print their product
 void day1a() {
   print('day1a');
 
@@ -17,6 +18,7 @@ void day1a() {
   }
 }
 
+//Find three numbers that add to 2020 and print their product
 void day1b() {
   print('day1b');
 
@@ -27,11 +29,11 @@ void day1b() {
     var n1 = int.parse(num1);
     for (var num2 in lines) {
       var n2 = int.parse(num2);
-      var twoSum = n1 + n2;
-      if (twoSum < target) {
-        var required = target - int.parse(num1);
+      var twoNumsSummed = n1 + n2;
+      if (twoNumsSummed < target) {
+        var required = target - twoNumsSummed;
         if (unique.contains(required.toString())) {
-          print('$num1 * $required = ${int.parse(num1) * required}');
+          print('$n1 * $n2 * $required = ${n1 * n2 * required}');
           return;
         }
       }
