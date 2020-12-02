@@ -4,9 +4,9 @@ import '../utils.dart';
 var verbose = false;
 var debug = false;
 
-//Find three numbers that add to 2020 and print their product
 typedef bool IsValidPasswordFn(PasswordEntry pe);
 
+//find passwords that have a char in one of two positions (but not both)
 void day2b() {
   //True if letter at pos1 or pos2 but not both) is char (^ = XOR)
   bool isValidPassord(PasswordEntry pe) =>
@@ -17,7 +17,9 @@ void day2b() {
   day2(isValidPassord);
 }
 
+//find passwords that have between min and max occurences of a char in password
 void day2a() {
+  //
   bool isValidPassord(PasswordEntry pe) {
     var occurencesCount = pe.requiredChar.allMatches(pe.password).length;
     return (occurencesCount >= pe.minAppearances &&
