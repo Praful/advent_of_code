@@ -4,36 +4,30 @@ import '../utils.dart';
 var verbose = false;
 var debug = false;
 
-var test = '9-12 q: qqqxhnhdmqqqqjz';
-// var re = RegExp(
-//     r'^(?<min>\d{1,2})-(?<max>\d{1,2}) (?<char>.): (?<password>.*)$',
-//     caseSensitive: true,
-//     multiLine: false);
-
 typedef bool IsValidPasswordFn(PasswordEntry pe);
 
 //find passwords that have a char in one of two positions (but not both)
 void day2b() {
   //True if letter at pos1 or pos2 but not both) is char (^ = XOR)
-  bool isValidPassord(PasswordEntry pe) =>
+  bool isValidPassword(PasswordEntry pe) =>
       ((pe.password[pe.minAppearances - 1] == pe.requiredChar) ^
           (pe.password[pe.maxAppearances - 1] == pe.requiredChar));
 
   printHeader('2b');
-  day2(isValidPassord);
+  day2(isValidPassword);
 }
 
 //find passwords that have between min and max occurences of a char in password
 void day2a() {
   //
-  bool isValidPassord(PasswordEntry pe) {
+  bool isValidPassword(PasswordEntry pe) {
     var occurencesCount = pe.requiredChar.allMatches(pe.password).length;
     return (occurencesCount >= pe.minAppearances &&
         occurencesCount <= pe.maxAppearances);
   }
 
   printHeader('2a');
-  day2(isValidPassord);
+  day2(isValidPassword);
 }
 
 class PasswordEntry {
@@ -88,6 +82,8 @@ void day2(IsValidPasswordFn isValidPassword) {
 
 void test1() {
   printHeader('2 test output');
+  final test = '9-12 q: qqqxhnhdmqqqqjz';
+
   print(PasswordEntry.regex.hasMatch(test));
   print(PasswordEntry.regex.stringMatch(test));
 
