@@ -1,11 +1,15 @@
-import 'dart:async';
 import 'dart:io';
+import '../utils.dart';
+
+var verbose = true;
+var debug = true;
+
+var lines = File('./2020/data/day1a.txt').readAsLinesSync();
 
 //Find three numbers that add to 2020 and print their product
 void day1b() {
-  print('day1b');
+  printDay('1b');
 
-  var lines = File('./data/day1a.txt').readAsLinesSync();
   var numbers = lines.map(int.parse).toList();
 
   var unique = Set.from(numbers);
@@ -26,9 +30,8 @@ void day1b() {
 
 //Find two numbers that add to 2020 and print their product
 void day1a() {
-  print('day1a');
+  printDay('1a');
 
-  var lines = File('./data/day1a.txt').readAsLinesSync();
   var unique = Set.from(lines);
   var target = 2020;
   for (var num1 in lines) {
