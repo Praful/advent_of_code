@@ -33,11 +33,9 @@ void day2a() {
 class PasswordEntry {
   //regex to parse "<min>-<max> char: password" eg:
   //   9-12 q: qqqxhnhdmqqqqjz
-  //in part 2, min and max represent the two character position in the password
-  static RegExp regex = RegExp(
-      r'^(?<min>\d{1,2})-(?<max>\d{1,2}) (?<char>.): (?<password>.*)$',
-      caseSensitive: true,
-      multiLine: false);
+  //in part 2, min and max represent the two character positions in the password
+  static RegExp regex =
+      RegExp(r'^(?<min>\d+)-(?<max>\d+) (?<char>.): (?<password>.+)$');
 
   int minAppearances;
   int maxAppearances;
