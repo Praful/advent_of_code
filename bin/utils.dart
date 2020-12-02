@@ -1,1 +1,1 @@
-void printDay(String day) => print('Day $day ====================');
+void printHeader(String day) => print('=== Day $day ====================');

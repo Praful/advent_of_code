@@ -4,6 +4,12 @@ import '../utils.dart';
 var verbose = false;
 var debug = false;
 
+var test = '9-12 q: qqqxhnhdmqqqqjz';
+// var re = RegExp(
+//     r'^(?<min>\d{1,2})-(?<max>\d{1,2}) (?<char>.): (?<password>.*)$',
+//     caseSensitive: true,
+//     multiLine: false);
+
 typedef bool IsValidPasswordFn(PasswordEntry pe);
 
 //find passwords that have a char in one of two positions (but not both)
@@ -13,7 +19,7 @@ void day2b() {
       ((pe.password[pe.minAppearances - 1] == pe.requiredChar) ^
           (pe.password[pe.maxAppearances - 1] == pe.requiredChar));
 
-  printDay('2b');
+  printHeader('2b');
   day2(isValidPassord);
 }
 
@@ -26,17 +32,32 @@ void day2a() {
         occurencesCount <= pe.maxAppearances);
   }
 
-  printDay('2a');
+  printHeader('2a');
   day2(isValidPassord);
 }
 
 class PasswordEntry {
+  //regex to parse "<min>-<max> char: password" eg:
+  //   9-12 q: qqqxhnhdmqqqqjz
+  //in part 2, min and max represent the two character position in the password
+  static RegExp regex = RegExp(
+      r'^(?<min>\d{1,2})-(?<max>\d{1,2}) (?<char>.): (?<password>.*)$',
+      caseSensitive: true,
+      multiLine: false);
+
   int minAppearances;
   int maxAppearances;
   String requiredChar;
   String password;
-  PasswordEntry(this.minAppearances, this.maxAppearances, this.requiredChar,
-      this.password);
+
+  PasswordEntry(String s) {
+    final match = PasswordEntry.regex.firstMatch(s);
+
+    minAppearances = int.parse(match.namedGroup('min'));
+    maxAppearances = int.parse(match.namedGroup('max'));
+    requiredChar = match.namedGroup('char').toString();
+    password = match.namedGroup('password');
+  }
 
   @override
   String toString() =>
@@ -44,49 +65,32 @@ class PasswordEntry {
 }
 
 void day2(IsValidPasswordFn isValidPassword) {
-  //regex to parse "<min>-<max> char: password" eg:
-  //   9-12 q: qqqxhnhdmqqqqjz
-  var test = '9-12 q: qqqxhnhdmqqqqjz';
-  var re = RegExp(
-      r'^(?<min>\d{1,2})-(?<max>\d{1,2}) (?<char>.): (?<password>.*)$',
-      caseSensitive: true,
-      multiLine: false);
-
-  PasswordEntry getValues(RegExpMatch match) => PasswordEntry(
-      int.parse(match.namedGroup('min')),
-      int.parse(match.namedGroup('max')),
-      match.namedGroup('char').toString(),
-      match.namedGroup('password'));
-
-  if (debug) {
-    print('Test output');
-    print(re.hasMatch(test));
-    print(re.stringMatch(test));
-    var match = re.firstMatch(test);
-
-    var values = getValues(match);
-    print('Password entry: $values');
-  }
-
-  var lines = File('./2020/data/day2a.txt').readAsLinesSync();
+  final lines = File('./2020/data/day02.txt').readAsLinesSync();
 
   var validPasswordsCount = 0;
 
   for (var s in lines) {
-    var values = getValues(re.firstMatch(s));
-    if (verbose) print('$s = $values');
+    final passwordDetails = PasswordEntry(s);
+    if (verbose) print('$s = $passwordDetails');
     try {
-      if (isValidPassword(values)) {
-        // var occurencesCount = char.toString().allMatches(password).length;
-        // if (occurencesCount >= min && occurencesCount <= max) {
+      if (isValidPassword(passwordDetails)) {
         validPasswordsCount++;
         if (verbose) ('   valid password');
       } else {
         if (verbose) ('   INVALID password');
       }
     } catch (e) {
-      print('**** ERROR: $values error: $e');
+      print('**** ERROR: $passwordDetails error: $e');
     }
   }
   print('Total valid passwords: $validPasswordsCount');
+}
+
+void test1() {
+  printHeader('2 test output');
+  print(PasswordEntry.regex.hasMatch(test));
+  print(PasswordEntry.regex.stringMatch(test));
+
+  final passwordDetails = PasswordEntry(test);
+  print('Password entry: $passwordDetails');
 }
