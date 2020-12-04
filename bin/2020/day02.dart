@@ -57,6 +57,9 @@ class PasswordEntry {
 }
 
 void day2(IsValidPasswordFn isValidPassword) {
+  // day2Filter(isValidPassword);
+  // return;
+
   final lines = File('./2020/data/day02.txt').readAsLinesSync();
 
   var validPasswordsCount = 0;
@@ -75,6 +78,16 @@ void day2(IsValidPasswordFn isValidPassword) {
       print('**** ERROR: $passwordDetails error: $e');
     }
   }
+  print('Total valid passwords: $validPasswordsCount');
+}
+
+//a more functional version of day2()
+void day2Filter(IsValidPasswordFn isValidPassword) {
+  final lines = File('./2020/data/day02.txt').readAsLinesSync();
+
+  var validPasswordsCount =
+      lines.where((s) => isValidPassword(PasswordEntry(s))).length;
+
   print('Total valid passwords: $validPasswordsCount');
 }
 
