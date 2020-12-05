@@ -103,11 +103,10 @@ void day4b() {
 }
 
 //functional version using fold (a generic version of reduce)
-int passportValidCount(
-    List<Map<String, String>> passports, IsValidPassportFn isValidPassport) {
-  return passports.fold(
-      0, (result, passport) => result + (isValidPassport(passport) ? 1 : 0));
-}
+int passportValidCount(List<Map<String, String>> passports,
+        IsValidPassportFn isValidPassport) =>
+    passports.fold(
+        0, (result, passport) => result + (isValidPassport(passport) ? 1 : 0));
 
 //procedural
 // int passportValidCount(
