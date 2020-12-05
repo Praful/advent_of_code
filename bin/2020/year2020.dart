@@ -5,10 +5,8 @@ import './day04.dart';
 import './day05.dart';
 
 void run() {
-  test5b();
-  day5b();
-  test5a();
-  day5a();
+  test5();
+  day5();
 
   // test4b();
   // day4b();
