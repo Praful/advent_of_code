@@ -1,17 +1,19 @@
 import 'dart:io';
 import '../utils.dart';
+import 'dart:math' as math;
+
+//Part 1 here is long-winded. After writing, I saw that treating each row as a binary
+//representation (B, R=1 and F,L = 0) results in the largest binary number
+//being the max seat ID.
+//
+//Part 2 has various solutions.
 
 const bool DEBUG = false;
-
-const int MAX_FIELDS = 8;
-const int MIN_FIELDS = 7;
 
 final List<String> TEST_INPUT =
     File('./2020/data/day05-test.txt').readAsLinesSync();
 
 final List<String> MAIN_INPUT = File('./2020/data/day05.txt').readAsLinesSync();
-
-typedef bool IsValidPassportFn(Map<String, String> p);
 
 const ROW_RANGE = Range(0, 127);
 const COLUMN_RANGE = Range(0, 7);
@@ -21,9 +23,7 @@ class Range {
   final int lower;
   const Range(this.lower, this.upper);
 
-  //~/ is integer division
   double _midPoint() => (lower + upper) / 2;
-
   Range lowerHalf() => Range(lower, _midPoint().floor());
   Range upperHalf() => Range(_midPoint().ceil(), upper);
 
@@ -31,12 +31,36 @@ class Range {
   String toString() => 'lower: $lower, upper: $upper';
 }
 
-int findRow(String passRows) {
-  if (DEBUG) print(passRows);
-  var result = ROW_RANGE;
+extension Iterable2 on Iterable<int> {
+  int get max => reduce(math.max);
+  int get min => reduce(math.min);
+}
 
+class SeatInfo {
+  List<int> seatIDs;
+  SeatInfo(this.seatIDs);
+  int maxSeatID() => seatIDs.max;
+  int minSeatID() => seatIDs.min;
+
+  List<int> missingSeatIDs() {
+    var result = <int>[];
+    seatIDs.sort();
+    var counter = minSeatID();
+    seatIDs.forEach((id) {
+      if (counter != id) {
+        result.add(counter);
+        counter = id;
+      }
+      counter++;
+    });
+    return result;
+  }
+}
+
+int findRow(String passRows) {
+  var result = ROW_RANGE;
   passRows.split('').forEach((direction) {
-    if (DEBUG) print(result);
+    var oldResult = result;
     switch (direction) {
       case 'F':
         result = result.lowerHalf();
@@ -45,21 +69,19 @@ int findRow(String passRows) {
         result = result.upperHalf();
         break;
       default:
-        if (DEBUG) print('invalid direction for row');
+        print('invalid direction for row');
         return 0;
     }
-    if (DEBUG) print('$direction: $result');
+    if (DEBUG) print('$oldResult: $direction => $result');
   });
 
-  if (DEBUG) print(passRows[passRows.length - 1]);
-  return passRows[passRows.length - 1] == 'F' ? result.lower : result.upper;
+  return result.lower;
 }
 
 int findColumn(String passColumns) {
-  if (DEBUG) print(passColumns);
   var result = COLUMN_RANGE;
   passColumns.split('').forEach((direction) {
-    if (DEBUG) print(result);
+    var oldResult = result;
     switch (direction) {
       case 'R':
         result = result.upperHalf();
@@ -71,44 +93,37 @@ int findColumn(String passColumns) {
         print('invalid direction for column');
         return 0;
     }
-    if (DEBUG) print('$direction: $result');
+    if (DEBUG) print('$oldResult: $direction => $result');
   });
-  if (DEBUG) print(passColumns[passColumns.length - 1]);
-  return passColumns[passColumns.length - 1] == 'L'
-      ? result.lower
-      : result.upper;
+  return result.lower;
 }
 
-int findHighestSeatId(List<String> boardingPasses) {
-  var result = 0;
+SeatInfo findSeatInfo(List<String> boardingPasses) {
+  var seatIDs = <int>[];
   boardingPasses.forEach((line) {
     if (line.length == 10) {
       var row = findRow(line.substring(0, 7));
       var column = findColumn(line.substring(7, 10));
       var seatId = (row * 8) + column;
-      if (seatId > result) result = seatId;
+      seatIDs.add(seatId);
       if (DEBUG) print('$line: row $row, column: $column, seat ID $seatId');
     } else {
-      print('Wrong length: $line');
+      print('Wrong length for boarding pass: $line');
     }
   });
-  return result;
+  return SeatInfo(seatIDs);
 }
 
-void test5a() {
+void test5() {
   printHeader('5a test');
-  print(findHighestSeatId(TEST_INPUT));
+  //answer 820
+  print('Max seat ID: ${findSeatInfo(TEST_INPUT).maxSeatID()}');
 }
 
-void test5b() {
-  printHeader('5b test');
-}
-
-void day5a() {
+void day5() {
   printHeader('5a');
-  print(findHighestSeatId(MAIN_INPUT));
-}
-
-void day5b() {
-  printHeader('5b');
+  //answers 858 and 557
+  var seatInfo = findSeatInfo(MAIN_INPUT);
+  print('Max seat ID: ${seatInfo.maxSeatID()}');
+  print('Missing seatIDs: ${seatInfo.missingSeatIDs()}');
 }
