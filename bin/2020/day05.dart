@@ -1,6 +1,5 @@
 import 'dart:io';
 import '../utils.dart';
-import 'dart:math' as math;
 
 //Part 1 here is long-winded. After writing, I saw that treating each row as a binary
 //representation (B, R=1 and F,L = 0) results in the largest binary number
@@ -29,11 +28,6 @@ class Range {
 
   @override
   String toString() => 'lower: $lower, upper: $upper';
-}
-
-extension Iterable2 on Iterable<int> {
-  int get max => reduce(math.max);
-  int get min => reduce(math.min);
 }
 
 class SeatInfo {
