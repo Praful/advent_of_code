@@ -10,7 +10,7 @@ final String MAIN_INPUT = File('./data/day07.txt').readAsStringSync();
 
 Iterable<String> findOuterBags(input, bag) {
   var result = <String>{};
-  RegExp(r'(?<outerBag>.*)s contain.*' + bag, multiLine: true)
+  RegExp(r'(?<outerBag>.*)s contain.*' + bag)
       .allMatches(input)
       .forEach((match) {
     var outerBag = match.namedGroup('outerBag');
@@ -22,7 +22,7 @@ Iterable<String> findOuterBags(input, bag) {
 
 int findInnerBagCount(input, bag) {
   var result = 0;
-  RegExp(bag + r's contain (?<innerBags>.*).', multiLine: true)
+  RegExp(bag + r's contain (?<innerBags>.*).')
       .allMatches(input)
       .forEach((match) {
     match.namedGroup('innerBags').split(',').forEach((innerBags) {
