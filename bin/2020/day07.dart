@@ -30,9 +30,8 @@ int findInnerBagCount(input, bag) {
           .allMatches(innerBags)
           .forEach((bag) {
         var count = int.parse(bag.namedGroup('count'));
-        var innerInnerBagCount =
-            findInnerBagCount(input, bag.namedGroup('name'));
-        result += count + (count * innerInnerBagCount);
+        result +=
+            count + (count * findInnerBagCount(input, bag.namedGroup('name')));
       });
     });
   });
