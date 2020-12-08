@@ -10,10 +10,13 @@ class Computer {
   final List input;
   int _pc = 0;
   int _acc = 0;
+  bool _hasRun = false;
 
   Computer(this.input);
 
-  bool wasNormallyTerminated() => _pc == input.length;
+  bool wasNormallyTerminated() => (!_hasRun
+      ? throw 'Program has not run. Call run() first with input.'
+      : _pc == input.length);
 
   int get accumulator {
     return _acc;
@@ -51,6 +54,7 @@ class Computer {
           print('invalid instruction: $instruction');
       }
     }
+    _hasRun = true;
     return accumulator;
   }
 }
@@ -66,7 +70,7 @@ int runScenarios(input) {
     return computer;
   }
 
-  var computer = Computer(null);
+  var computer = Computer(<String>[]);
 
   for (var i = 0; i < input.length; i++) {
     if (input[i].startsWith('nop')) {
