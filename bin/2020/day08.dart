@@ -41,7 +41,7 @@ Map<String, int> runCode(List input) {
 Map<String, int> runScenarios(input) {
   var result = {'acc': 0, 'pos': 0};
 
-  Map<String, int> run(i, from, to) {
+  Map<String, int> tryNewInput(i, from, to) {
     var newInput = List.from(input);
     newInput[i] = input[i].replaceFirst(from, to);
     return runCode(newInput);
@@ -51,9 +51,9 @@ Map<String, int> runScenarios(input) {
 
   for (var i = 0; i < input.length; i++) {
     if (input[i].startsWith('nop')) {
-      result = run(i, 'nop', 'jmp');
+      result = tryNewInput(i, 'nop', 'jmp');
     } else if (input[i].startsWith('jmp')) {
-      result = run(i, 'jmp', 'nop');
+      result = tryNewInput(i, 'jmp', 'nop');
     }
     if (foundSolution()) break;
   }
