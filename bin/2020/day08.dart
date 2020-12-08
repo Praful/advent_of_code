@@ -3,16 +3,16 @@ import '../utils.dart';
 
 const bool DEBUG = false;
 
-final List TEST_INPUT = File('./data/day08-test.txt').readAsLinesSync();
+final List<String> TEST_INPUT = File('./data/day08-test.txt').readAsLinesSync();
 // final String TEST_INPUT2 = File('./data/day07b-test.txt').readAsStringSync();
 
-final List MAIN_INPUT = File('./data/day08.txt').readAsLinesSync();
+final List<String> MAIN_INPUT = File('./data/day08.txt').readAsLinesSync();
 
-int runCode(input) {
+Map<String, int> runCode(List input) {
   var acc = 0, pos = 0, visited = <int>{};
   var re =
       RegExp(r'^(?<instruction>(nop|acc|jmp))\s(?<operator>.)(?<value>\d+)$');
-  while (!visited.contains(pos)) {
+  while (!visited.contains(pos) && pos < input.length) {
     visited.add(pos);
     var match = re.firstMatch(input[pos]);
     var instruction = match.namedGroup('instruction');
@@ -35,27 +35,64 @@ int runCode(input) {
     }
     // print('$acc, $pos');
   }
-  return acc;
+  return {'acc': acc, 'pos': pos};
+}
+
+Map<String, int> runScenarios(input) {
+  Map<String, int> run(i, from, to) {
+    var newInput = List.from(input);
+    newInput[i] = input[i].replaceFirst(from, to);
+    return runCode(newInput);
+  }
+
+  var result = {'acc': 0, 'pos': 0};
+
+  for (var i = 0; i < input.length; i++) {
+    if (input[i].startsWith('nop')) {
+      result = run(i, 'nop', 'jmp');
+    } else if (input[i].startsWith('jmp')) {
+      result = run(i, 'jmp', 'nop');
+    }
+    if (result['pos'] >= input.length) break;
+  }
+  return result;
 }
 
 void test() {
   printHeader('7a test');
   //Answer: 5
   print(runCode(TEST_INPUT));
+  //Answer: 8
+  print(runScenarios(TEST_INPUT));
 }
 
 void part1() {
-  //Answer: 1451
   printHeader('8a');
+  //Answer: 1451
   print(runCode(MAIN_INPUT));
 }
 
 void part2() {
   printHeader('8b');
+  //Answer: 1160
+  print(runScenarios(MAIN_INPUT));
+}
+
+//test cloning of List
+void test2() {
+  var a = ['first', 'second', 'third'];
+  print(a);
+  // var b = [...a]; //this works too
+  var b = List.from(a);
+  print(b);
+  a[0] = 'ten';
+  print(a);
+  print(b);
 }
 
 void main(List<String> arguments) {
   test();
+  // test2();
   part1();
   part2();
 }
