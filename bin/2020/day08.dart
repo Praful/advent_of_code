@@ -13,7 +13,7 @@ final List<String> MAIN_INPUT = File('./data/day08.txt').readAsLinesSync();
 Map<String, int> blankAnswer() => <String, int>{ACC: 0, PC: 0};
 
 Map<String, int> runCode(List input) {
-  var acc = 0, pc = 0, visited = <int>{}, result = blankAnswer();
+  var acc = 0, pc = 0, visited = <int>{};
   var re =
       RegExp(r'^(?<instruction>(nop|acc|jmp))\s(?<operator>.)(?<value>\d+)$');
 
@@ -38,9 +38,7 @@ Map<String, int> runCode(List input) {
         print('invalid instruction: $instruction');
     }
   }
-  result[ACC] = acc;
-  result[PC] = pc;
-  return result;
+  return <String, int>{ACC: acc, PC: pc};
 }
 
 Map<String, int> runScenarios(input) {
