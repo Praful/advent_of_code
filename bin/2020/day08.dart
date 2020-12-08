@@ -2,71 +2,87 @@ import 'dart:io';
 import '../utils.dart';
 
 const bool DEBUG = false;
-const String PC = 'program counter';
-const String ACC = 'accumulator';
 
 final List<String> TEST_INPUT = File('./data/day08-test.txt').readAsLinesSync();
-// final String TEST_INPUT2 = File('./data/day07b-test.txt').readAsStringSync();
-
 final List<String> MAIN_INPUT = File('./data/day08.txt').readAsLinesSync();
 
-Map<String, int> blankAnswer() => <String, int>{ACC: 0, PC: 0};
+class Computer {
+  final List input;
+  int _pc = 0;
+  int _acc = 0;
 
-Map<String, int> runCode(List input) {
-  var acc = 0, pc = 0, visited = <int>{};
-  var re =
-      RegExp(r'^(?<instruction>(nop|acc|jmp))\s(?<operator>.)(?<value>\d+)$');
+  Computer(this.input);
 
-  while (!visited.contains(pc) && pc < input.length) {
-    visited.add(pc);
-    var match = re.firstMatch(input[pc]);
-    var instruction = match.namedGroup('instruction');
-    var op = match.namedGroup('operator');
-    var value = int.parse(match.namedGroup('value'));
-    switch (instruction) {
-      case 'nop':
-        pc++;
-        break;
-      case 'acc':
-        acc += ((op == '+' ? 1 : -1) * value);
-        pc++;
-        break;
-      case 'jmp':
-        pc += ((op == '+' ? 1 : -1) * value);
-        break;
-      default:
-        print('invalid instruction: $instruction');
-    }
+  bool wasNormallyTerminated() => _pc == input.length;
+
+  int get accumulator {
+    return _acc;
   }
-  return <String, int>{ACC: acc, PC: pc};
+
+  static final INSTRUCTION_REGEX = RegExp(
+      r'^(?<instruction>(nop|acc|jmp))\s(?<operator>(\+|\-))(?<value>\d+)$');
+
+  int run() {
+    assert(input != null);
+
+    var visited = <int>{};
+
+    int increment(start, op, value) =>
+        (start += ((op == '+' ? 1 : -1) * value));
+
+    while (!visited.contains(_pc) && _pc < input.length) {
+      visited.add(_pc);
+      var match = INSTRUCTION_REGEX.firstMatch(input[_pc]);
+      var instruction = match.namedGroup('instruction');
+      var op = match.namedGroup('operator');
+      var value = int.parse(match.namedGroup('value'));
+      switch (instruction) {
+        case 'nop':
+          _pc++;
+          break;
+        case 'acc':
+          _acc = increment(_acc, op, value);
+          _pc++;
+          break;
+        case 'jmp':
+          _pc = increment(_pc, op, value);
+          break;
+        default:
+          print('invalid instruction: $instruction');
+      }
+    }
+    return accumulator;
+  }
 }
 
-Map<String, int> runScenarios(input) {
-  var result = blankAnswer();
-
-  Map<String, int> tryNewInput(i, from, to) {
+//Use brute force method to try different inputs, changing one nop/jmp
+//at a time until Computer run finishes without looping.
+int runScenarios(input) {
+  Computer tryNewInput(i, from, to) {
     var newInput = List.from(input);
     newInput[i] = input[i].replaceFirst(from, to);
-    return runCode(newInput);
+    var computer = Computer(newInput);
+    computer.run();
+    return computer;
   }
 
-  bool foundSolution() => (result[PC] >= input.length);
+  var computer = Computer(null);
 
   for (var i = 0; i < input.length; i++) {
     if (input[i].startsWith('nop')) {
-      result = tryNewInput(i, 'nop', 'jmp');
+      computer = tryNewInput(i, 'nop', 'jmp');
     } else if (input[i].startsWith('jmp')) {
-      result = tryNewInput(i, 'jmp', 'nop');
+      computer = tryNewInput(i, 'jmp', 'nop');
     }
-    if (foundSolution()) break;
+    if (computer.wasNormallyTerminated()) break;
   }
-  return result;
+  return computer.accumulator;
 }
 
 void test() {
   printHeader('7a test');
   //Answer: 5
-  print(runCode(TEST_INPUT));
+  print(Computer(TEST_INPUT).run());
   //Answer: 8
   print(runScenarios(TEST_INPUT));
 }
@@ -74,7 +90,7 @@ void test() {
 void part1() {
   printHeader('8a');
   //Answer: 1451
-  print(runCode(MAIN_INPUT));
+  print(Computer(MAIN_INPUT).run());
 }
 
 void part2() {
