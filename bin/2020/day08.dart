@@ -3,13 +3,15 @@ import '../utils.dart';
 
 const bool DEBUG = false;
 
+Map<String, int> NULL_ANSWER = {'acc': 0, 'pos': 0};
+
 final List<String> TEST_INPUT = File('./data/day08-test.txt').readAsLinesSync();
 // final String TEST_INPUT2 = File('./data/day07b-test.txt').readAsStringSync();
 
 final List<String> MAIN_INPUT = File('./data/day08.txt').readAsLinesSync();
 
 Map<String, int> runCode(List input) {
-  var acc = 0, pos = 0, visited = <int>{};
+  var acc = 0, pos = 0, visited = <int>{}, result = Map.from(NULL_ANSWER);
   var re =
       RegExp(r'^(?<instruction>(nop|acc|jmp))\s(?<operator>.)(?<value>\d+)$');
   while (!visited.contains(pos) && pos < input.length) {
@@ -21,25 +23,26 @@ Map<String, int> runCode(List input) {
     // print('------- $instruction, $op, $value, $acc, $pos');
     switch (instruction) {
       case 'nop':
-        pos++;
+        // pos++;
+        result['pos']++;
         break;
       case 'acc':
-        acc += ((op == '+' ? 1 : -1) * value);
-        pos++;
+        result['acc'] += ((op == '+' ? 1 : -1) * value);
+        result['pos']++;
         break;
       case 'jmp':
-        pos += ((op == '+' ? 1 : -1) * value);
+        result['pos'] += ((op == '+' ? 1 : -1) * value);
         break;
       default:
         print('invalid instruction: $instruction');
     }
     // print('$acc, $pos');
   }
-  return {'acc': acc, 'pos': pos};
+  return result;
 }
 
 Map<String, int> runScenarios(input) {
-  var result = {'acc': 0, 'pos': 0};
+  var result = Map.from(NULL_ANSWER);
 
   Map<String, int> tryNewInput(i, from, to) {
     var newInput = List.from(input);
