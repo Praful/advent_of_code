@@ -1,14 +1,14 @@
 import 'dart:io';
-import '../utils.dart';
+import './utils.dart';
 
 const bool DEBUG = false;
 
-final List<int> TEST_INPUT = File('./data/day09-test.txt')
+final List<int> TEST_INPUT = File('../data/day09-test.txt')
     .readAsLinesSync()
     .map((l) => int.parse(l))
     .toList();
 
-final List<int> MAIN_INPUT = File('./data/day09.txt')
+final List<int> MAIN_INPUT = File('../data/day09.txt')
     .readAsLinesSync()
     .map((l) => int.parse(l))
     .toList();

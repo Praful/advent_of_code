@@ -1,5 +1,5 @@
 import 'dart:io';
-import '../utils.dart';
+import './utils.dart';
 
 //Part 1 here is long-winded. After writing, I saw that treating each row as a binary
 //representation (B, R=1 and F,L = 0) results in the largest binary number
@@ -10,9 +10,9 @@ import '../utils.dart';
 const bool DEBUG = false;
 
 final List<String> TEST_INPUT =
-    File('./2020/data/day05-test.txt').readAsLinesSync();
+    File('../data/day05-test.txt').readAsLinesSync();
 
-final List<String> MAIN_INPUT = File('./2020/data/day05.txt').readAsLinesSync();
+final List<String> MAIN_INPUT = File('../data/day05.txt').readAsLinesSync();
 
 const ROW_RANGE = Range(0, 127);
 const COLUMN_RANGE = Range(0, 7);
@@ -120,4 +120,9 @@ void day5() {
   var seatInfo = findSeatInfo(MAIN_INPUT);
   print('Max seat ID: ${seatInfo.maxSeatID()}');
   print('Missing seatIDs: ${seatInfo.missingSeatIDs()}');
+}
+
+void main(List<String> args) {
+  test5();
+  day5();
 }

@@ -1,16 +1,16 @@
 import 'dart:io';
-import '../utils.dart';
+import './utils.dart';
 
 const bool DEBUG = false;
 
 final List<String> TEST_INPUT2 =
-    File('./2020/data/day06b-test.txt').readAsStringSync().split('\n\n');
+    File('../data/day06b-test.txt').readAsStringSync().split('\n\n');
 
 final List<String> TEST_INPUT =
-    File('./2020/data/day06-test.txt').readAsStringSync().split('\n\n');
+    File('../data/day06-test.txt').readAsStringSync().split('\n\n');
 
 final List<String> MAIN_INPUT =
-    File('./2020/data/day06.txt').readAsStringSync().split('\n\n');
+    File('../data/day06.txt').readAsStringSync().split('\n\n');
 
 int findSumOfGroups2(input) {
   return input.map((group) => group.split('\n')).map((g) {
@@ -35,4 +35,9 @@ void day6() {
   printHeader('6');
   print('Part 1: ${findSumOfGroups1(MAIN_INPUT)}');
   print('Part 2: ${findSumOfGroups2(MAIN_INPUT)}');
+}
+
+void main(List<String> args) {
+  test6();
+  day6();
 }

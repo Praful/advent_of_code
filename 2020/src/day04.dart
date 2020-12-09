@@ -1,5 +1,5 @@
 import 'dart:io';
-import '../utils.dart';
+import './utils.dart';
 
 //mapping lists and maps: https://bezkoder.com/dart-convert-list-map/
 
@@ -9,13 +9,13 @@ const int MAX_FIELDS = 8;
 const int MIN_FIELDS = 7;
 
 final List<String> TEST_INPUT =
-    File('./2020/data/day04-test.txt').readAsLinesSync();
+    File('../data/day04-test.txt').readAsLinesSync();
 final List<String> TEST_INPUT_INVALID =
-    File('./2020/data/day04-invalid-test.txt').readAsLinesSync();
+    File('../data/day04-invalid-test.txt').readAsLinesSync();
 final List<String> TEST_INPUT_VALID =
-    File('./2020/data/day04-valid-test.txt').readAsLinesSync();
+    File('../data/day04-valid-test.txt').readAsLinesSync();
 
-final List<String> MAIN_INPUT = File('./2020/data/day04.txt').readAsLinesSync();
+final List<String> MAIN_INPUT = File('../data/day04.txt').readAsLinesSync();
 
 typedef bool IsValidPassportFn(Map<String, String> p);
 
@@ -143,4 +143,12 @@ List<Map<String, String>> parseInput(final List<String> input) {
   });
 
   return result;
+}
+
+void main(List<String> args) {
+  test4a();
+  test4b();
+
+  day4a();
+  day4b();
 }
