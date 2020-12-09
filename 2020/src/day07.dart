@@ -1,12 +1,12 @@
 import 'dart:io';
-import '../utils.dart';
+import './utils.dart';
 
 const bool DEBUG = false;
 
-final String TEST_INPUT = File('./data/day07-test.txt').readAsStringSync();
-final String TEST_INPUT2 = File('./data/day07b-test.txt').readAsStringSync();
+final String TEST_INPUT = File('../data/day07-test.txt').readAsStringSync();
+final String TEST_INPUT2 = File('../data/day07b-test.txt').readAsStringSync();
 
-final String MAIN_INPUT = File('./data/day07.txt').readAsStringSync();
+final String MAIN_INPUT = File('../data/day07.txt').readAsStringSync();
 
 Iterable<String> findOuterBags(input, bag) {
   var result = <String>{};

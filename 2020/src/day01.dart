@@ -1,10 +1,10 @@
 import 'dart:io';
-import '../utils.dart';
+import './utils.dart';
 
 var verbose = true;
 var debug = true;
 
-var lines = File('./2020/data/day01.txt').readAsLinesSync();
+var lines = File('../data/day01.txt').readAsLinesSync();
 
 //Find three numbers that add to 2020 and print their product
 void day1b() {
@@ -42,4 +42,9 @@ void day1a() {
       return;
     }
   }
+}
+
+void main(List<String> args) {
+  day1a();
+  day1b();
 }

@@ -1,10 +1,11 @@
 import 'dart:io';
-import '../utils.dart';
+import './utils.dart';
 
 const bool DEBUG = false;
 
-final List<String> TEST_INPUT = File('./data/day08-test.txt').readAsLinesSync();
-final List<String> MAIN_INPUT = File('./data/day08.txt').readAsLinesSync();
+final List<String> TEST_INPUT =
+    File('../data/day08-test.txt').readAsLinesSync();
+final List<String> MAIN_INPUT = File('../data/day08.txt').readAsLinesSync();
 
 class Computer {
   final List input;

@@ -1,5 +1,5 @@
 import 'dart:io';
-import '../utils.dart';
+import './utils.dart';
 
 class Vector {
   final int x;
@@ -16,9 +16,8 @@ const bool DEBUG = false;
 const String TREE = '#';
 
 final List<String> TEST_COURSE =
-    File('./2020/data/day03-test.txt').readAsLinesSync();
-final List<String> MAIN_COURSE =
-    File('./2020/data/day03.txt').readAsLinesSync();
+    File('../data/day03-test.txt').readAsLinesSync();
+final List<String> MAIN_COURSE = File('../data/day03.txt').readAsLinesSync();
 
 const Vector FIRST_SLOPE = Vector(1, 3);
 
@@ -95,4 +94,12 @@ int treesOnCourse(final List<String> course, final Vector slope) {
     location = nextLocation(location);
   }
   return treeCount;
+}
+
+void main(List<String> args) {
+  test3a();
+  test3b();
+
+  day3a();
+  day3b();
 }

@@ -1,5 +1,5 @@
 import 'dart:io';
-import '../utils.dart';
+import './utils.dart';
 
 var verbose = false;
 var debug = false;
@@ -60,7 +60,7 @@ void day2(IsValidPasswordFn isValidPassword) {
   // day2Filter(isValidPassword);
   // return;
 
-  final lines = File('./2020/data/day02.txt').readAsLinesSync();
+  final lines = File('../data/day02.txt').readAsLinesSync();
 
   var validPasswordsCount = 0;
 
@@ -83,7 +83,7 @@ void day2(IsValidPasswordFn isValidPassword) {
 
 //a more functional version of day2()
 void day2Filter(IsValidPasswordFn isValidPassword) {
-  final lines = File('./2020/data/day02.txt').readAsLinesSync();
+  final lines = File('../data/day02.txt').readAsLinesSync();
 
   var validPasswordsCount =
       lines.where((s) => isValidPassword(PasswordEntry(s))).length;
@@ -100,4 +100,10 @@ void test1() {
 
   final passwordDetails = PasswordEntry(test);
   print('Password entry: $passwordDetails');
+}
+
+void main(List<String> args) {
+  test1();
+  day2a();
+  day2b();
 }
