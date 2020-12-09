@@ -16,7 +16,7 @@ final List<int> MAIN_INPUT = File('./data/day09.txt')
 //Find number that doesn't have a pair in the preceding list (size preambleLength)
 //that doesn't add up to number.
 int findOutlier(List<int> input, int preambleLength) {
-  bool pairExists(List<int> candidates, int target) {
+  bool summedPairExists(List<int> candidates, int target) {
     //we can ignore the last element because
     //it would have been matched if complement existed.
     for (var i = 0; i < candidates.length - 1; i++) {
@@ -27,7 +27,7 @@ int findOutlier(List<int> input, int preambleLength) {
   }
 
   for (var i = preambleLength; i < input.length; i++) {
-    if (!pairExists(input.sublist(i - preambleLength, i), input[i])) {
+    if (!summedPairExists(input.sublist(i - preambleLength, i), input[i])) {
       return input[i];
     }
   }
@@ -35,13 +35,34 @@ int findOutlier(List<int> input, int preambleLength) {
 }
 
 int findEncryptionWeakness(List<int> input, int target) {
-  for (var i = 0; i < input.length; i++) {}
+  var emptyList = <int>[];
+
+  List<int> continguousSum(start) {
+    var sum = 0;
+    for (var i = start; i < input.length; i++) {
+      sum += input[i];
+      if (sum > target) return emptyList;
+      if (sum == target) return input.sublist(start, i + 1);
+    }
+    return emptyList;
+  }
+
+  var continguousList = emptyList;
+  for (var i = 0; i < input.length; i++) {
+    continguousList = continguousSum(i);
+    if (continguousList.isNotEmpty && continguousList.length > 1) {
+      return (continguousList.min + continguousList.max);
+    }
+  }
+  return null;
 }
 
 void test() {
-  printHeader('9a test');
+  printHeader('9 test');
   //Answer: 127
   print(findOutlier(TEST_INPUT, 5));
+  //Answer: 62
+  print(findEncryptionWeakness(TEST_INPUT, findOutlier(TEST_INPUT, 5)));
 }
 
 void part1() {
@@ -52,10 +73,8 @@ void part1() {
 
 void part2() {
   printHeader('9 part 2');
-  //Answer:
-
-  var part1Answer = findOutlier(MAIN_INPUT, 25);
-  print(findEncryptionWeakness(MAIN_INPUT, part1Answer));
+  //Answer: 177989832
+  print(findEncryptionWeakness(MAIN_INPUT, findOutlier(MAIN_INPUT, 25)));
 }
 
 void main(List<String> arguments) {
