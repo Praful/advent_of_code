@@ -35,62 +35,54 @@ int findJoltsPart1(List<int> input) {
 }
 
 //part 2
-class Node {
-  final int adapter;
-  final List<int> nextNodes;
-  bool wasVisited = false;
-  int pathCount = 0;
+class Adapter {
+  final List<int> nextAdapters;
+  bool wasCalculated = false;
+  int _pathCount = 0;
 
-  Node(this.adapter, this.nextNodes);
+  Adapter(this.nextAdapters);
 
-  //count = how many node paths there are from this node to the end
-  void visited(count) {
-    wasVisited = true;
-    pathCount = count;
+  //v = how many adapter paths there are from this one to the end
+  set pathCount(v) {
+    _pathCount = v;
+    wasCalculated = true;
   }
+
+  int get pathCount => _pathCount;
 
   @override
   String toString() {
-    return '$adapter: $nextNodes (visited: $visited, path: $pathCount)\n';
+    return '$nextAdapters (visited: $wasCalculated, path: $_pathCount)\n';
   }
 }
 
 class Graph {
-  Map<int, Node> graph;
-  Node root;
+  Map<int, Adapter> _graph;
+  Adapter root;
 
   Graph(List<int> input) {
-    graph = buildGraph(input);
-    root = graph[0];
+    _graph = buildGraph(input);
+    root = _graph[0];
   }
 
-  //For any entry, it can "connect" up to MAX_DIFF ahead
-  //eg 23 can connect to 24,25 and 26 and the map entry would be
-  //tree[23]=[24,25,26]
-  Map<int, Node> buildGraph(input) {
-    var tree = <int, Node>{};
-    for (var i = 0; i < input.length; i++) {
-      var nextNodes = <int>[];
-      var lookahead =
-          ((i + MAX_DIFF) < input.length ? i + MAX_DIFF : input.length - 1);
-      for (var k = i + 1; k <= lookahead; k++) {
-        if (input[k] - input[i] <= MAX_DIFF) {
-          nextNodes.add(input[k]);
-        }
-      }
-      tree[input[i]] = Node(input[i], nextNodes);
-    }
-    return tree;
+  Map<int, Adapter> buildGraph(List<int> input) {
+    var graph = <int, Adapter>{};
+    input.forEach((adapter) {
+      graph[adapter] = Adapter(
+          input.where((e) => e > adapter && e <= adapter + MAX_DIFF).toList());
+    });
+
+    return graph;
   }
 
-  // returns the number of paths from node to the end of the tree
-  int pathsFromNode(Node node) {
-    if (node.nextNodes.isEmpty) return 1; //end reached: complete path found
+  // returns the number of paths from adapter to the end of the graph
+  int pathsFromAdapter(Adapter node) {
+    if (node.nextAdapters.isEmpty) return 1; //end reached: complete path found
 
-    return node.nextNodes.fold(0, (acc, adapter) {
-      var subNode = graph[adapter];
-      if (!subNode.wasVisited) {
-        subNode.visited(pathsFromNode(subNode));
+    return node.nextAdapters.fold(0, (acc, adapter) {
+      var subNode = _graph[adapter];
+      if (!subNode.wasCalculated) {
+        subNode.pathCount = pathsFromAdapter(subNode);
       }
       acc += subNode.pathCount;
       return acc;
@@ -107,7 +99,7 @@ void runPart2(String name, List<int> input) {
   printHeader(name);
   var tree = Graph(input);
   // print(tree);
-  print(tree.pathsFromNode(tree.root));
+  print(tree.pathsFromAdapter(tree.root));
 }
 
 void main(List<String> arguments) {
