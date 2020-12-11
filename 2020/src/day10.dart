@@ -4,20 +4,15 @@ import './utils.dart';
 const bool DEBUG = false;
 const int MAX_DIFF = 3;
 
-final List<int> TEST_INPUT = File('../data/day10-test.txt')
-    .readAsLinesSync()
-    .map((l) => int.parse(l))
-    .toList();
+List<int> TEST_INPUT;
+List<int> TEST_INPUT2;
+List<int> MAIN_INPUT;
 
-final List<int> TEST_INPUT2 = File('../data/day10b-test.txt')
-    .readAsLinesSync()
-    .map((l) => int.parse(l))
-    .toList();
-
-final List<int> MAIN_INPUT = File('../data/day10.txt')
-    .readAsLinesSync()
-    .map((l) => int.parse(l))
-    .toList();
+List<int> file(input) {
+  var result = File(input).readAsLinesSync().map((l) => int.parse(l)).toList();
+  result.sort();
+  return result;
+}
 
 //Part 1 = quick and dirty
 int findJoltsPart1(List<int> input) {
@@ -35,12 +30,12 @@ int findJoltsPart1(List<int> input) {
 }
 
 //part 2
-class Adapter {
-  final List<int> nextAdapters;
+class AdapterNode {
+  final List<int> linkedAdapterJolts;
   bool wasCalculated = false;
   int _pathCount = 0;
 
-  Adapter(this.nextAdapters);
+  AdapterNode(this.linkedAdapterJolts);
 
   //v = how many adapter paths there are from this one to the end
   set pathCount(v) {
@@ -52,39 +47,41 @@ class Adapter {
 
   @override
   String toString() {
-    return '$nextAdapters (visited: $wasCalculated, path: $_pathCount)\n';
+    return '$linkedAdapterJolts (visited: $wasCalculated, path: $_pathCount)\n';
   }
 }
 
 class Graph {
-  Map<int, Adapter> _graph;
-  Adapter root;
+  Map<int, AdapterNode> _graph;
+  AdapterNode root;
 
   Graph(List<int> input) {
     _graph = buildGraph(input);
     root = _graph[0];
   }
 
-  Map<int, Adapter> buildGraph(List<int> input) {
-    var graph = <int, Adapter>{};
-    input.forEach((adapter) {
-      graph[adapter] = Adapter(
-          input.where((e) => e > adapter && e <= adapter + MAX_DIFF).toList());
-    });
+  Map<int, AdapterNode> buildGraph(List<int> input) {
+    var graph = <int, AdapterNode>{};
 
+    input.forEach((adapterJolt) {
+      graph[adapterJolt] = AdapterNode(input
+          .where((e) => e.isBetween(adapterJolt, adapterJolt + MAX_DIFF + 1))
+          .toList());
+    });
+    // print(graph);
     return graph;
   }
 
   // returns the number of paths from adapter to the end of the graph
-  int pathsFromAdapter(Adapter node) {
-    if (node.nextAdapters.isEmpty) return 1; //end reached: complete path found
+  int pathsFromAdapter(AdapterNode adapterNode) {
+    if (adapterNode.linkedAdapterJolts.isEmpty) return 1; //end reached
 
-    return node.nextAdapters.fold(0, (acc, adapter) {
-      var subNode = _graph[adapter];
-      if (!subNode.wasCalculated) {
-        subNode.pathCount = pathsFromAdapter(subNode);
+    return adapterNode.linkedAdapterJolts.fold(0, (acc, adapterJolt) {
+      var linkedAdapterNode = _graph[adapterJolt];
+      if (!linkedAdapterNode.wasCalculated) {
+        linkedAdapterNode.pathCount = pathsFromAdapter(linkedAdapterNode);
       }
-      acc += subNode.pathCount;
+      acc += linkedAdapterNode.pathCount;
       return acc;
     });
   }
@@ -97,15 +94,15 @@ void runPart1(String name, List<int> input) {
 
 void runPart2(String name, List<int> input) {
   printHeader(name);
-  var tree = Graph(input);
-  // print(tree);
-  print(tree.pathsFromAdapter(tree.root));
+  var graph = Graph(input);
+  print(graph.pathsFromAdapter(graph.root));
+  // print(graph._graph);
 }
 
 void main(List<String> arguments) {
-  TEST_INPUT.sort();
-  TEST_INPUT2.sort();
-  MAIN_INPUT.sort();
+  TEST_INPUT = file('../data/day10-test.txt');
+  TEST_INPUT2 = file('../data/day10b-test.txt');
+  MAIN_INPUT = file('../data/day10.txt');
 
   //Answer: 35
   runPart1('10 test 1a', TEST_INPUT);
