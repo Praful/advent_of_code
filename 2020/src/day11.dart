@@ -18,10 +18,12 @@ List toGrid(String input) {
 }
 
 class Seating {
-  static const MAX_ROUNDS = 1000000;
+  static const INFINITE_LOOP = 1000000;
+
   static const String LOCATION_EMPTY_SEAT = 'L';
   static const String LOCATION_OCCUPIED_SEAT = '#';
   static const String LOCATION_FLOOR = '.';
+
   static const List MOVE_DIRECTION = [
     [-1, -1],
     [-1, 0],
@@ -36,9 +38,9 @@ class Seating {
   List grid;
   Seating(this.grid);
 
-// If a seat is empty (L) and there are no occupied seats adjacent to it, the seat becomes occupied.
-// If a seat is occupied (#) and four or more seats adjacent to it are also occupied, the seat becomes empty.
-// Otherwise, the seat's state does not change.
+  // If a seat is empty (L) and there are no occupied seats adjacent to it, the seat becomes occupied.
+  // If a seat is occupied (#) and four or more seats adjacent to it are also occupied, the seat becomes empty.
+  // Otherwise, the seat's state does not change.
   List nextRound(input, [recurseSearch = false, occupiedCount = 4]) {
     var rowCount = input.length;
     var colCount = input[0].length;
@@ -79,9 +81,11 @@ class Seating {
     MOVE_DIRECTION.forEach((direction) {
       var adjR = row, adjC = col;
       do {
-        if (safetyCounter++ > MAX_ROUNDS) throw 'loop appears infinite';
+        if (safetyCounter++ > INFINITE_LOOP) throw 'loop appears infinite';
+
         adjR += direction[0];
         adjC += direction[1];
+
         if (!inGrid(adjR, adjC)) break;
         if (grid[adjR][adjC] == LOCATION_EMPTY_SEAT) break;
         if (grid[adjR][adjC] == LOCATION_OCCUPIED_SEAT) {
@@ -98,11 +102,12 @@ class Seating {
   //Return seats occupied.
   int repeatRounds([recurseSearch = false, occupiedCount = 4]) {
     var currentGrid = grid;
-    var nextGrid;
     var safetyCounter = 0;
     do {
-      if (safetyCounter++ > MAX_ROUNDS) throw 'loop appears infinite';
-      nextGrid = nextRound(currentGrid, recurseSearch, occupiedCount);
+      if (safetyCounter++ > INFINITE_LOOP) throw 'loop appears infinite';
+
+      var nextGrid = nextRound(currentGrid, recurseSearch, occupiedCount);
+
       if (sameGrid(currentGrid, nextGrid)) {
         return occupiedSeatCount(nextGrid);
       } else {
