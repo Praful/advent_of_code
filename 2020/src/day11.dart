@@ -71,7 +71,7 @@ class Seating {
   }
 
   int adjacentOccupied(grid, row, col, [recurseSearch = false]) {
-    var result = 0;
+    var result = 0, safetyCounter = 0;
 
     bool inGrid(r, c) =>
         r >= 0 && r < grid.length && c >= 0 && c < grid[0].length;
@@ -79,6 +79,7 @@ class Seating {
     MOVE_DIRECTION.forEach((direction) {
       var adjR = row, adjC = col;
       do {
+        if (safetyCounter++ > MAX_ROUNDS) throw 'loop appears infinite';
         adjR += direction[0];
         adjC += direction[1];
         if (!inGrid(adjR, adjC)) break;
@@ -100,7 +101,7 @@ class Seating {
     var nextGrid;
     var safetyCounter = 0;
     do {
-      if (safetyCounter++ > MAX_ROUNDS) return -1;
+      if (safetyCounter++ > MAX_ROUNDS) throw 'loop appears infinite';
       nextGrid = nextRound(currentGrid, recurseSearch, occupiedCount);
       if (sameGrid(currentGrid, nextGrid)) {
         return occupiedSeatCount(nextGrid);
