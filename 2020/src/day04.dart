@@ -17,7 +17,7 @@ final List<String> TEST_INPUT_VALID =
 
 final List<String> MAIN_INPUT = File('../data/day04.txt').readAsLinesSync();
 
-typedef bool IsValidPassportFn(Map<String, String> p);
+typedef IsValidPassportFn = bool Function(Map<String, String> p);
 
 bool isValidPassportPart1(Map<String, String> passport) =>
     (passport.length == MAX_FIELDS) ||

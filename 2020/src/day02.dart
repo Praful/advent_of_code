@@ -4,7 +4,7 @@ import './utils.dart';
 var verbose = false;
 var debug = false;
 
-typedef bool IsValidPasswordFn(PasswordEntry pe);
+typedef IsValidPasswordFn = bool Function(PasswordEntry pe);
 
 //find passwords that have a char in one of two positions (but not both)
 void day2b() {
