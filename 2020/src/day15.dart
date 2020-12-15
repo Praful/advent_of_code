@@ -10,19 +10,16 @@ void findLastSpokenNumber(String name, List<int> input,
   printHeader(name);
 
   var history = <int, int>{};
-  for (var i = 0; i < input.length - 1; i++) history[input[i]] = i + 1;
+  for (var i = 0; i < input.length - 1; i++) {
+    history[input[i]] = i + 1;
+  }
 
   var lastNumberSpoken = input.last;
-  for (var turn = input.length + 1; turn <= turnCount; turn++) {
-    var occurrences = history[lastNumberSpoken] ?? 0;
 
-    if (occurrences == 0) {
-      history[lastNumberSpoken] = turn - 1;
-      lastNumberSpoken = 0;
-    } else {
-      history[lastNumberSpoken] = turn - 1;
-      lastNumberSpoken = (turn - 1) - occurrences;
-    }
+  for (var turn = input.length + 1; turn <= turnCount; turn++) {
+    var spoken = history[lastNumberSpoken] ?? 0;
+    history[lastNumberSpoken] = turn - 1;
+    lastNumberSpoken = spoken == 0 ? 0 : turn - 1 - spoken;
   }
   print(lastNumberSpoken);
 }
