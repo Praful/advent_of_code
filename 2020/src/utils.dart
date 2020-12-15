@@ -15,6 +15,12 @@ List<int> fileAsInt(input, [sort = false]) {
   return result;
 }
 
+extension String2 on String {
+  String replaceCharAt(int index, String newChar) {
+    return this.substring(0, index) + newChar + this.substring(index + 1);
+  }
+}
+
 extension Iterable2 on Iterable<int> {
   int get max => reduce(math.max);
   int get min => reduce(math.min);
