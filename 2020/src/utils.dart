@@ -27,8 +27,9 @@ extension Iterable2 on Iterable<int> {
 }
 
 extension Range on num {
+  /// Range is inclusive, ie num >= from && num <= to
+  bool isBetweenI(num from, num to) => from <= this && this <= to;
+
   /// Range is exclusive, ie num > from && num < to
-  bool isBetween(num from, num to) {
-    return from < this && this < to;
-  }
+  bool isBetween(num from, num to) => from < this && this < to;
 }
