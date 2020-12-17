@@ -17,7 +17,7 @@ List<int> fileAsInt(input, [sort = false]) {
 
 extension String2 on String {
   String replaceCharAt(int index, String newChar) {
-    return this.substring(0, index) + newChar + this.substring(index + 1);
+    return substring(0, index) + newChar + substring(index + 1);
   }
 }
 
