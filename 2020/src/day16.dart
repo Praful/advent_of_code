@@ -1,5 +1,4 @@
 import './utils.dart';
-import 'day04.dart';
 
 const bool DEBUG = false;
 
