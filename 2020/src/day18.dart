@@ -142,10 +142,10 @@ class Calculator {
     return result;
   }
 
-  int evaluatePostfix(List exp) {
+  int evaluatePostfix(List postfix) {
     var stack = Stack<int>();
 
-    for (var ch in exp) {
+    for (var ch in postfix) {
       if (ch is int) {
         stack.push(ch);
       } else {
