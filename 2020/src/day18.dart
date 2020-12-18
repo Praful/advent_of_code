@@ -11,22 +11,23 @@ List TEST_INPUT2;
 List MAIN_INPUT;
 
 class Calculator {
+  final Stack stack = Stack();
+
   Calculator();
 
-  static RegExp regex =
-      RegExp(r'^(?<min>\d+)-(?<max>\d+) (?<char>.): (?<password>.+)$');
+  // static RegExp regex =
+  //     RegExp(r'^(?<min>\d+)-(?<max>\d+) (?<char>.): (?<password>.+)$');
   static RegExp REGEX_NUMBER = RegExp(r'^(?<number>\d+)');
 
-  bool isNumber(c) => int.tryParse(c) != null;
-
-  static String SPACE = ' ';
-  static String BRACKET_OPENING = '(';
-  static String BRACKET_CLOSING = ')';
-  static String OPERATOR_ADD = '+';
-  static String OPERATOR_MULTIPLY = '*';
-  static Set OPERATOR = <String>{OPERATOR_ADD, OPERATOR_MULTIPLY};
+  static const String SPACE = ' ';
+  static const String BRACKET_OPENING = '(';
+  static const String BRACKET_CLOSING = ')';
+  static const String OPERATOR_ADD = '+';
+  static const String OPERATOR_MULTIPLY = '*';
+  static const Set OPERATOR = <String>{OPERATOR_ADD, OPERATOR_MULTIPLY};
 
   bool isOperator(c) => OPERATOR.contains(c);
+  bool isNumber(c) => int.tryParse(c) != null;
 
   int getNumber(s) =>
       int.parse(REGEX_NUMBER.firstMatch(s).namedGroup('number'));
@@ -59,6 +60,50 @@ class Calculator {
     }
   }
 
+  //return true if a has greater precedence that b
+  bool greaterPrecedence(a, b) =>
+      b == BRACKET_OPENING || a == OPERATOR_ADD && b == OPERATOR_MULTIPLY;
+
+  int evaluate2(expression) {
+    var digit;
+    var i = 0;
+    var postfix = [];
+    var operatorStack = Stack();
+
+    while (i < expression.length) {
+      var ch = expression[i];
+      if (ch == SPACE) {
+        i++;
+      } else if (isNumber(ch)) {
+        digit = getNumber(expression.substring(i));
+        postfix.add(digit);
+        i += digit.toString().length;
+      } else if (isOperator(ch)) {
+        if (operatorStack.isEmpty ||
+            greaterPrecedence(ch, operatorStack.peek())) {
+          operatorStack.push(ch);
+        } else {
+          postfix.add(operatorStack.pop());
+          operatorStack.push(ch);
+        }
+        i += ch.length;
+      } else if (ch == BRACKET_OPENING) {
+        operatorStack.push(ch);
+        i += ch.length;
+      } else if (ch == BRACKET_CLOSING) {
+        while (true) {
+          var opCh = operatorStack.pop();
+          if (opCh == BRACKET_OPENING) break;
+          postfix.add(opCh);
+        }
+        i += ch.length;
+      }
+    }
+    while (operatorStack.isNotEmpty) postfix.add(operatorStack.pop());
+    // print(postfix);
+    return evaluatePostfix(postfix);
+  }
+
   int evaluate(expression) {
     var lastOperator = null;
     var rhsNumber;
@@ -89,12 +134,34 @@ class Calculator {
       } else if (ch == BRACKET_OPENING) {
         var subexpression = getSubexpression(expression.substring(i));
         // print('subexp = $subexpression');
-        rhsNumber = evaluate(subexpression);
+        rhsNumber = Calculator().evaluate(subexpression);
         updateResult();
         i += subexpression.length + 2;
       }
     }
     return result;
+  }
+
+  int evaluatePostfix(List exp) {
+    var stack = Stack<int>();
+
+    for (var ch in exp) {
+      if (ch is int) {
+        stack.push(ch);
+      } else {
+        var val1 = stack.pop();
+        var val2 = stack.pop();
+
+        if (ch == OPERATOR_ADD) {
+          stack.push(val1 + val2);
+        } else if (ch == OPERATOR_MULTIPLY) {
+          stack.push(val1 * val2);
+        } else {
+          throw 'Invalid operator in postfix expression';
+        }
+      }
+    }
+    return stack.pop();
   }
 }
 
@@ -103,10 +170,10 @@ void runPart1(String name, List input) {
   var calculator = Calculator();
   var total = 0;
   input.forEach((expression) {
-    print('=====================');
-    print('$expression');
+    // print('=====================');
+    // print('$expression');
     var result = calculator.evaluate(expression);
-    print('Answer = $result');
+    // print('Answer = $result');
     total += result;
   });
   print(total);
@@ -114,6 +181,16 @@ void runPart1(String name, List input) {
 
 void runPart2(String name, List input) {
   printHeader(name);
+  var calculator = Calculator();
+  var total = 0;
+  input.forEach((expression) {
+    // print('=====================');
+    // print('$expression');
+    var result = calculator.evaluate2(expression);
+    // print('Answer = $result');
+    total += result;
+  });
+  print(total);
 }
 
 void main(List<String> arguments) {
@@ -127,11 +204,17 @@ void main(List<String> arguments) {
   // 5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4)) = 12240
   // ((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2 = 13632
   runPart1('18 test part 1', TEST_INPUT);
-  //Answer:
-  // runPart2('18 test part 2', TEST_INPUT);
+
+  // 1 + 2 * 3 + 4 * 5 + 6 = 231
+  // 2 * 3 + (4 * 5) = 46
+  // 5 + (8 * 3 + 9 + 3 * 4 * 3) = 1445
+  // 5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4)) = 669060
+  // ((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2 = 23340
+  runPart2('18 test part 2', TEST_INPUT);
 
   //Answer: 98621258158412
   runPart1('18 part 1', MAIN_INPUT);
-  //Answer:
-  // runPart2('18 part 2', MAIN_INPUT);
+
+  //Answer: 241216538527890
+  runPart2('18 part 2', MAIN_INPUT);
 }

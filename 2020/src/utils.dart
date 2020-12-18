@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math' as math;
+import "dart:collection" show Queue;
 
 void printHeader(String day) => print('=== Day $day ====================');
 
@@ -32,4 +33,38 @@ extension Range on num {
 
   /// Range is exclusive, ie num > from && num < to
   bool isBetween(num from, num to) => from < this && this < to;
+}
+
+class Stack<T> {
+  final Queue<T> _underlyingQueue;
+
+  Stack() : _underlyingQueue = Queue<T>();
+
+  int get length => _underlyingQueue.length;
+  bool get isEmpty => _underlyingQueue.isEmpty;
+  bool get isNotEmpty => _underlyingQueue.isNotEmpty;
+
+  void clear() => _underlyingQueue.clear();
+
+  T peek() {
+    if (isEmpty) {
+      throw StateError('Cannot peek() on empty stack.');
+    }
+    return _underlyingQueue.last;
+  }
+
+  T pop() {
+    if (isEmpty) {
+      throw StateError('Cannot pop() on empty stack.');
+    }
+    return _underlyingQueue.removeLast();
+  }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return _underlyingQueue.toString();
+  }
+
+  void push(final T element) => _underlyingQueue.addLast(element);
 }
