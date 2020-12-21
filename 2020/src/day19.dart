@@ -55,14 +55,18 @@ class Rules {
   }
 
   Object createRegex([start = '0']) {
-    var top = rules[start];
-    if (top.type == RuleType.terminal) return top.value;
-    return top.ruleIds.map((subrule) => subrule
-        .map((subsubrule) => createRegex(subsubrule))
-        .toList()
-        .map((alts) => alts.length == 1
-            ? alts
-            : "(${alts.map((r) => r.join()).join('|')})"));
+    try {
+      var top = rules[start];
+      if (top.type == RuleType.terminal) return top.value;
+      return top.ruleIds.map((ids) => ids
+          .map((id) => createRegex(id))
+          .toList()
+          .map((alts) => alts.length == 1
+              ? alts
+              : "(${alts.map((r) => r.join()).join('|')})"));
+    } catch (e) {
+      print('error: $start: $e');
+    }
   }
 
   @override
@@ -84,14 +88,6 @@ void runPart1(String name, List input) {
 
 void runPart2(String name, List input) {
   printHeader(name);
-  var rules = Rules(input);
-  print(rules);
-  var rulesRegexStr =
-      '^' + rules.createRegex().toString().replaceAll(', ', '') + '\$';
-  var regex = RegExp(rulesRegexStr);
-  var result =
-      rules.messages.fold(0, (acc, m) => acc + (regex.hasMatch(m) ? 1 : 0));
-  print(result);
 }
 
 void main(List<String> arguments) {
@@ -102,7 +98,7 @@ void main(List<String> arguments) {
   //Answer: 2
   runPart1('19 test part 1', TEST_INPUT);
   //Answer:
-  runPart2('19 test part 2', TEST_INPUT2);
+  // runPart2('19 test part 2', TEST_INPUT2);
 
   //Answer: 165
   runPart1('19 part 1', MAIN_INPUT);
