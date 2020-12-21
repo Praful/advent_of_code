@@ -62,7 +62,6 @@ class Stack<T> {
 
   @override
   String toString() {
-    // TODO: implement toString
     return _underlyingQueue.toString();
   }
 
