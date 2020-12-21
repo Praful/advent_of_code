@@ -49,7 +49,8 @@ void runPart2(String name, List input) {
       input.asMap().entries.where((e) => e.value != OUT_OF_SERVICE).toList();
   print(buses);
 
-  bool busScheduled(bus, timestamp) => (timestamp + bus.key) % bus.value == 0;
+  bool busScheduled(bus, timestamp) =>
+      (timestamp + bus.key) % bus.terminal == 0;
 
   var timestamp = 0;
   var inc = 1;
