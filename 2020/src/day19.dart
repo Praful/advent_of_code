@@ -84,6 +84,14 @@ void runPart1(String name, List input) {
 
 void runPart2(String name, List input) {
   printHeader(name);
+  var rules = Rules(input);
+  print(rules);
+  var rulesRegexStr =
+      '^' + rules.createRegex().toString().replaceAll(', ', '') + '\$';
+  var regex = RegExp(rulesRegexStr);
+  var result =
+      rules.messages.fold(0, (acc, m) => acc + (regex.hasMatch(m) ? 1 : 0));
+  print(result);
 }
 
 void main(List<String> arguments) {
