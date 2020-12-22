@@ -50,7 +50,7 @@ class Food {
       });
     });
 
-    //remove allergens from allIngredients
+    //remove allergens from all ingredients list
     allIngredients.removeWhere((i) =>
         allergenCandidates.values.expand((ing) => ing).toSet().contains(i));
     print(allIngredients.length);
@@ -77,7 +77,7 @@ void main(List<String> arguments) {
   // runPart2('21 test part 2', TEST_INPUT);
 
   //Answer: 2315
-  runPart1('21 part 1', MAIN_INPUT);
+  // runPart1('21 part 1', MAIN_INPUT);
   //Answer:
   // runPart2('21 part 2', MAIN_INPUT);
 }
