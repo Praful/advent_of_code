@@ -55,18 +55,14 @@ class Rules {
   }
 
   Object createRegex([start = '0']) {
-    try {
-      var top = rules[start];
-      if (top.type == RuleType.terminal) return top.value;
-      return top.ruleIds.map((ids) => ids
-          .map((id) => createRegex(id))
-          .toList()
-          .map((alts) => alts.length == 1
-              ? alts
-              : "(${alts.map((r) => r.join()).join('|')})"));
-    } catch (e) {
-      print('error: $start: $e');
-    }
+    var top = rules[start];
+    if (top.type == RuleType.terminal) return top.value;
+    return top.ruleIds.map((ids) => ids
+        .map((id) => createRegex(id))
+        .toList()
+        .map((alts) => alts.length == 1
+            ? alts
+            : "(${alts.map((r) => r.join()).join('|')})"));
   }
 
   @override
