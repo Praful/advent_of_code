@@ -42,7 +42,7 @@ class Food {
         .map((a, i) => MapEntry(a, i.expand((x) => x).toSet()));
   }
 
-  void findNonAllergens() {
+  int findNonAllergens() {
     allergensToIngredientsMap.entries.forEach((kv) {
       kv.value.forEach((ingSet) {
         allergenCandidates[kv.key] =
@@ -53,18 +53,37 @@ class Food {
     //remove allergens from all ingredients list
     allIngredients.removeWhere((i) =>
         allergenCandidates.values.expand((ing) => ing).toSet().contains(i));
-    print(allIngredients.length);
+    // print(allergenCandidates);
+    return allIngredients.length;
+  }
+
+  //We need to narrow each set down to one element per allergen then
+  //return the ingredients in allergen order
+  String ingredientsInAllergenOrder() {
+    while (true) {
+      var singleElementSets =
+          allergenCandidates.values.where((v) => v.length == 1);
+      var multipleElementSets =
+          allergenCandidates.values.where((s) => s.length > 1);
+      if (multipleElementSets.isEmpty) break;
+      singleElementSets.forEach((singles) => multipleElementSets
+          .forEach((multiples) => multiples.remove(singles.first)));
+    }
+    var result = '';
+
+    allergenCandidates.keys.toList()
+      ..sort()
+      ..forEach((k) => result += '${allergenCandidates[k].first},');
+
+    return result;
   }
 }
 
-void runPart1(String name, List input) {
+void runPart1and2(String name, List input) {
   printHeader(name);
   var food = Food(input);
-  food.findNonAllergens();
-}
-
-void runPart2(String name, List input) {
-  printHeader(name);
+  print(food.findNonAllergens());
+  print(food.ingredientsInAllergenOrder());
 }
 
 void main(List<String> arguments) {
@@ -72,12 +91,10 @@ void main(List<String> arguments) {
   MAIN_INPUT = fileAsString('../data/day21.txt');
 
   //Answer: 5
-  runPart1('21 test part 1', TEST_INPUT);
-  //Answer:
-  // runPart2('21 test part 2', TEST_INPUT);
+  //Answer: mxmxvkd,sqjhc,fvjkl,
+  runPart1and2('21 test part 1 and 2', TEST_INPUT);
 
   //Answer: 2315
-  // runPart1('21 part 1', MAIN_INPUT);
-  //Answer:
-  // runPart2('21 part 2', MAIN_INPUT);
+  //Answer: cfzdnz,htxsjf,ttbrlvd,bbbl,lmds,cbmjz,cmbcm,dvnbh,
+  runPart1and2('21 part 1 and 2', MAIN_INPUT);
 }
