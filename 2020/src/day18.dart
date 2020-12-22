@@ -1,7 +1,3 @@
-import 'dart:io';
-import 'dart:math';
-import 'dart:mirrors';
-
 import './utils.dart';
 
 const bool DEBUG = false;
@@ -15,8 +11,6 @@ class Calculator {
 
   Calculator();
 
-  // static RegExp regex =
-  //     RegExp(r'^(?<min>\d+)-(?<max>\d+) (?<char>.): (?<password>.+)$');
   static RegExp REGEX_NUMBER = RegExp(r'^(?<number>\d+)');
 
   static const String SPACE = ' ';
@@ -99,13 +93,15 @@ class Calculator {
         i += ch.length;
       }
     }
-    while (operatorStack.isNotEmpty) postfix.add(operatorStack.pop());
+    while (operatorStack.isNotEmpty) {
+      postfix.add(operatorStack.pop());
+    }
     // print(postfix);
     return evaluatePostfix(postfix);
   }
 
   int evaluate(expression) {
-    var lastOperator = null;
+    var lastOperator;
     var rhsNumber;
     var result = 0;
     var i = 0;
