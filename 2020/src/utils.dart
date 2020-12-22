@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:math' as math;
-import "dart:collection" show Queue;
+import 'dart:collection' show Queue;
 
 void printHeader(String day) => print('=== Day $day ====================');
 
