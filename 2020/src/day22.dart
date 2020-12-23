@@ -47,8 +47,8 @@ class Game {
   //return winning player
   Player playCombat() {
     while (player1.hasMoreCards && player2.hasMoreCards) {
-      var p1Card = player1.play();
-      var p2Card = player2.play();
+      var p1Card = player1.playRound();
+      var p2Card = player2.playRound();
       if (p1Card > p2Card) {
         winRound(player1, p1Card, p2Card);
       } else {
@@ -70,8 +70,8 @@ class Game {
   Player playRecursiveCombat() {
     while (player1.hasMoreCards && player2.hasMoreCards) {
       if (player1.hasRepeatHand && player2.hasRepeatHand) return player1;
-      var p1Card = player1.play();
-      var p2Card = player2.play();
+      var p1Card = player1.playRound();
+      var p2Card = player2.playRound();
       if (player1.cardsInDeck >= p1Card && player2.cardsInDeck >= p2Card) {
         if (playSubGame(p1Card, p2Card).id == 1) {
           winRound(player1, p1Card, p2Card);
@@ -133,7 +133,7 @@ class Player {
     return clone;
   }
 
-  int play() {
+  int playRound() {
     deckHistory.add(cards.join());
     return cards.removeFirst();
   }
