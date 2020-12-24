@@ -1,63 +1,84 @@
+import 'dart:collection';
+
 import './utils.dart';
 
 const bool DEBUG = false;
+
+class CupEntry<T> extends LinkedListEntry<CupEntry> {
+  T value;
+  CupEntry(this.value);
+
+  @override
+  String toString() => '$value';
+}
 
 class Cups {
   final List<int> input;
   final int picksPerMove;
   int maxCupValue;
   int minCupValue;
-  int currentCup;
-  List<int> cups;
+  CupEntry currentCup;
+
+  LinkedList<CupEntry> cups = LinkedList();
+  Map<int, CupEntry> cupIndex = {};
 
   Cups(this.input, this.picksPerMove) {
-    currentCup = input[0];
-    cups = input;
-    minCupValue = cups.min;
-    maxCupValue = cups.max;
+    minCupValue = input.min;
+    maxCupValue = input.max;
+
+    cups.addAll(input.map((e) {
+      var cup = CupEntry(e);
+      cupIndex[e] = cup;
+      return cup;
+    }));
+    currentCup = cups.first;
   }
 
-  List<int> strToList(String s) => s.split('').map(int.parse).toList();
-
-  List<int> pickup() {
-    var pickedCups = <int>[];
-    var removedIndices = [];
-    var pickupIndex = cups.indexOf(currentCup) + 1;
-    while (pickedCups.length < picksPerMove) {
-      if (pickupIndex >= cups.length) pickupIndex = 0;
-      pickedCups.add(cups[pickupIndex]);
-      removedIndices.add(pickupIndex);
-      pickupIndex++;
+  List<CupEntry> pickup() {
+    var pickedCups = <CupEntry>[];
+    var next = currentCup;
+    for (var i = 0; i < picksPerMove; i++) {
+      next = nextCup(next);
+      pickedCups.add(next);
     }
-    removedIndices.sort();
-    for (var i = removedIndices.length - 1; i >= 0; i--) {
-      cups.removeAt(removedIndices[i]);
-    }
-
     return pickedCups;
   }
 
-  int nextCupClockwise(int start) {
-    var nextIndex = cups.indexOf(start) + 1;
-    if (nextIndex >= cups.length) nextIndex = 0;
-    return cups[nextIndex];
+  //anticlockwise
+  CupEntry previousCup(CupEntry start) {
+    return start.previous ?? cups.last;
   }
 
-  int selectDestinationCup() {
-    var destCup = currentCup - 1;
-    while (!cups.contains(destCup)) {
-      destCup--;
-      if (destCup < minCupValue) destCup = maxCupValue;
+  //clockwise
+  CupEntry nextCup(CupEntry start) {
+    return start.next ?? cups.first;
+  }
+
+  bool isPicked(cup, pickedList) {
+    return pickedList.map((e) => e.value == cup).any((v) => v == true);
+  }
+
+  CupEntry selectDestinationCup(List<CupEntry> pickedList) {
+    var destCupValue =
+        currentCup.value != minCupValue ? currentCup.value - 1 : maxCupValue;
+    while (isPicked(destCupValue, pickedList)) {
+      destCupValue--;
+      if (destCupValue < minCupValue) destCupValue = maxCupValue;
     }
-    return destCup;
+    return cupIndex[destCupValue];
   }
 
-  void placeCup(int destCup, List<int> pickedCups) {
-    cups.insertAll(cups.indexOf(destCup) + 1, pickedCups);
+  void placeCup(CupEntry destCup, List<CupEntry> pickedCups) {
+    var start = destCup;
+    for (var cup in pickedCups) {
+      cup.unlink();
+      start.insertAfter(cup);
+      start = cup;
+    }
   }
 
   void newCurrentCup() {
-    currentCup = nextCupClockwise(currentCup);
+    currentCup = nextCup(currentCup);
   }
 
   void play(int moves) {
@@ -65,32 +86,30 @@ class Cups {
     var destCup;
 
     void printStateOfPlay() {
-      // print('Destination: $destCup');
-      // print('Picked: $pickedCups');
-      // print(toString());
+      print('Destination: $destCup');
+      print('Picked: $pickedCups');
+      print(toString());
     }
 
-    printStateOfPlay();
+    if (DEBUG) printStateOfPlay();
 
     for (var i = 0; i < moves; i++) {
-      // print('Move ${i + 1} -------------------------------------------');
-      if (i % 1000 == 0) print('Index: $i');
+      if (DEBUG) print('Move ${i + 1} ---------------------------------');
+      if (DEBUG && i % 1000 == 0) print('Index: $i');
       pickedCups = pickup();
-      // print(cups);
-      destCup = selectDestinationCup();
+      destCup = selectDestinationCup(pickedCups);
       placeCup(destCup, pickedCups);
       newCurrentCup();
-      printStateOfPlay();
+      if (DEBUG) printStateOfPlay();
     }
   }
 
   String playResult1() {
-    //todo
     var result = '';
-    var nextCup = 1;
+    var next = cupIndex[1];
     while (result.length < input.length - 1) {
-      nextCup = nextCupClockwise(nextCup);
-      result += nextCup.toString();
+      next = nextCup(next);
+      result += '${next.value}';
     }
 
     return result;
@@ -102,9 +121,10 @@ class Cups {
   }
 
   int playResult2() {
-    var first = nextCupClockwise(1);
-    var second = nextCupClockwise(first);
-    return first * second;
+    var first = nextCup(cupIndex[1]);
+    var second = nextCup(first);
+    // print('first: $first, second: $second');
+    return first.value * second.value;
   }
 }
 
@@ -130,11 +150,11 @@ void runPart2(String name, String input, int moves) {
 void main(List<String> arguments) {
   //Answer: 92658374
   runPart1('23 test part 1', '389125467', 10);
-  //Answer:
-  runPart2('23 test part 1', '389125467', 10000000);
+  //Answer: 934001 x 159792 = 149245887792
+  runPart2('23 test part 2', '389125467', 10000000);
 
   //Answer: 27865934
   runPart1('23 part 1', '872495136', 100);
-  //Answer:
-  // runPart2('23 part 2', MAIN_INPUT);
+  //Answer: 170836011000
+  runPart2('23 part 2', '872495136', 10000000);
 }
