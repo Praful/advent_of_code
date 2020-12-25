@@ -1,4 +1,5 @@
 import './utils.dart';
+import 'test.dart';
 
 const bool DEBUG = false;
 
@@ -7,45 +8,48 @@ List TEST_INPUT2;
 List MAIN_INPUT;
 
 //Using cube coordinates: see https://www.redblobgames.com/grids/hexagons/
-class Direction {
+class Location {
   static const List<String> moveOptions = ['ne', 'e', 'se', 'sw', 'w', 'nw'];
-  static final Map<String, Direction> moveVectors = {
-    moveOptions[0]: Direction(1, 0, -1), //ne
-    moveOptions[1]: Direction(1, -1, 0), //e
-    moveOptions[2]: Direction(0, -1, 1), //se
-    moveOptions[3]: Direction(-1, 0, 1), //sw
-    moveOptions[4]: Direction(-1, 1, 0), //w
-    moveOptions[5]: Direction(0, 1, -1) //nw
+  static final Map<String, Location> moveVectors = {
+    moveOptions[0]: Location(1, 0, -1), //ne
+    moveOptions[1]: Location(1, -1, 0), //e
+    moveOptions[2]: Location(0, -1, 1), //se
+    moveOptions[3]: Location(-1, 0, 1), //sw
+    moveOptions[4]: Location(-1, 1, 0), //w
+    moveOptions[5]: Location(0, 1, -1) //nw
   };
 
   final int x, y, z;
-  Direction([this.x = 0, this.y = 0, this.z = 0]);
-  Direction move(location, instruction) {
+  Location([this.x = 0, this.y = 0, this.z = 0]);
+  Location move(location, instruction) {
     // print('$location, $instruction, ${moveVectors[instruction]}');
     var r = location + moveVectors[instruction];
     return r;
   }
 
-  Direction operator +(Direction v) => Direction(x + v.x, y + v.y, z + v.z);
+  Location operator +(Location v) => Location(x + v.x, y + v.y, z + v.z);
 
   @override
   String toString() => '$x, $y, $z';
+
+  static Location parse(s) {
+    var coords = s.split(',').map(int.parse).toList();
+    return Location(coords[0], coords[1], coords[2]);
+  }
 }
 
 class Floor {
   final List<String> input;
   List<List<String>> moveDirections = [];
+  var blackTiles = <String>{};
 
   Floor(this.input) {
     parseInput();
-    print(Direction.moveVectors);
   }
 
   int doFlips() {
-    var blackTiles = <String>{};
-
     moveDirections.forEach((md) {
-      var location = Direction();
+      var location = Location();
       md.forEach((instruction) {
         if (DEBUG) print('before: $location');
         location = location.move(location, instruction);
@@ -63,15 +67,55 @@ class Floor {
     return blackTiles.length;
   }
 
+  int adjacentBlackTiles(Set blackTiles, Location tile) {
+    var result = 0;
+    Location.moveVectors.values.forEach((side) {
+      if (blackTiles.contains((tile + side).toString())) result++;
+    });
+    return result;
+  }
+
+  List<Location> findWhiteTilesThatNeedFlipping(blackTiles) {
+    bool isWhite(t) => !blackTiles.contains(t.toString());
+
+    var result = <Location>[];
+    blackTiles.forEach((blackAsStr) {
+      var black = Location.parse(blackAsStr);
+      Location.moveVectors.values.forEach((side) {
+        var adjTile = black + side;
+        if (isWhite(adjTile) && adjacentBlackTiles(blackTiles, adjTile) == 2) {
+          result.add(adjTile);
+        }
+      });
+    });
+    return result;
+  }
+
   int artShow(int days) {
+    var nextDaysBlackTiles = blackTiles;
+
     for (var i = 0; i < days; i++) {
-      //todo
+      var daysBlackTiles = nextDaysBlackTiles;
+      nextDaysBlackTiles = <String>{};
+
+      daysBlackTiles.forEach((tile) {
+        var adjBlackTiles =
+            adjacentBlackTiles(daysBlackTiles, Location.parse(tile));
+        if (adjBlackTiles.isBetweenI(1, 2)) {
+          nextDaysBlackTiles.add(tile.toString());
+        }
+        var flipWhite = findWhiteTilesThatNeedFlipping(daysBlackTiles);
+        nextDaysBlackTiles.addAll(flipWhite.map((t) => t.toString()));
+      });
+
+      print('day $i: ${nextDaysBlackTiles.length} ---- ');
     }
+    return nextDaysBlackTiles.length;
   }
 
   void parseInput() {
     String findDirection(t) {
-      for (var op in Direction.moveOptions) {
+      for (var op in Location.moveOptions) {
         if (t.startsWith(op)) return op;
       }
       throw 'Direction not found in instructions $t';
@@ -102,7 +146,7 @@ void runPart2(String name, List input, days) {
   printHeader(name);
   var floor = Floor(input);
   floor.doFlips();
-  print(floor.artShow(100));
+  print(floor.artShow(days));
 }
 
 void main(List<String> arguments) {
@@ -116,6 +160,6 @@ void main(List<String> arguments) {
 
   //Answer: 346
   runPart1('24 part 1', MAIN_INPUT);
-  //Answer:
-  // runPart2('24 part 2', MAIN_INPUT);
+  //Answer: 3802
+  runPart2('24 part 2', MAIN_INPUT, 100);
 }
