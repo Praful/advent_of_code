@@ -62,9 +62,9 @@ class Rules {
     //HACK! to create repeating groups since Dart doesn't seem
     //to support. The 10 is chose based on part 2 rules. Other
     //rules/data may not work.
-    var r8 = range(1, 10).map((i) => '$r42{$i}$r31{$i}').toList();
+    var r8 = range(1, 10).map((i) => '$r42{$i}$r31{$i}').join('|');
 
-    return '(?:${r8.join('|')})';
+    return '(?:${r8})';
   }
 
   Object createRegex([start = 0, part2 = false]) {
@@ -77,11 +77,13 @@ class Rules {
 
     if (rule.type == RuleType.terminal) return rule.value;
 
-    var regex = rule.mappings.map((alternatives) =>
-        alternatives.map((id) => createRegex(id, part2)).join());
+    var regex = rule.mappings
+        .map((alternatives) =>
+            alternatives.map((id) => createRegex(id, part2)).join())
+        .join('|');
 
     //Use non-capturing groups (?:) otherwise it's slow.
-    return '(?:${regex.join('|')})';
+    return '(?:${regex})';
   }
 
   @override

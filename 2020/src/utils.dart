@@ -36,6 +36,8 @@ extension Num2 on num {
   bool isBetween(num from, num to) => from < this && this < to;
 }
 
+// https://stackoverflow.com/questions/37798397/dart-create-a-list-from-0-to-n
+// See quiver package for useful libaries.
 Iterable<int> range(int low, int high) sync* {
   for (var i = low; i < high; ++i) {
     yield i;
