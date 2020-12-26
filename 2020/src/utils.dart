@@ -25,14 +25,21 @@ extension String2 on String {
 extension Iterable2 on Iterable<int> {
   int get max => reduce(math.max);
   int get min => reduce(math.min);
+  int get sum => reduce((a, b) => a + b);
 }
 
-extension Range on num {
+extension Num2 on num {
   /// Range is inclusive, ie num >= from && num <= to
   bool isBetweenI(num from, num to) => from <= this && this <= to;
 
   /// Range is exclusive, ie num > from && num < to
   bool isBetween(num from, num to) => from < this && this < to;
+}
+
+Iterable<int> range(int low, int high) sync* {
+  for (var i = low; i < high; ++i) {
+    yield i;
+  }
 }
 
 class Stack<T> {
