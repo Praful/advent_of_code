@@ -4,6 +4,10 @@ import 'dart:collection' show Queue;
 
 void printHeader(String day) => print('=== Day $day ====================');
 
+String readFile(input) {
+  return File(input).readAsStringSync();
+}
+
 List<String> fileAsString(input, [sort = false]) {
   var result = File(input).readAsLinesSync();
   if (sort) result.sort();
@@ -17,15 +21,17 @@ List<int> fileAsInt(input, [sort = false]) {
 }
 
 extension String2 on String {
-  String replaceCharAt(int index, String newChar) {
-    return substring(0, index) + newChar + substring(index + 1);
-  }
+  String replaceCharAt(int index, String newChar) =>
+      substring(0, index) + newChar + substring(index + 1);
+
+  String reversed() => split('').reversed.join('');
 }
 
 extension Iterable2 on Iterable<int> {
   int get max => reduce(math.max);
   int get min => reduce(math.min);
   int get sum => reduce((a, b) => a + b);
+  int get multiply => reduce((a, b) => a * b);
 }
 
 extension Num2 on num {
