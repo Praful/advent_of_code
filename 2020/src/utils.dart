@@ -24,7 +24,7 @@ extension String2 on String {
   String replaceCharAt(int index, String newChar) =>
       substring(0, index) + newChar + substring(index + 1);
 
-  String reversed() => split('').reversed.join('');
+  String get reversed => split('').reversed.join('');
 }
 
 extension Iterable2 on Iterable<int> {
