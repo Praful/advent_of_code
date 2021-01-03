@@ -1,5 +1,6 @@
 import './utils.dart';
 import 'package:trotter/trotter.dart';
+import 'dart:math' as math;
 
 const bool DEBUG = false;
 
@@ -7,24 +8,35 @@ Image TEST_INPUT;
 Image TEST_INPUT2;
 Image MAIN_INPUT;
 
-class AdjacentTile {
-  final int id;
-  final String commonEdge;
-  AdjacentTile(this.id, this.commonEdge);
+class Point {
+  final int row;
+  final int col;
+  Point(this.row, this.col);
+
+  Point operator +(Point other) => Point(row + other.row, col + other.col);
 
   @override
-  String toString() => '$id: $commonEdge';
+  String toString() => '$row, $col';
+}
+
+class AdjacentTile {
+  final int id;
+  final String sharedBorder;
+  AdjacentTile(this.id, this.sharedBorder);
+
+  @override
+  String toString() => '$id: $sharedBorder';
 }
 
 enum Location { top, bottom, left, right, none }
 
 class Edge {
   final Location location;
-  final String value;
-  Edge(this.location, this.value);
+  final String border;
+  Edge(this.location, this.border);
 
   @override
-  String toString() => '$location, $value';
+  String toString() => '$location, $border';
 }
 
 class Tile {
@@ -46,6 +58,8 @@ class Tile {
 
   Tile(this.input) {
     parseInput();
+
+    // TODO how do you map enum to getter or method?
     // enumToMethod[Side.bottom] = bottom;
     // enumToMethod[Side.top] = top;
     // enumToMethod[Side.left] = left;
@@ -76,8 +90,8 @@ class Tile {
   }
 
   //Return true if we managed to align tile edge to the correct location
-  bool alignEdges(Location location, String value) {
-    print('aligning $location for $value');
+  bool alignEdges(Location location, String border) {
+    // print('aligning $location for $border');
     for (var n = 0; n < 4; n++) {
       var target;
       // if (s == enumToMethod[side]()) break;
@@ -95,9 +109,9 @@ class Tile {
           target = right;
           break;
         default:
-          throw 'Invalid value for location $location';
+          throw 'Invalid border for location $location';
       }
-      if (target == value) return true;
+      if (target == border) return true;
       rotate90();
     }
     return false;
@@ -113,20 +127,28 @@ class Tile {
   }
 
   List<String> flip() {
-    print('Flipping ${toString()}');
+    // print('Flipping ${toString()}');
     tile = tile.reversed.toList();
-    print('Flipped to ${toString()}');
+    // print('Flipped to ${toString()}');
     return tile;
   }
 
-  Edge edge(String value) {
+  List get withoutBorder {
+    var trimmedTile = List.from(tile)
+      ..removeLast()
+      ..removeAt(0);
+
+    return trimmedTile.map((e) => e.substring(1, e.length - 1)).toList();
+  }
+
+  Edge edge(String border) {
     bool equals(String a, String b) => (a == b) || (a == b.reversed);
 
-    if (equals(value, top)) return Edge(Location.top, top);
-    if (equals(value, bottom)) return Edge(Location.bottom, bottom);
-    if (equals(value, left)) return Edge(Location.left, left);
-    if (equals(value, right)) return Edge(Location.right, right);
-    throw '$value is not on any side of the tile';
+    if (equals(border, top)) return Edge(Location.top, top);
+    if (equals(border, bottom)) return Edge(Location.bottom, bottom);
+    if (equals(border, left)) return Edge(Location.left, left);
+    if (equals(border, right)) return Edge(Location.right, right);
+    throw '$border is not on any side of the tile';
   }
 
   String get top => tile[0];
@@ -135,15 +157,22 @@ class Tile {
   String get right => tile.map((line) => line[line.length - 1]).join();
 
   @override
-  String toString() => '$id:${adjacentTiles.values}\n${tile.join('\n')}';
+  String toString() =>
+      '$id: ${edges}${adjacentTiles.values}\n${tile.join('\n')}';
 }
 
 class Image {
   Map<int, Tile> tiles;
   final String input;
+  var tileIdGrid;
+  List<String> mergedImage;
 
   Image(this.input) {
     tiles = {for (var e in parseInput()) e.id: e};
+
+    var size = math.sqrt(tiles.entries.length).round();
+    //2D square array
+    tileIdGrid = List.generate(size, (i) => List(size), growable: false);
   }
 
   List<Tile> parseInput() => input
@@ -170,40 +199,111 @@ class Image {
     // printAdjacentTiles();
   }
 
-  void alignTiles() {
-    var startingTile = cornerTiles()[0];
-    // print(startingTile);
-    // return;
+  //We want the corner tile we process to be [0, 0] in grid
+  //we create. Rotate until it's the top left hand corner of square.
+  void makeTopLeft(Tile cornerTile) {
+    bool isCorrectOrientation(Set s1, Set s2) =>
+        (s1.intersection(s2)).length == 2;
 
-    startingTile.aligned = true;
-    alignAdjacent(startingTile);
+    var v1 = cornerTile.adjacentTiles.values.toList()[0].sharedBorder;
+    var v2 = cornerTile.adjacentTiles.values.toList()[1].sharedBorder;
 
-    print('===============================');
-    printTiles();
+    var targetOrientation = <Location>{Location.right, Location.bottom};
+
+    for (var corners = 0; corners < 4; corners++) {
+      if (isCorrectOrientation(
+          {cornerTile.edge(v1).location, cornerTile.edge(v2).location},
+          targetOrientation)) return;
+
+      cornerTile.rotate90();
+    }
+    throw 'Could not make corner tile top left';
   }
 
-  //tile1 must bealigned before this method is invoked
+  void alignTiles() {
+    var startTile = cornerTiles()[0];
+    var startPoint = Point(0, 0);
+    makeTopLeft(startTile);
+
+    startTile.aligned = true;
+    alignAdjacent(startTile);
+    // printTiles();
+
+    tileIdGrid[startPoint.row][startPoint.col] = startTile.id;
+    createTileIdGrid(startTile, startPoint);
+
+    createMergedImage();
+
+    print(tileIdGrid);
+    print(mergedImage);
+  }
+
+  void createMergedImage() {
+    var trimmedTileLength = tiles[tiles.keys.first].withoutBorder.length;
+
+    //REMOVE - test with untrimmed tile
+    // trimmedTileLength = tiles[tiles.keys.first].tile.length;
+
+    mergedImage = List<String>.generate(
+        tileIdGrid.length * trimmedTileLength, (int i) => '');
+
+    print(mergedImage.length);
+
+    for (var row = 0; row < tileIdGrid.length; row++) {
+      for (var col = 0; col < tileIdGrid.length; col++) {
+        //
+        var trimmedTile = tiles[tileIdGrid[row][col]].withoutBorder;
+        //REMOVE - test with untrimmed; useful to print merged image
+        // trimmedTile = tiles[tileIdGrid[row][col]].tile;
+        for (var tileIndex = 0; tileIndex < trimmedTile.length; tileIndex++) {
+          var mergedIndex = row * trimmedTileLength + tileIndex;
+          //add + ' ' to separate tiles for testing
+          mergedImage[mergedIndex] += trimmedTile[tileIndex]; //+ ' '
+        }
+      }
+    }
+  }
+
+  static Map<Location, Point> directionVector = {}
+    ..[Location.top] = Point(-1, 0)
+    ..[Location.bottom] = Point(1, 0)
+    ..[Location.left] = Point(0, -1)
+    ..[Location.right] = Point(0, 1);
+
+  //create grid with just IDs (not the tiles) eg:
+  // 1234 3455 2342
+  // 3456 7643 1322
+  // 5456 4643 4322
+  void createTileIdGrid(Tile start, Point pos) {
+    start.edges.entries.forEach((t) {
+      var newPos = pos + Image.directionVector[t.key];
+      tileIdGrid[newPos.row][newPos.col] = t.value;
+      createTileIdGrid(tiles[t.value], Point(newPos.row, newPos.col));
+    });
+  }
+
+  //tile1 must be aligned before this method is invoked
   void alignAdjacent(Tile tile1) {
-    print('Aligning tiles adjacent to: $tile1 ----------------------');
+    // print('Aligning tiles adjacent to: $tile1 ----------------------');
 
     for (var adjacent in tile1.adjacentTiles.values) {
       var tile2 = tiles[adjacent.id];
-      print('     Processing $tile2');
+      // print('     Processing $tile2');
       if (!tile2.aligned) {
-        var edge = tile1.edge(adjacent.commonEdge);
+        var edge = tile1.edge(adjacent.sharedBorder);
         var targetLocation = Tile.alignsWith[edge.location];
         tile1.edges[edge.location] = tile2.id;
 
-        if (!tile2.alignEdges(targetLocation, edge.value)) {
+        if (!tile2.alignEdges(targetLocation, edge.border)) {
           tile2.flip();
-          if (!tile2.alignEdges(targetLocation, edge.value)) {
+          if (!tile2.alignEdges(targetLocation, edge.border)) {
             throw 'Cannot align ${tile2.id} with ${tile1.id}';
           }
         }
         tile2.aligned = true;
         alignAdjacent(tile2);
       } else {
-        print('${tile2.id} aligned');
+        // print('${tile2.id} aligned');
       }
     }
   }
@@ -243,11 +343,6 @@ void runPart2(String name, Image image) {
   //4. mark sea monsters with 0
   //5. return number of # that are not part of sea monster
   image.findAdjacentTiles();
-  // print(image.cornerIdMultiplier());
-  // print(image.tiles[0]);
-  // print(image.tiles[0].rotate90());
-  // print(image.tiles[0].flip());
-  // image.alignEdges();
   image.alignTiles();
 }
 
@@ -263,5 +358,5 @@ void main(List<String> arguments) {
   //Answer: 22878471088273
   // runPart1('20 part 1', MAIN_INPUT);
   //Answer:
-  // runPart2('20 part 2', MAIN_INPUT);
+  runPart2('20 part 2', MAIN_INPUT);
 }
