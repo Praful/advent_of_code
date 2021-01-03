@@ -28,7 +28,7 @@ class AdjacentTile {
   String toString() => '$id: $sharedBorder';
 }
 
-enum Location { top, bottom, left, right, none }
+enum Location { top, bottom, left, right }
 
 class Edge {
   final Location location;
@@ -47,6 +47,8 @@ class Tile {
   Map<int, AdjacentTile> adjacentTiles = {};
   bool aligned = false;
   Map<Location, int> edges = {};
+  static const NUM_SIDES = 4; //sides of tile!
+
   // Map<Side, Function> enumToMethod;
 
   //Align top with bottom, left with right, etc
@@ -56,8 +58,8 @@ class Tile {
     ..[Location.top] = Location.bottom
     ..[Location.bottom] = Location.top;
 
-  Tile(this.input) {
-    parseInput();
+  Tile([this.input]) {
+    if (input != null) parseInput();
 
     // TODO how do you map enum to getter or method?
     // enumToMethod[Side.bottom] = bottom;
@@ -92,7 +94,7 @@ class Tile {
   //Return true if we managed to align tile edge to the correct location
   bool alignEdges(Location location, String border) {
     // print('aligning $location for $border');
-    for (var n = 0; n < 4; n++) {
+    for (var n = 0; n < Tile.NUM_SIDES; n++) {
       var target;
       // if (s == enumToMethod[side]()) break;
       switch (location) {
@@ -117,30 +119,27 @@ class Tile {
     return false;
   }
 
-  List<String> rotate90() {
+  void rotate90() {
     var result = <String>[];
     for (var i = 0; i < tile.length; i++) {
       result.add(tile.reversed.map((line) => line[i]).join());
     }
     tile = result;
-    return tile;
   }
 
-  List<String> flip() {
-    // print('Flipping ${toString()}');
+  void flip() {
     tile = tile.reversed.toList();
-    // print('Flipped to ${toString()}');
-    return tile;
   }
 
   List get withoutBorder {
-    var trimmedTile = List.from(tile)
+    var result = List.from(tile)
       ..removeLast()
       ..removeAt(0);
-
-    return trimmedTile.map((e) => e.substring(1, e.length - 1)).toList();
+    return result.map((e) => e.substring(1, e.length - 1)).toList();
   }
 
+  //Return Edge object with location of border and border as it is
+  //on the tile.
   Edge edge(String border) {
     bool equals(String a, String b) => (a == b) || (a == b.reversed);
 
@@ -166,6 +165,17 @@ class Image {
   final String input;
   var tileIdGrid;
   List<String> mergedImage;
+  int monstersFound;
+
+  static RegExp testMonsterRegex = RegExp(
+      '(?<=#.{5})#.{4}#{2}.{4}#{2}.{4}#{3}(?=.{5}#.{2}#.{2}#.{2}#.{2}#.{2}#)');
+
+  static RegExp monsterRegex = RegExp(
+      '(?<=#.{77})#.{4}#{2}.{4}#{2}.{4}#{3}(?=.{77}#.{2}#.{2}#.{2}#.{2}#.{2}#)');
+
+  static const SEA_MONSTER = '                  # '
+      '#    ##    ##    ###'
+      ' #  #  #  #  #  #   ';
 
   Image(this.input) {
     tiles = {for (var e in parseInput()) e.id: e};
@@ -196,7 +206,6 @@ class Image {
         tile2.adjacentTiles[tile1.id] = AdjacentTile(tile1.id, adj.first);
       }
     }
-    // printAdjacentTiles();
   }
 
   //We want the corner tile we process to be [0, 0] in grid
@@ -205,15 +214,16 @@ class Image {
     bool isCorrectOrientation(Set s1, Set s2) =>
         (s1.intersection(s2)).length == 2;
 
-    var v1 = cornerTile.adjacentTiles.values.toList()[0].sharedBorder;
-    var v2 = cornerTile.adjacentTiles.values.toList()[1].sharedBorder;
+    var border1 = cornerTile.adjacentTiles.values.toList()[0].sharedBorder;
+    var border2 = cornerTile.adjacentTiles.values.toList()[1].sharedBorder;
 
     var targetOrientation = <Location>{Location.right, Location.bottom};
 
-    for (var corners = 0; corners < 4; corners++) {
-      if (isCorrectOrientation(
-          {cornerTile.edge(v1).location, cornerTile.edge(v2).location},
-          targetOrientation)) return;
+    for (var corners = 0; corners < Tile.NUM_SIDES; corners++) {
+      if (isCorrectOrientation({
+        cornerTile.edge(border1).location,
+        cornerTile.edge(border2).location
+      }, targetOrientation)) return;
 
       cornerTile.rotate90();
     }
@@ -221,21 +231,14 @@ class Image {
   }
 
   void alignTiles() {
-    var startTile = cornerTiles()[0];
+    var startTile = cornerTiles()[0]..aligned = true;
     var startPoint = Point(0, 0);
-    makeTopLeft(startTile);
 
-    startTile.aligned = true;
+    makeTopLeft(startTile);
     alignAdjacent(startTile);
-    // printTiles();
 
     tileIdGrid[startPoint.row][startPoint.col] = startTile.id;
     createTileIdGrid(startTile, startPoint);
-
-    createMergedImage();
-
-    print(tileIdGrid);
-    print(mergedImage);
   }
 
   void createMergedImage() {
@@ -247,7 +250,7 @@ class Image {
     mergedImage = List<String>.generate(
         tileIdGrid.length * trimmedTileLength, (int i) => '');
 
-    print(mergedImage.length);
+    // print(mergedImage.length);
 
     for (var row = 0; row < tileIdGrid.length; row++) {
       for (var col = 0; col < tileIdGrid.length; col++) {
@@ -258,7 +261,7 @@ class Image {
         for (var tileIndex = 0; tileIndex < trimmedTile.length; tileIndex++) {
           var mergedIndex = row * trimmedTileLength + tileIndex;
           //add + ' ' to separate tiles for testing
-          mergedImage[mergedIndex] += trimmedTile[tileIndex]; //+ ' '
+          mergedImage[mergedIndex] += trimmedTile[tileIndex]; // + ' ';
         }
       }
     }
@@ -278,7 +281,7 @@ class Image {
     start.edges.entries.forEach((t) {
       var newPos = pos + Image.directionVector[t.key];
       tileIdGrid[newPos.row][newPos.col] = t.value;
-      createTileIdGrid(tiles[t.value], Point(newPos.row, newPos.col));
+      createTileIdGrid(tiles[t.value], newPos);
     });
   }
 
@@ -302,9 +305,26 @@ class Image {
         }
         tile2.aligned = true;
         alignAdjacent(tile2);
-      } else {
-        // print('${tile2.id} aligned');
       }
+    }
+  }
+
+  void findMonsters(regex) {
+    monstersFound = 0;
+    var merged = Tile()..tile = mergedImage;
+
+    void doSearch() {
+      for (var i = 0; i < Tile.NUM_SIDES; i++) {
+        monstersFound = regex.allMatches(merged.tile.join('')).toList().length;
+        if (monstersFound > 0) return;
+        merged.rotate90();
+      }
+    }
+
+    doSearch();
+    if (monstersFound == 0) {
+      merged.flip();
+      doSearch();
     }
   }
 
@@ -313,6 +333,17 @@ class Image {
 
   //part 1 solution
   int cornerIdMultiplier() => cornerTiles().map((t2) => t2.id).multiply;
+
+  //part 2 solution
+  int waterRoughness() {
+    int count(list) => list.fold(0, (sum, v) => sum + (v == '#' ? 1 : 0));
+
+    var total = mergedImage.fold(0, (sum, v) => sum + (count(v.split(''))));
+    var perMonster = count(SEA_MONSTER.split(''));
+    // print(
+    //     'total: $total, per monster: $perMonster, monsters found: $monstersFound');
+    return total - (perMonster * monstersFound);
+  }
 
   void printTiles() {
     tiles.entries.forEach((t) {
@@ -331,19 +362,17 @@ void runPart1(String name, Image image) {
   printHeader(name);
   image.findAdjacentTiles();
   print(image.cornerIdMultiplier());
-  // image.alignEdges();
 }
 
-void runPart2(String name, Image image) {
+void runPart2(String name, Image image, RegExp regex) {
   printHeader(name);
-  //0. align tiles
-  //1. remove border (outer four tiles) of all tiles
-  //2. merge tiles into one image
-  //3. look for sea monsters, rotating and flipping until found
-  //4. mark sea monsters with 0
-  //5. return number of # that are not part of sea monster
-  image.findAdjacentTiles();
-  image.alignTiles();
+  image
+    ..findAdjacentTiles()
+    ..alignTiles()
+    ..createMergedImage()
+    ..findMonsters(regex);
+
+  print('water roughness: ${image.waterRoughness()}');
 }
 
 void main(List<String> arguments) {
@@ -352,11 +381,11 @@ void main(List<String> arguments) {
 
   //Answer: 1951 * 3079 * 2971 * 1171 = 20899048083289
   runPart1('20 test part 1', TEST_INPUT);
-  //Answer:
-  runPart2('20 test part 2', TEST_INPUT);
+  //Answer: 273 (303 - two monsters; each monster is 15 #'s)
+  runPart2('20 test part 2', TEST_INPUT, Image.testMonsterRegex);
 
   //Answer: 22878471088273
-  // runPart1('20 part 1', MAIN_INPUT);
-  //Answer:
-  runPart2('20 part 2', MAIN_INPUT);
+  runPart1('20 part 1', MAIN_INPUT);
+  //Answer: 1680 (2130 - 30 monsters)
+  runPart2('20 part 2', MAIN_INPUT, Image.monsterRegex);
 }
