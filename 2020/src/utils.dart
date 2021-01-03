@@ -25,6 +25,10 @@ extension String2 on String {
       substring(0, index) + newChar + substring(index + 1);
 
   String get reversed => split('').reversed.join('');
+
+  int parseInt() {
+    return int.parse(this);
+  }
 }
 
 extension Iterable2 on Iterable<int> {
@@ -42,10 +46,18 @@ extension Num2 on num {
   bool isBetween(num from, num to) => from < this && this < to;
 }
 
+//Two ways for range. See
 // https://stackoverflow.com/questions/37798397/dart-create-a-list-from-0-to-n
 // See quiver package for useful libaries.
-Iterable<int> range(int low, int high) sync* {
-  for (var i = low; i < high; ++i) {
+// eg 0.to(10).forEach(....
+// range(1,10).map()....
+// extension Int2 on int {
+//   List<int> to(int maxExclusive, [int step = 1]) =>
+//       [for (int i = this; i < maxExclusive; i += step) i];
+// }
+
+Iterable<int> range(int lowInclusive, int highExclusive) sync* {
+  for (var i = lowInclusive; i < highExclusive; ++i) {
     yield i;
   }
 }

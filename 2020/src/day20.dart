@@ -1,12 +1,13 @@
 import './utils.dart';
-import 'package:trotter/trotter.dart';
 import 'dart:math' as math;
 
-const bool DEBUG = false;
+//Requires following line to be added as dependency in pubspec.yaml:
+//   trotter: any
+//Remember to get package. In VS Code, right click pubspec.yaml and
+//click Get Packages.
+import 'package:trotter/trotter.dart';
 
-Image TEST_INPUT;
-Image TEST_INPUT2;
-Image MAIN_INPUT;
+const bool DEBUG = false;
 
 class Point {
   final int row;
@@ -40,36 +41,38 @@ class Edge {
 }
 
 class Tile {
-  final input;
+  final _input;
   int id;
   List<String> tile;
   Map<String, Edge> possibleEdges;
-  Map<int, AdjacentTile> adjacentTiles = {};
+  final Map<int, AdjacentTile> adjacentTiles = {};
   bool aligned = false;
-  Map<Location, int> edges = {};
-  static const NUM_SIDES = 4; //sides of tile!
+  final Map<Location, int> edges = {};
+  static const SIDES_COUNT = 4; //sides of tile! Used for rotations.
 
-  // Map<Side, Function> enumToMethod;
+  final Map<Location, Function> _locationToBorderMapping = {};
+
+  static Tile from(List<String> t) => Tile()..tile = t;
 
   //Align top with bottom, left with right, etc
-  static Map<Location, Location> alignsWith = {}
+  static final Map<Location, Location> alignsWith = {}
     ..[Location.left] = Location.right
     ..[Location.right] = Location.left
     ..[Location.top] = Location.bottom
     ..[Location.bottom] = Location.top;
 
-  Tile([this.input]) {
-    if (input != null) parseInput();
+  Tile([this._input]) {
+    if (_input != null) _parseInput();
 
-    // TODO how do you map enum to getter or method?
-    // enumToMethod[Side.bottom] = bottom;
-    // enumToMethod[Side.top] = top;
-    // enumToMethod[Side.left] = left;
-    // enumToMethod[Side.right] = right;
+    //map location to getter for location
+    _locationToBorderMapping[Location.bottom] = () => bottom;
+    _locationToBorderMapping[Location.top] = () => top;
+    _locationToBorderMapping[Location.left] = () => left;
+    _locationToBorderMapping[Location.right] = () => right;
   }
 
-  void parseInput() {
-    tile = input.split('\n');
+  void _parseInput() {
+    tile = _input.split('\n');
     id = int.parse(tile[0].split(' ')[1].split(':')[0]);
     tile.removeAt(0); //remove id row
     possibleEdges = generatePossibleEdges();
@@ -91,29 +94,10 @@ class Tile {
     return result;
   }
 
-  //Return true if we managed to align tile edge to the correct location
-  bool alignEdges(Location location, String border) {
-    // print('aligning $location for $border');
-    for (var n = 0; n < Tile.NUM_SIDES; n++) {
-      var target;
-      // if (s == enumToMethod[side]()) break;
-      switch (location) {
-        case Location.top:
-          target = top;
-          break;
-        case Location.bottom:
-          target = bottom;
-          break;
-        case Location.left:
-          target = left;
-          break;
-        case Location.right:
-          target = right;
-          break;
-        default:
-          throw 'Invalid border for location $location';
-      }
-      if (target == border) return true;
+  //Return true if we managed to find tile border at the location
+  bool alignSharedBorder(Location location, String border) {
+    for (var _ in range(0, Tile.SIDES_COUNT)) {
+      if (border == _locationToBorderMapping[location]()) return true;
       rotate90();
     }
     return false;
@@ -121,7 +105,7 @@ class Tile {
 
   void rotate90() {
     var result = <String>[];
-    for (var i = 0; i < tile.length; i++) {
+    for (var i in range(0, tile.length)) {
       result.add(tile.reversed.map((line) => line[i]).join());
     }
     tile = result;
@@ -162,30 +146,24 @@ class Tile {
 
 class Image {
   Map<int, Tile> tiles;
-  final String input;
+  final String _input;
   var tileIdGrid;
   List<String> mergedImage;
   int monstersFound;
-
-  static RegExp testMonsterRegex = RegExp(
-      '(?<=#.{5})#.{4}#{2}.{4}#{2}.{4}#{3}(?=.{5}#.{2}#.{2}#.{2}#.{2}#.{2}#)');
-
-  static RegExp monsterRegex = RegExp(
-      '(?<=#.{77})#.{4}#{2}.{4}#{2}.{4}#{3}(?=.{77}#.{2}#.{2}#.{2}#.{2}#.{2}#)');
 
   static const SEA_MONSTER = '                  # '
       '#    ##    ##    ###'
       ' #  #  #  #  #  #   ';
 
-  Image(this.input) {
-    tiles = {for (var e in parseInput()) e.id: e};
+  Image(this._input) {
+    tiles = {for (var e in _parseInput()) e.id: e};
 
     var size = math.sqrt(tiles.entries.length).round();
     //2D square array
     tileIdGrid = List.generate(size, (i) => List(size), growable: false);
   }
 
-  List<Tile> parseInput() => input
+  List<Tile> _parseInput() => _input
       .split('\n\n')
       .where((s) => s.trim().isNotEmpty)
       .map((t) => Tile(t.trim()))
@@ -210,7 +188,7 @@ class Image {
 
   //We want the corner tile we process to be [0, 0] in grid
   //we create. Rotate until it's the top left hand corner of square.
-  void makeTopLeft(Tile cornerTile) {
+  void _makeTopLeft(Tile cornerTile) {
     bool isCorrectOrientation(Set s1, Set s2) =>
         (s1.intersection(s2)).length == 2;
 
@@ -219,7 +197,7 @@ class Image {
 
     var targetOrientation = <Location>{Location.right, Location.bottom};
 
-    for (var corners = 0; corners < Tile.NUM_SIDES; corners++) {
+    for (var _ in range(0, Tile.SIDES_COUNT)) {
       if (isCorrectOrientation({
         cornerTile.edge(border1).location,
         cornerTile.edge(border2).location
@@ -234,88 +212,81 @@ class Image {
     var startTile = cornerTiles()[0]..aligned = true;
     var startPoint = Point(0, 0);
 
-    makeTopLeft(startTile);
-    alignAdjacent(startTile);
+    _makeTopLeft(startTile);
+    _alignAdjacent(startTile);
 
     tileIdGrid[startPoint.row][startPoint.col] = startTile.id;
-    createTileIdGrid(startTile, startPoint);
+    _createTileIdGrid(startTile, startPoint);
   }
 
   void createMergedImage() {
     var trimmedTileLength = tiles[tiles.keys.first].withoutBorder.length;
 
-    //REMOVE - test with untrimmed tile
-    // trimmedTileLength = tiles[tiles.keys.first].tile.length;
-
     mergedImage = List<String>.generate(
         tileIdGrid.length * trimmedTileLength, (int i) => '');
 
-    // print(mergedImage.length);
-
-    for (var row = 0; row < tileIdGrid.length; row++) {
-      for (var col = 0; col < tileIdGrid.length; col++) {
-        //
+    for (var row in range(0, tileIdGrid.length)) {
+      for (var col in range(0, tileIdGrid.length)) {
         var trimmedTile = tiles[tileIdGrid[row][col]].withoutBorder;
-        //REMOVE - test with untrimmed; useful to print merged image
-        // trimmedTile = tiles[tileIdGrid[row][col]].tile;
-        for (var tileIndex = 0; tileIndex < trimmedTile.length; tileIndex++) {
+        for (var tileIndex in range(0, trimmedTile.length)) {
           var mergedIndex = row * trimmedTileLength + tileIndex;
-          //add + ' ' to separate tiles for testing
-          mergedImage[mergedIndex] += trimmedTile[tileIndex]; // + ' ';
+          mergedImage[mergedIndex] += trimmedTile[tileIndex];
         }
       }
     }
   }
 
-  static Map<Location, Point> directionVector = {}
+  static final Map<Location, Point> _directionVector = {}
     ..[Location.top] = Point(-1, 0)
     ..[Location.bottom] = Point(1, 0)
     ..[Location.left] = Point(0, -1)
     ..[Location.right] = Point(0, 1);
 
   //create grid with just IDs (not the tiles) eg:
-  // 1234 3455 2342
-  // 3456 7643 1322
+  // 1234 3455 2349
+  // 3759 7641 1321
   // 5456 4643 4322
-  void createTileIdGrid(Tile start, Point pos) {
+  void _createTileIdGrid(Tile start, Point pos) {
     start.edges.entries.forEach((t) {
-      var newPos = pos + Image.directionVector[t.key];
+      var newPos = pos + Image._directionVector[t.key];
       tileIdGrid[newPos.row][newPos.col] = t.value;
-      createTileIdGrid(tiles[t.value], newPos);
+      _createTileIdGrid(tiles[t.value], newPos);
     });
   }
 
   //tile1 must be aligned before this method is invoked
-  void alignAdjacent(Tile tile1) {
-    // print('Aligning tiles adjacent to: $tile1 ----------------------');
-
+  void _alignAdjacent(Tile tile1) {
     for (var adjacent in tile1.adjacentTiles.values) {
       var tile2 = tiles[adjacent.id];
-      // print('     Processing $tile2');
       if (!tile2.aligned) {
         var edge = tile1.edge(adjacent.sharedBorder);
         var targetLocation = Tile.alignsWith[edge.location];
         tile1.edges[edge.location] = tile2.id;
 
-        if (!tile2.alignEdges(targetLocation, edge.border)) {
+        if (!tile2.alignSharedBorder(targetLocation, edge.border)) {
           tile2.flip();
-          if (!tile2.alignEdges(targetLocation, edge.border)) {
+          if (!tile2.alignSharedBorder(targetLocation, edge.border)) {
             throw 'Cannot align ${tile2.id} with ${tile1.id}';
           }
         }
         tile2.aligned = true;
-        alignAdjacent(tile2);
+        _alignAdjacent(tile2);
       }
     }
   }
 
-  void findMonsters(regex) {
+  void findMonsters() {
     monstersFound = 0;
-    var merged = Tile()..tile = mergedImage;
+    var merged = Tile.from(mergedImage);
+    var gap = mergedImage.length - (SEA_MONSTER.length ~/ 3) + 1;
+
+    var monsterRegex = RegExp(
+        '(?<=#.{$gap})#.{4}#{2}.{4}#{2}.{4}#{3}(?=.{$gap}#.{2}#.{2}#.{2}#.{2}#.{2}#)');
 
     void doSearch() {
-      for (var i = 0; i < Tile.NUM_SIDES; i++) {
-        monstersFound = regex.allMatches(merged.tile.join('')).toList().length;
+      for (var _ in range(0, Tile.SIDES_COUNT)) {
+        monstersFound =
+            monsterRegex.allMatches(merged.tile.join('')).toList().length;
         if (monstersFound > 0) return;
         merged.rotate90();
       }
@@ -335,14 +306,29 @@ class Image {
   int cornerIdMultiplier() => cornerTiles().map((t2) => t2.id).multiply;
 
   //part 2 solution
-  int waterRoughness() {
+  int get waterRoughness {
     int count(list) => list.fold(0, (sum, v) => sum + (v == '#' ? 1 : 0));
 
     var total = mergedImage.fold(0, (sum, v) => sum + (count(v.split(''))));
     var perMonster = count(SEA_MONSTER.split(''));
-    // print(
-    //     'total: $total, per monster: $perMonster, monsters found: $monstersFound');
     return total - (perMonster * monstersFound);
+  }
+
+  void printMergedImageWithBorders() {
+    var tileLength = tiles[tiles.keys.first].tile.length;
+    var merged =
+        List<String>.generate(tileIdGrid.length * tileLength, (int i) => '');
+
+    for (var row in range(0, tileIdGrid.length)) {
+      for (var col in range(0, tileIdGrid.length)) {
+        var tile = tiles[tileIdGrid[row][col]].tile;
+        for (var tileIndex in range(0, tile.length)) {
+          var mergedIndex = row * tileLength + tileIndex;
+          merged[mergedIndex] += tile[tileIndex] + ' ';
+        }
+      }
+    }
+    print(merged.join('\n'));
   }
 
   void printTiles() {
@@ -364,28 +350,29 @@ void runPart1(String name, Image image) {
   print(image.cornerIdMultiplier());
 }
 
-void runPart2(String name, Image image, RegExp regex) {
+void runPart2(String name, Image image) {
   printHeader(name);
   image
     ..findAdjacentTiles()
     ..alignTiles()
+    // ..printMergedImageWithBorders()
     ..createMergedImage()
-    ..findMonsters(regex);
+    ..findMonsters();
 
-  print('water roughness: ${image.waterRoughness()}');
+  print('water roughness: ${image.waterRoughness}');
 }
 
 void main(List<String> arguments) {
-  TEST_INPUT = Image(readFile('../data/day20-test.txt'));
-  MAIN_INPUT = Image(readFile('../data/day20.txt'));
+  var TEST_INPUT = Image(readFile('../data/day20-test.txt'));
+  var MAIN_INPUT = Image(readFile('../data/day20.txt'));
 
   //Answer: 1951 * 3079 * 2971 * 1171 = 20899048083289
   runPart1('20 test part 1', TEST_INPUT);
   //Answer: 273 (303 - two monsters; each monster is 15 #'s)
-  runPart2('20 test part 2', TEST_INPUT, Image.testMonsterRegex);
+  runPart2('20 test part 2', TEST_INPUT);
 
   //Answer: 22878471088273
   runPart1('20 part 1', MAIN_INPUT);
   //Answer: 1680 (2130 - 30 monsters)
-  runPart2('20 part 2', MAIN_INPUT, Image.monsterRegex);
+  runPart2('20 part 2', MAIN_INPUT);
 }
