@@ -23,3 +23,5 @@ dart --enable-asserts ./advent_of_code.dart
 ```
 
 I wrote these on Windows 10 but Dart can run on Linux and macOS.
+
+The story of my Advent of Code 2020 is on my [blog](https://prafulkapadia.com/2021/01/05/advent-of-code-2020/).
