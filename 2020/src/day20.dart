@@ -149,7 +149,7 @@ class Image {
   final String _input;
   var tileIdGrid;
   List<String> mergedImage;
-  int monstersFound;
+  int monsterCount;
 
   static const SEA_MONSTER = '                  # '
       '#    ##    ##    ###'
@@ -276,7 +276,7 @@ class Image {
   }
 
   void findMonsters() {
-    monstersFound = 0;
+    monsterCount = 0;
     var merged = Tile.from(mergedImage);
     var gap = mergedImage.length - (SEA_MONSTER.length ~/ 3) + 1;
 
@@ -285,15 +285,15 @@ class Image {
 
     void doSearch() {
       for (var _ in range(0, Tile.SIDES_COUNT)) {
-        monstersFound =
+        monsterCount =
             monsterRegex.allMatches(merged.tile.join('')).toList().length;
-        if (monstersFound > 0) return;
+        if (monsterCount > 0) return;
         merged.rotate90();
       }
     }
 
     doSearch();
-    if (monstersFound == 0) {
+    if (monsterCount == 0) {
       merged.flip();
       doSearch();
     }
@@ -311,7 +311,7 @@ class Image {
 
     var total = mergedImage.fold(0, (sum, v) => sum + (count(v.split(''))));
     var perMonster = count(SEA_MONSTER.split(''));
-    return total - (perMonster * monstersFound);
+    return total - (perMonster * monsterCount);
   }
 
   void printMergedImageWithBorders() {
