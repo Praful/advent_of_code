@@ -2,29 +2,25 @@ import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
 
-List TEST_INPUT;
-List TEST_INPUT2;
-List MAIN_INPUT;
-
-Object runPart1(String name, List input) {
+Object part1(String name, List input) {
   printHeader(name);
 }
 
-Object runPart2(String name, List input) {
+Object part2(String name, List input) {
   printHeader(name);
 }
 
 void main(List<String> arguments) {
-  TEST_INPUT = fileAsLines('../data/dayXX-test.txt');
-  MAIN_INPUT = fileAsLines('../data/dayXX.txt');
+  List testInput = FileUtils.asLines('../data/dayXX-test.txt');
+  List mainInput = FileUtils.asLines('../data/dayXX.txt');
 
   //Answer:
-  print(runPart1('XX test part 1', TEST_INPUT));
+  print(part1('XX test part 1', testInput));
   //Answer:
-  // print(runPart2('XX test part 2', TEST_INPUT));
+  // print(part2('XX test part 2', testInput));
 
   //Answer:
-  // print(runPart1('XX part 1', MAIN_INPUT));
+  // print(part1('XX part 1', mainInput));
   //Answer:
-  // print(runPart2('XX part 2', MAIN_INPUT));
+  // print(part2('XX part 2', mainInput));
 }

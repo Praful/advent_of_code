@@ -2,10 +2,6 @@ import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
 
-List TEST_INPUT;
-List TEST_INPUT2;
-List MAIN_INPUT;
-
 int recursiveFuelRequired(int mass) {
   var fuel = fuelRequired(mass);
   return (fuel <= 0) ? 0 : fuel + recursiveFuelRequired(fuel);
@@ -33,14 +29,14 @@ int fuelRequired(int mass) {
   return result;
 }
 
-int runPart1(String name, List<int> input) {
+int part1(String name, List<int> input) {
   printHeader(name);
   // return input.fold(0, (a, b) => a + fuelRequired(b));
   // return input.map((f) => fuelRequired(f)).sum; //alternative to above
   return input.fold2(fuelRequired); //another alt
 }
 
-int runPart2(String name, List<int> input) {
+int part2(String name, List<int> input) {
   printHeader(name);
 
   return input.fold2(recursiveFuelRequired); //another alt
@@ -49,16 +45,14 @@ int runPart2(String name, List<int> input) {
 }
 
 void main(List<String> arguments) {
-  TEST_INPUT = FileUtils.asInt('../data/day01-test.txt');
-  MAIN_INPUT = FileUtils.asInt('../data/day01.txt');
+  List testInput = FileUtils.asInt('../data/day01-test.txt');
+  List mainInput = FileUtils.asInt('../data/day01.txt');
 
-  //Answer:34241
-  print(runPart1('01 test part 1', TEST_INPUT));
-  //Answer:51316
-  print(runPart2('01 test part 2', TEST_INPUT));
+  assertEqual(part1('01 test part 1', testInput), 34241);
+  assertEqual(part2('01 test part 2', testInput), 51316);
 
   //Answer:3246455
-  print(runPart1('01 part 1', MAIN_INPUT));
+  print(part1('01 part 1', mainInput));
   //Answer:4866824
-  print(runPart2('01 part 2', MAIN_INPUT));
+  print(part2('01 part 2', mainInput));
 }
