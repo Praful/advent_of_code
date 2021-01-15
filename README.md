@@ -19,9 +19,14 @@ dart ./day06.dart
 To enable assertions in dart:
 
 ```
-dart --enable-asserts ./advent_of_code.dart
+dart --enable-asserts ./day06.dart
 ```
 
 I wrote these on Windows 10 but Dart can run on Linux and macOS.
 
 The story of my Advent of Code 2020 is on my [blog](https://prafulkapadia.com/2021/01/05/advent-of-code-2020/).
+
+
+### Update 1
+
+Having completed AoC 2020, I'm slowly working my way through AoC 2019.
