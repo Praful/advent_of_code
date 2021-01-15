@@ -1,13 +1,16 @@
 import '../../shared/dart/src/utils.dart';
+import 'utils.dart';
+
+/// Puzzle description: https://adventofcode.com/2019/day/4
 
 const bool DEBUG = false;
 
-Object part1(String name, List input) {
-  printHeader(name);
+Object part1(String header, List input) {
+  printHeader(header);
 }
 
-Object part2(String name, List input) {
-  printHeader(name);
+Object part2(String header, List input) {
+  printHeader(header);
 }
 
 void main(List<String> arguments) {
@@ -15,9 +18,9 @@ void main(List<String> arguments) {
   List mainInput = FileUtils.asLines('../data/dayXX.txt');
 
   //Answer:
-  print(part1('XX test part 1', testInput));
+  assertEqual(part1('XX test part 1', testInput), 1);
   //Answer:
-  // print(part2('XX test part 2', testInput));
+  // assertEqual(part2('XX test part 2', testInput), 1);
 
   //Answer:
   // print(part1('XX part 1', mainInput));
