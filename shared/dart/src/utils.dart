@@ -2,7 +2,8 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'dart:collection' show Queue;
 
-void printHeader(String day) => print('=== Day $day ====================');
+void printHeader(String header) =>
+    print('=== Day $header ====================');
 
 void assertEqual(found, expected) {
   try {
@@ -45,11 +46,11 @@ class NumUtils {
   static T multiply<T extends num>(T a, T b) => a * b;
 }
 
-extension IterableInt on Iterable<num> {
+extension IterableNum on Iterable<num> {
   num get max => fold(first, math.max);
   num get min => fold(first, math.min);
-  num get sum => fold(0, (a, b) => NumUtils.sum(a, b));
-  num get multiply => fold(1, (a, b) => NumUtils.multiply(a, b));
+  num get sum => fold(0, (a, b) => a + b);
+  num get multiply => fold(1, (a, b) => a * b);
 
   //these don't work for int; ok for double!
   // num get max => reduce(math.max);

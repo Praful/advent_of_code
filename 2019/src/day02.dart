@@ -1,6 +1,8 @@
 import '../../shared/dart/src/utils.dart';
 import 'package:trotter/trotter.dart';
 
+/// Puzzle description: https://adventofcode.com/2019/day/2
+
 const bool DEBUG = false;
 
 class Computer {
@@ -42,8 +44,8 @@ class Computer {
   }
 }
 
-Object part1(String name, List input) {
-  printHeader(name);
+Object part1(String header, List input) {
+  printHeader(header);
   return Computer(input).run(0);
 }
 
@@ -55,8 +57,8 @@ List initProgram(program, noun, verb) {
 }
 
 //more declarative alternative for part 2
-Object part2a(String name, List input, int targetOutput) {
-  printHeader(name);
+Object part2a(String header, List input, int targetOutput) {
+  printHeader(header);
 
   int runProgram(noun, verb) => Computer(initProgram(input, noun, verb)).run(0);
 
@@ -67,8 +69,8 @@ Object part2a(String name, List input, int targetOutput) {
   return (100 * nounVerb[0]) + nounVerb[1];
 }
 
-Object part2(String name, List input, int targetOutput) {
-  printHeader(name);
+Object part2(String header, List input, int targetOutput) {
+  printHeader(header);
 
   var combos = Amalgams(2, range(0, 100).toList());
   for (var nounVerb in combos()) {

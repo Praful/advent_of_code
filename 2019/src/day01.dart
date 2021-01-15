@@ -1,5 +1,7 @@
 import '../../shared/dart/src/utils.dart';
 
+/// Puzzle description: https://adventofcode.com/2019/day/1
+
 const bool DEBUG = false;
 
 int recursiveFuelRequired(int mass) {
@@ -29,15 +31,15 @@ int fuelRequired(int mass) {
   return result;
 }
 
-int part1(String name, List<int> input) {
-  printHeader(name);
+int part1(String header, List<int> input) {
+  printHeader(header);
   // return input.fold(0, (a, b) => a + fuelRequired(b));
   // return input.map((f) => fuelRequired(f)).sum; //alternative to above
   return input.fold2(fuelRequired); //another alt
 }
 
-int part2(String name, List<int> input) {
-  printHeader(name);
+int part2(String header, List<int> input) {
+  printHeader(header);
 
   return input.fold2(recursiveFuelRequired); //another alt
   // return input.fold(0, (a, b) => a + recursiveFuelRequired(b));
