@@ -4,6 +4,15 @@ import 'dart:collection' show Queue;
 
 void printHeader(String day) => print('=== Day $day ====================');
 
+void assertEqual(found, expected) {
+  try {
+    assert(found == expected);
+  } catch (e, stacktrace) {
+    print(
+        'Failed assertion: found $found, expected $expected\n\n${stacktrace}');
+  }
+}
+
 class FileUtils {
   static String asString(input) => File(input).readAsStringSync();
 

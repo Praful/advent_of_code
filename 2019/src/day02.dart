@@ -3,10 +3,6 @@ import 'package:trotter/trotter.dart';
 
 const bool DEBUG = false;
 
-List TEST_INPUT;
-List TEST_INPUT2;
-List MAIN_INPUT;
-
 class Computer {
   static const OPCODE_ADD = 1;
   static const OPCODE_MULTIPY = 2;
@@ -46,7 +42,7 @@ class Computer {
   }
 }
 
-Object runPart1(String name, List input) {
+Object part1(String name, List input) {
   printHeader(name);
   return Computer(input).run(0);
 }
@@ -59,7 +55,7 @@ List initProgram(program, noun, verb) {
 }
 
 //more declarative alternative for part 2
-Object runPart2a(String name, List input, int targetOutput) {
+Object part2a(String name, List input, int targetOutput) {
   printHeader(name);
 
   int runProgram(noun, verb) => Computer(initProgram(input, noun, verb)).run(0);
@@ -71,7 +67,7 @@ Object runPart2a(String name, List input, int targetOutput) {
   return (100 * nounVerb[0]) + nounVerb[1];
 }
 
-Object runPart2(String name, List input, int targetOutput) {
+Object part2(String name, List input, int targetOutput) {
   printHeader(name);
 
   var combos = Amalgams(2, range(0, 100).toList());
@@ -84,31 +80,30 @@ Object runPart2(String name, List input, int targetOutput) {
       return (100 * nounVerb[0]) + nounVerb[1];
     }
   }
+  return null;
 }
 
 void main(List<String> arguments) {
-  MAIN_INPUT = FileUtils.asString('../data/day02.txt')
+  List mainInput = FileUtils.asString('../data/day02.txt')
       .split(',')
       .map((v) => v.toInt())
       .toList();
 
-  //Answer:
-  print(runPart1('02 test part 1', [1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50]));
-  print(runPart1(
-      '02 test part 1', [1, 0, 0, 0, 99])); // => 2,0,0,0,99 (1 + 1 = 2).
-  print(runPart1(
-      '02 test part 1', [2, 3, 0, 3, 99])); // => 2,3,0,6,99 (3 * 2 = 6).
-  print(runPart1('02 test part 1',
-      [2, 4, 4, 5, 99, 0])); // => 2,4,4,5,99,9801 (99 * 99 = 9801).
-  print(runPart1('02 test part 1',
-      [1, 1, 1, 4, 99, 5, 6, 0, 99])); // => 30,1,1,4,2,5,6,0,99.
-
-  //Answer:
-  // print(runPart2('02 test part 2', TEST_INPUT));
+  assertEqual(
+      part1('02 test part 1', [1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50]),
+      3500);
+  assertEqual(part1('02 test part 1a', [1, 0, 0, 0, 99]),
+      2); // => 2,0,0,0,99 (1 + 1 = 2).
+  assertEqual(part1('02 test part 1b', [2, 3, 0, 3, 99]),
+      2); // => 2,3,0,6,99 (3 * 2 = 6).
+  assertEqual(part1('02 test part 1c', [2, 4, 4, 5, 99, 0]),
+      2); // => 2,4,4,5,99,9801 (99 * 99 = 9801).
+  assertEqual(part1('02 test part 1', [1, 1, 1, 4, 99, 5, 6, 0, 99]),
+      30); // => 30,1,1,4,2,5,6,0,99.
 
   //Answer: 4023471
-  print(runPart1('02 part 1', initProgram(MAIN_INPUT, 12, 2)));
+  print(part1('02 part 1', initProgram(mainInput, 12, 2)));
 
   //Answer: 8051
-  print(runPart2a('02 part 2', MAIN_INPUT, 19690720));
+  print(part2a('02 part 2', mainInput, 19690720));
 }
