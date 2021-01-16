@@ -15,26 +15,40 @@ class Opcode {
   static const HALT = 99;
   static const MAX_LENGTH = 4;
 
-  final int opcodeId;
+  final int id;
   final Instruction Function(List<int>) create;
   final length; //no of params in instruction
-  Opcode(this.opcodeId, this.create, this.length);
+  Opcode(this.id, this.create, this.length);
 
-  static final Map<int, Opcode> entries = {}
+  //code is of form ABCDE where DE = op code id.
+  //Return opcode id, extracted from param1 described in parseModes().
+  static int opcodeId(int code) {
+    var s = code.toString().padLeft(5, '0');
+    return s.substring(s.length - 2).toInt();
+  }
+
+  static final Map<int, Opcode> opcodeMap = {}
     ..[Opcode.ADD] = Opcode(Opcode.ADD, (a) => Add(a), 4)
     ..[Opcode.MULTIPY] = Opcode(Opcode.MULTIPY, (a) => Multiply(a), 4)
     ..[Opcode.WRITE] = Opcode(Opcode.WRITE, (a) => Write(a), 2)
     ..[Opcode.OUTPUT] = Opcode(Opcode.OUTPUT, (a) => Output(a), 2)
+    ..[Opcode.JMP_TRUE] = Opcode(Opcode.JMP_TRUE, (a) => JumpIfTrue(a), 3)
+    ..[Opcode.JMP_FALSE] = Opcode(Opcode.JMP_FALSE, (a) => JumpIfFalse(a), 3)
+    ..[Opcode.LESS_THAN] = Opcode(Opcode.LESS_THAN, (a) => LessThan(a), 4)
+    ..[Opcode.EQUALS] = Opcode(Opcode.EQUALS, (a) => Equals(a), 4)
     ..[Opcode.HALT] = Opcode(Opcode.HALT, (a) => Halt(a), 1);
 }
 
 abstract class Instruction {
   static const MAX_LENGTH = 4;
 
-  static final modes = {}
+  static final modeMap = {}
     ..[0] = Mode.position
     ..[1] = Mode.immediate;
 
+  //instruction consists of code, param1, param2 [,param3]
+  //code is of form ABCDE where
+  //DE = opcode id, C = mode of param1, B = mode of param2, A = mode of param3
   List<int> instruction;
   Opcode opcode;
   Map<int, Parameter> parameters = {};
@@ -44,42 +58,35 @@ abstract class Instruction {
   List<int> apply(List<int> memory) => memory;
   int get length => opcode.length;
 
+  int nextPointer(current) => current + opcode.length;
+
   Instruction(this.instruction) {
-    opcode = Opcode.entries[opcodeId(instruction[0])];
+    opcode = Opcode.opcodeMap[Opcode.opcodeId(instruction[0])];
     var modes = parseModes(instruction[0]);
-    parameters
-      ..[1] = Parameter(instruction[1], modes[0])
-      ..[2] = Parameter(instruction[2], modes[1])
-      ..[3] = Parameter(instruction[3], modes[2]);
+    for (var i in range(1, opcode.length)) {
+      parameters[i] = Parameter(instruction[i], modes[i]);
+    }
   }
 
-  //param 1 of form ABCDE where
-  //DE = op code, C = mode of param1, B = mode of param2, A = mode of param3
-  List parseModes(int opdata) {
-    var opdataStr = opdata.toString().padLeft(5, '0');
-    return [
-      Instruction.modes[opdataStr[2].toInt()],
-      Instruction.modes[opdataStr[1].toInt()],
-      Instruction.modes[opdataStr[0].toInt()]
-    ];
+  Map parseModes(int code) {
+    var s = code.toString().padLeft(5, '0');
+    return {
+      1: Instruction.modeMap[s[2].toInt()],
+      2: Instruction.modeMap[s[1].toInt()],
+      3: Instruction.modeMap[s[0].toInt()]
+    };
   }
 
-  //Return opcode value, extracted from param1 described in parseModes().
-  static int opcodeId(int param1) {
-    var s = param1.toString();
-    return s.length < 3 ? s.toInt() : s.substring(s.length - 2).toInt();
-  }
-
-  //Return a specific Instruction object eg Add, Multiply, Halt, etc, Multiply, Halt, etc.
+  //Return a specific Instruction object eg Add, Multiply, Halt, etc,
   factory Instruction.create(int code, List<int> instruction) =>
-      opcodes[opcodeId(code)].create(instruction);
+      Opcode.opcodeMap[Opcode.opcodeId(code)].create(instruction);
 }
 
 class Parameter {
   final int value;
   final Mode mode;
   Parameter(this.value, this.mode);
-  int read(memory) {
+  int withMode(memory) {
     switch (mode) {
       case Mode.position:
         return memory[value];
@@ -101,9 +108,8 @@ class Add extends Instruction {
 
   @override
   List<int> apply(List<int> memory) {
-    // print('Add: $operand1 and $operand2. Store at: $storeAddress');
     memory[parameters[3].value] =
-        parameters[1].read(memory) + parameters[2].read(memory);
+        parameters[1].withMode(memory) + parameters[2].withMode(memory);
     return memory;
   }
 }
@@ -113,45 +119,102 @@ class Multiply extends Instruction {
 
   @override
   List<int> apply(List<int> memory) {
-    // print('Multiply: $operand1 and $operand2. Store at: $storeAddress');
     memory[parameters[3].value] =
-        parameters[1].read(memory) * parameters[2].read(memory);
+        parameters[1].withMode(memory) * parameters[2].withMode(memory);
     return memory;
   }
 }
 
 class Write extends Instruction {
-  Write(instruction) : super(instruction); //todo
+  int input;
+  Write(instruction) : super(instruction);
 
   @override
   List<int> apply(List<int> memory) {
-    // print('Write: $param2. Store at: $storeAddress');
-    memory[parameters[1].value] = parameters[2].value;
+    memory[parameters[1].value] = input;
     return memory;
   }
 }
 
 class Output extends Instruction {
-  Output(param) : super(param);
+  Output(instruction) : super(instruction);
 
   @override
   List<int> apply(List<int> memory) {
-    // print('Output: $param2. Store at: $storeAddress');
     print(memory[parameters[1].value]);
     return memory;
   }
 }
 
-class Halt extends Instruction {
-  Halt(param) : super(param);
-  // @override
-  // int get length => Instruction.increment[Instruction.OPCODE_HALT];
+class JumpIfTrue extends Instruction {
+  static const NO_CHANGE = -1;
+  int lastInstructionPointer;
 
-  // @override
-  // List<int> apply(List<int> memory) {
-  // do nothing
-  // return memory;
-  // }
+  JumpIfTrue(instruction) : super(instruction);
+
+  @override
+  int nextPointer(old) {
+    return (lastInstructionPointer != NO_CHANGE)
+        ? lastInstructionPointer
+        : super.nextPointer(old);
+  }
+
+  @override
+  List<int> apply(List<int> memory) {
+    lastInstructionPointer = (parameters[1].withMode(memory) != 0)
+        ? parameters[2].withMode(memory)
+        : NO_CHANGE;
+    return super.apply(memory);
+  }
+}
+
+class JumpIfFalse extends Instruction {
+  static const NO_CHANGE = -1;
+  int lastInstructionPointer;
+  JumpIfFalse(instruction) : super(instruction);
+
+  @override
+  int nextPointer(old) {
+    return (lastInstructionPointer != NO_CHANGE)
+        ? lastInstructionPointer
+        : super.nextPointer(old);
+  }
+
+  @override
+  List<int> apply(List<int> memory) {
+    lastInstructionPointer = (parameters[1].withMode(memory) == 0)
+        ? parameters[2].withMode(memory)
+        : NO_CHANGE;
+    return super.apply(memory);
+  }
+}
+
+class LessThan extends Instruction {
+  LessThan(instruction) : super(instruction);
+
+  @override
+  List<int> apply(List<int> memory) {
+    memory[parameters[3].value] =
+        parameters[1].withMode(memory) < parameters[2].withMode(memory) ? 1 : 0;
+    return memory;
+  }
+}
+
+class Equals extends Instruction {
+  Equals(instruction) : super(instruction);
+
+  @override
+  List<int> apply(List<int> memory) {
+    memory[parameters[3].value] =
+        parameters[1].withMode(memory) == parameters[2].withMode(memory)
+            ? 1
+            : 0;
+    return memory;
+  }
+}
+
+class Halt extends Instruction {
+  Halt(instruction) : super(instruction);
 }
 
 class Computer {
@@ -161,23 +224,28 @@ class Computer {
   }
 
   Object run(returnAddress, input) {
-    var pc = 0; //program counter
-    var opcode = 0;
+    var instructionPointer = 0;
+    var opcodeId = 0;
+    List<int> params;
     while (true) {
-      opcode = memory[pc];
-      if (opcode == Opcode.HALT) break;
+      try {
+        opcodeId = Opcode.opcodeId(memory[instructionPointer]);
+        if (opcodeId == Opcode.HALT) break;
+        params = memory
+            .getRange(instructionPointer,
+                instructionPointer + Opcode.opcodeMap[opcodeId].length)
+            .toList();
+        var instruction = Instruction.create(opcodeId, params);
+        if (opcodeId == Opcode.WRITE) (instruction as Write).input = input;
+        instruction.apply(memory);
 
-      var params = memory.getRange(pc, pc + Instruction.MAX_LENGTH).toList();
-      if (opcode == Opcode.WRITE) params[2] = input;
-      var instruction = Instruction.create(opcode, params);
-      // print('------------------------------');
-      // print(instruction);
-      instruction.apply(memory);
-      pc += instruction.length;
-      // print(memory);
-      // print('counter: $pc');
+        instructionPointer = instruction.nextPointer(instructionPointer);
+      } catch (e, stacktrace) {
+        print(
+            'Error running program:\n instruction pointer: $instructionPointer, opcode: $opcodeId, params: $params\n\n$stacktrace');
+        return null;
+      }
     }
-    // print(input);
     return memory[returnAddress];
   }
 }
