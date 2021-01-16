@@ -35,6 +35,8 @@ extension String2 on String {
       substring(0, index) + newChar + substring(index + 1);
 
   String get reversed => split('').reversed.join('');
+  String get last => split('').last;
+  String get first => split('').first;
 
   int toInt() {
     return int.parse(this);
@@ -46,17 +48,16 @@ class NumUtils {
   static T multiply<T extends num>(T a, T b) => a * b;
 }
 
-extension IterableNum on Iterable<num> {
-  num get max => fold(first, math.max);
-  num get min => fold(first, math.min);
-  num get sum => fold(0, (a, b) => a + b);
-  num get multiply => fold(1, (a, b) => a * b);
+extension IterableNum<T extends num> on Iterable<T> {
+  // num get max => fold(first, math.max);
+  // num get min => fold(first, math.min);
+  // num get sum => fold(0, (a, b) => a + b);
+  // num get multiply => fold(1, (a, b) => a * b);
 
-  //these don't work for int; ok for double!
-  // num get max => reduce(math.max);
-  // num get min => reduce(math.min);
-  // num get sum => reduce(NumUtils.sum);
-  // num get multiply => reduce(NumUtils.multiply);
+  T get max => reduce(math.max);
+  T get min => reduce(math.min);
+  T get sum => reduce((a, b) => a + b as T);
+  T get multiply => reduce((a, b) => a * b as T);
 }
 
 extension GeneralIterableExtension<T> on Iterable<T> {
