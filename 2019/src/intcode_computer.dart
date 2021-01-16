@@ -19,14 +19,14 @@ class Opcode {
   final Instruction Function(List<int>) create;
   final length; //no of params in instruction
   Opcode(this.opcodeId, this.create, this.length);
-}
 
-Map<int, Opcode> opcodes = {}
-  ..[Opcode.ADD] = Opcode(Opcode.ADD, (a) => Add(a), 4)
-  ..[Opcode.MULTIPY] = Opcode(Opcode.MULTIPY, (a) => Multiply(a), 4)
-  ..[Opcode.WRITE] = Opcode(Opcode.WRITE, (a) => Write(a), 2)
-  ..[Opcode.OUTPUT] = Opcode(Opcode.OUTPUT, (a) => Output(a), 2)
-  ..[Opcode.HALT] = Opcode(Opcode.HALT, (a) => Halt(a), 1);
+  static final Map<int, Opcode> entries = {}
+    ..[Opcode.ADD] = Opcode(Opcode.ADD, (a) => Add(a), 4)
+    ..[Opcode.MULTIPY] = Opcode(Opcode.MULTIPY, (a) => Multiply(a), 4)
+    ..[Opcode.WRITE] = Opcode(Opcode.WRITE, (a) => Write(a), 2)
+    ..[Opcode.OUTPUT] = Opcode(Opcode.OUTPUT, (a) => Output(a), 2)
+    ..[Opcode.HALT] = Opcode(Opcode.HALT, (a) => Halt(a), 1);
+}
 
 abstract class Instruction {
   static const MAX_LENGTH = 4;
@@ -45,7 +45,7 @@ abstract class Instruction {
   int get length => opcode.length;
 
   Instruction(this.instruction) {
-    opcode = opcodes[opcodeId(instruction[0])];
+    opcode = Opcode.entries[opcodeId(instruction[0])];
     var modes = parseModes(instruction[0]);
     parameters
       ..[1] = Parameter(instruction[1], modes[0])
