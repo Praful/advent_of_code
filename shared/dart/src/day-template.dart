@@ -1,5 +1,4 @@
 import '../../shared/dart/src/utils.dart';
-import 'utils.dart';
 
 /// Puzzle description: https://adventofcode.com/2019/day/4
 
