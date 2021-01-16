@@ -8,7 +8,9 @@ const bool DEBUG = false;
 Object part1(String header, List input) {
   printHeader(header);
   print(input);
-  return Computer(input).run(0);
+  var writeInput = 1;
+  var returnAddress = 0;
+  return Computer(input).run(returnAddress, writeInput);
 }
 
 Object part2(String header, List input) {
@@ -22,6 +24,7 @@ void main(List<String> arguments) {
       .map((v) => v.toInt())
       .toList();
 
+  //Tests from day 2.
   assertEqual(
       part1('05 test part 1', [1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50]),
       3500);
