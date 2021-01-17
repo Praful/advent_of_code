@@ -5,9 +5,10 @@ import 'dart:collection' show Queue;
 void printHeader(String header) =>
     print('=== Day $header ====================');
 
-void assertEqual(found, expected) {
+void assertEqual(found, expected, [doPrint = true]) {
   try {
     assert(found == expected);
+    if (doPrint) print('Assert passed: $found found');
   } catch (e, stacktrace) {
     print(
         'Failed assertion: found $found, expected $expected\n\n${stacktrace}');
