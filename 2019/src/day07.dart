@@ -6,6 +6,11 @@ import './intcode_computer.dart';
 
 const bool DEBUG = false;
 
+void printAndAssert(actual, [expected = null]) {
+  print(actual);
+  if (expected != null) assertEqual(actual, expected);
+}
+
 List run(program, input) {
   return Computer(program).run(0, input);
 }
@@ -31,16 +36,19 @@ void main(List<String> arguments) {
   List testInput = FileUtils.asInt('../data/day07-test.txt', ',');
   List testInputb = FileUtils.asInt('../data/day07b-test.txt', ',');
   List testInputc = FileUtils.asInt('../data/day07c-test.txt', ',');
+  List testInputd = FileUtils.asInt('../data/day07d-test.txt', ',');
+  List testInpute = FileUtils.asInt('../data/day07e-test.txt', ',');
   List mainInput = FileUtils.asInt('../data/day07.txt', ',');
 
   assertEqual(part1('07 test part 1', testInput), 43210);
   assertEqual(part1('07 test part 1b', testInputb), 54321);
   assertEqual(part1('07 test part 1c', testInputc), 65210);
 
-  // assertEqual(part2('07 test part 2', testInput), 1);
+  assertEqual(part1('07 test part 2d', testInputd), 139629729);
+  assertEqual(part1('07 test part 2e', testInpute), 18216);
 
   //Answer: 13848
-  print(part1('07 part 1', mainInput));
+  printAndAssert(part1('07 part 1', mainInput), 13848);
   //Answer:
-  // print(part2('07 part 2', mainInput));
+  printAndAssert(part2('07 part 2', mainInput));
 }
