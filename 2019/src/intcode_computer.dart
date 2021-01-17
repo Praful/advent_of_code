@@ -28,15 +28,15 @@ class Opcode {
   }
 
   static final Map<int, Opcode> opcodeMap = {}
-    ..[Opcode.ADD] = Opcode(Opcode.ADD, (a) => Add(a), 4)
-    ..[Opcode.MULTIPY] = Opcode(Opcode.MULTIPY, (a) => Multiply(a), 4)
-    ..[Opcode.WRITE] = Opcode(Opcode.WRITE, (a) => Write(a), 2)
-    ..[Opcode.OUTPUT] = Opcode(Opcode.OUTPUT, (a) => Output(a), 2)
-    ..[Opcode.JMP_TRUE] = Opcode(Opcode.JMP_TRUE, (a) => JumpIfTrue(a), 3)
-    ..[Opcode.JMP_FALSE] = Opcode(Opcode.JMP_FALSE, (a) => JumpIfFalse(a), 3)
-    ..[Opcode.LESS_THAN] = Opcode(Opcode.LESS_THAN, (a) => LessThan(a), 4)
-    ..[Opcode.EQUALS] = Opcode(Opcode.EQUALS, (a) => Equals(a), 4)
-    ..[Opcode.HALT] = Opcode(Opcode.HALT, (a) => Halt(a), 1);
+    ..[ADD] = Opcode(Opcode.ADD, (a) => Add(a), 4)
+    ..[MULTIPY] = Opcode(Opcode.MULTIPY, (a) => Multiply(a), 4)
+    ..[WRITE] = Opcode(Opcode.WRITE, (a) => Write(a), 2)
+    ..[OUTPUT] = Opcode(Opcode.OUTPUT, (a) => Output(a), 2)
+    ..[JMP_TRUE] = Opcode(Opcode.JMP_TRUE, (a) => JumpIfTrue(a), 3)
+    ..[JMP_FALSE] = Opcode(Opcode.JMP_FALSE, (a) => JumpIfFalse(a), 3)
+    ..[LESS_THAN] = Opcode(Opcode.LESS_THAN, (a) => LessThan(a), 4)
+    ..[EQUALS] = Opcode(Opcode.EQUALS, (a) => Equals(a), 4)
+    ..[HALT] = Opcode(Opcode.HALT, (a) => Halt(a), 1);
 }
 
 abstract class Instruction {
@@ -141,8 +141,9 @@ class Output extends Instruction {
 
   @override
   List<int> apply(List<int> memory) {
-    print(memory[parameters[1].value]);
-    return memory;
+    // print(memory[parameters[1].value]);
+    return [memory[parameters[1].value]];
+    // return memory;
   }
 }
 
@@ -223,8 +224,9 @@ class Computer {
     memory = List.from(data);
   }
 
-  Object run(returnAddress, input) {
+  List<int> run(int returnAddress, List<int> input) {
     var instructionPointer = 0;
+    var output;
     var opcodeId = 0;
     List<int> params;
     while (true) {
@@ -236,8 +238,12 @@ class Computer {
                 instructionPointer + Opcode.opcodeMap[opcodeId].length)
             .toList();
         var instruction = Instruction.create(opcodeId, params);
-        if (opcodeId == Opcode.WRITE) (instruction as Write).input = input;
-        instruction.apply(memory);
+        if (opcodeId == Opcode.WRITE) {
+          (instruction as Write).input = input.first;
+          input.removeAt(0);
+        }
+        var result = instruction.apply(memory);
+        if (opcodeId == Opcode.OUTPUT) output = result;
 
         instructionPointer = instruction.nextPointer(instructionPointer);
       } catch (e, stacktrace) {
@@ -246,6 +252,6 @@ class Computer {
         return null;
       }
     }
-    return memory[returnAddress];
+    return output ?? [memory[returnAddress]];
   }
 }
