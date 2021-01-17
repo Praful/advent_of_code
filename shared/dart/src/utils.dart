@@ -24,11 +24,15 @@ class FileUtils {
     return result;
   }
 
-  static List<int> asInt(input, [sort = false]) {
-    var result = File(input).readAsLinesSync().map((l) => l.toInt()).toList();
+  static List<int> asInt(input, [sep = '\n', sort = false]) {
+    var result = asString(input).split(sep).map((l) => l.toInt()).toList();
     if (sort) result.sort();
     return result;
   }
+}
+
+extension List2 on List {
+  Set intersection(List other) => toSet().intersection(other.toSet());
 }
 
 extension String2 on String {

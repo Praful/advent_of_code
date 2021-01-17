@@ -77,14 +77,13 @@ class Wire {
 int manhattan(Point p) => p.x.abs() + p.y.abs();
 
 int minManhattan(List<Point> path1, List<Point> path2) =>
-    path1.toSet().intersection(path2.toSet()).map((p) => manhattan(p)).min;
+    path1.intersection(path2).map((p) => manhattan(p)).min;
 
 //Return number of steps to first occurence of point.
 int minSteps(List<Point> path, Point p) => path.indexOf(p) + 1;
 
 int minStepsToCrossings(List<Point> path1, List<Point> path2) => path1
-    .toSet()
-    .intersection(path2.toSet())
+    .intersection(path2)
     .map((p) => minSteps(path1, p) + minSteps(path2, p))
     .min;
 
