@@ -141,9 +141,7 @@ class Output extends Instruction {
 
   @override
   List<int> apply(List<int> memory) {
-    // print(memory[parameters[1].value]);
     return [memory[parameters[1].value]];
-    // return memory;
   }
 }
 
@@ -220,38 +218,44 @@ class Halt extends Instruction {
 
 class Computer {
   List<int> memory;
+  bool halted = false;
+  bool firstRun = true;
+  var instructionPointer = 0;
+  int output;
+
   Computer(data) {
     memory = List.from(data);
   }
 
-  List<int> run(int returnAddress, List<int> input) {
-    var instructionPointer = 0;
-    var output;
-    var opcodeId = 0;
+  List getInstructionParams(opcodeId) => memory
+      .getRange(instructionPointer,
+          instructionPointer + Opcode.opcodeMap[opcodeId].length)
+      .toList();
+
+  void run(List<int> input, [exitOnOuput = false]) {
+    var opcodeId;
     List<int> params;
     while (true) {
-      try {
-        opcodeId = Opcode.opcodeId(memory[instructionPointer]);
-        if (opcodeId == Opcode.HALT) break;
-        params = memory
-            .getRange(instructionPointer,
-                instructionPointer + Opcode.opcodeMap[opcodeId].length)
-            .toList();
-        var instruction = Instruction.create(opcodeId, params);
-        if (opcodeId == Opcode.WRITE) {
-          (instruction as Write).input = input.first;
-          input.removeAt(0);
-        }
-        var result = instruction.apply(memory);
-        if (opcodeId == Opcode.OUTPUT) output = result;
+      opcodeId = Opcode.opcodeId(memory[instructionPointer]);
+      if (opcodeId == Opcode.HALT) {
+        halted = true;
+        break;
+      }
+      params = getInstructionParams(opcodeId);
+      var instruction = Instruction.create(opcodeId, params);
 
-        instructionPointer = instruction.nextPointer(instructionPointer);
-      } catch (e, stacktrace) {
-        print(
-            'Error running program:\n instruction pointer: $instructionPointer, opcode: $opcodeId, params: $params\n\n$stacktrace');
-        return null;
+      if (opcodeId == Opcode.WRITE) {
+        (instruction as Write).input = firstRun ? input[0] : input[1];
+        if (firstRun) firstRun = false;
+      }
+
+      var result = instruction.apply(memory);
+      instructionPointer = instruction.nextPointer(instructionPointer);
+
+      if (opcodeId == Opcode.OUTPUT) {
+        output = result.first;
+        if (exitOnOuput) break;
       }
     }
-    return output ?? [memory[returnAddress]];
   }
 }

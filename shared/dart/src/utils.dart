@@ -5,13 +5,13 @@ import 'dart:collection' show Queue;
 void printHeader(String header) =>
     print('=== Day $header ====================');
 
-void assertEqual(found, expected, [doPrint = true]) {
+void assertEqual(actual, expected, [doPrint = true]) {
   try {
-    assert(found == expected);
-    if (doPrint) print('Assert passed: $found found');
+    assert(actual == expected);
+    if (doPrint) print('Assert passed: $actual found');
   } catch (e, stacktrace) {
     print(
-        'Failed assertion: found $found, expected $expected\n\n${stacktrace}');
+        'Failed assertion: found $actual, expected $expected\n\n${stacktrace}');
   }
 }
 
