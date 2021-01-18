@@ -4,6 +4,14 @@ import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
 
+void printAndAssert(actual, [expected]) {
+  if (expected != null) {
+    assertEqual(actual, expected);
+  } else {
+    print(actual);
+  }
+}
+
 Object part1(String header, List input) {
   printHeader(header);
 }
@@ -22,7 +30,7 @@ void main(List<String> arguments) {
   // assertEqual(part2('XX test part 2', testInput), 1);
 
   //Answer:
-  // print(part1('XX part 1', mainInput));
+  // printAndAssert(part1('XX part 1', mainInput));
   //Answer:
-  // print(part2('XX part 2', mainInput));
+  // printAndAssert(part2('XX part 2', mainInput));
 }
