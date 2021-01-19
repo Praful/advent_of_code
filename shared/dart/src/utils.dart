@@ -16,7 +16,7 @@ void assertEqual(actual, expected, [doPrint = true]) {
 }
 
 class FileUtils {
-  static String asString(input) => File(input).readAsStringSync();
+  static String asString(input) => File(input).readAsStringSync().trim();
 
   static List<String> asLines(input, [sort = false]) {
     var result = File(input).readAsLinesSync();
@@ -42,6 +42,9 @@ extension String2 on String {
   String get reversed => split('').reversed.join('');
   String get last => split('').last;
   String get first => split('').first;
+
+  Iterable<String> where(bool Function(String element) test) =>
+      split('').where(test);
 
   int toInt() {
     return int.parse(this);
