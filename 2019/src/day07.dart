@@ -17,7 +17,8 @@ void printAndAssert(actual, [expected]) {
 int run1(program, input) {
   var c = Computer(program);
   c.run(input);
-  return c.output;
+  // print(c.output);
+  return c.output.last;
 }
 
 Object part1(String header, List input) {
@@ -33,8 +34,8 @@ Object part1(String header, List input) {
 }
 
 int run2(Computer amp, int phase, int signal) {
-  amp.run([phase, signal], true);
-  return amp.output;
+  return amp.run([phase, signal], true).last;
+  // return amp.output;
 }
 
 Object part2(String header, List input) {
@@ -49,7 +50,7 @@ Object part2(String header, List input) {
         signal = run2(amps[i], phase[i], signal);
       }
     }
-    return amps[4].output;
+    return amps[4].output.last;
   }).max;
 }
 
