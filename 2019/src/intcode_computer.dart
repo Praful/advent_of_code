@@ -1,7 +1,7 @@
 import '../../shared/dart/src/utils.dart';
 // import 'package:trotter/trotter.dart';
 
-enum Mode { position, immediate }
+enum Mode { position, immediate, relative }
 
 class Opcode {
   static const ADD = 1;
@@ -12,8 +12,8 @@ class Opcode {
   static const JMP_FALSE = 6;
   static const LESS_THAN = 7;
   static const EQUALS = 8;
+  static const RELATIVE_BASE = 9;
   static const HALT = 99;
-  static const MAX_LENGTH = 4;
 
   final int id;
   final Instruction Function(List<int>) create;
@@ -36,15 +36,15 @@ class Opcode {
     ..[JMP_FALSE] = Opcode(Opcode.JMP_FALSE, (a) => JumpIfFalse(a), 3)
     ..[LESS_THAN] = Opcode(Opcode.LESS_THAN, (a) => LessThan(a), 4)
     ..[EQUALS] = Opcode(Opcode.EQUALS, (a) => Equals(a), 4)
+    ..[RELATIVE_BASE] = Opcode(Opcode.RELATIVE_BASE, (a) => RelativeBase(a), 2)
     ..[HALT] = Opcode(Opcode.HALT, (a) => Halt(a), 1);
 }
 
 abstract class Instruction {
-  static const MAX_LENGTH = 4;
-
   static final modeMap = {}
     ..[0] = Mode.position
-    ..[1] = Mode.immediate;
+    ..[1] = Mode.immediate
+    ..[2] = Mode.relative;
 
   //instruction consists of code, param1, param2 [,param3]
   //code is of form ABCDE where
@@ -55,7 +55,7 @@ abstract class Instruction {
 
   @override
   String toString() => 'param: $instruction\nparams: $parameters';
-  List<int> apply(List<int> memory) => memory;
+  Object apply(Map<int, int> memory, int relativeBase) => memory;
   int get length => opcode.length;
 
   int nextPointer(current) => current + opcode.length;
@@ -86,13 +86,19 @@ class Parameter {
   final int value;
   final Mode mode;
   Parameter(this.value, this.mode);
-  int withMode(memory) {
+
+  int withMode(memory, relativeBase, [isWrite = false]) {
+    if (isWrite) return value + (mode == Mode.relative ? relativeBase : 0);
+
     switch (mode) {
       case Mode.position:
-        return memory[value];
+        return memory[value] ?? 0;
         break;
       case Mode.immediate:
         return value;
+        break;
+      case Mode.relative:
+        return memory[relativeBase + value] ?? 0;
         break;
       default:
         throw 'Invalid mode $mode';
@@ -100,16 +106,17 @@ class Parameter {
   }
 
   @override
-  String toString() => 'Param: $value, mode: $mode';
+  String toString() => 'value: $value, mode: $mode';
 }
 
 class Add extends Instruction {
   Add(instruction) : super(instruction);
 
   @override
-  List<int> apply(List<int> memory) {
-    memory[parameters[3].value] =
-        parameters[1].withMode(memory) + parameters[2].withMode(memory);
+  Object apply(Map<int, int> memory, relativeBase) {
+    memory[parameters[3].withMode(memory, relativeBase, true)] =
+        parameters[1].withMode(memory, relativeBase) +
+            parameters[2].withMode(memory, relativeBase);
     return memory;
   }
 }
@@ -118,9 +125,10 @@ class Multiply extends Instruction {
   Multiply(instruction) : super(instruction);
 
   @override
-  List<int> apply(List<int> memory) {
-    memory[parameters[3].value] =
-        parameters[1].withMode(memory) * parameters[2].withMode(memory);
+  Object apply(Map<int, int> memory, relativeBase) {
+    memory[parameters[3].withMode(memory, relativeBase, true)] =
+        parameters[1].withMode(memory, relativeBase) *
+            parameters[2].withMode(memory, relativeBase);
     return memory;
   }
 }
@@ -130,8 +138,8 @@ class Write extends Instruction {
   Write(instruction) : super(instruction);
 
   @override
-  List<int> apply(List<int> memory) {
-    memory[parameters[1].value] = input;
+  Object apply(Map<int, int> memory, relativeBase) {
+    memory[parameters[1].withMode(memory, relativeBase, true)] = input;
     return memory;
   }
 }
@@ -140,8 +148,8 @@ class Output extends Instruction {
   Output(instruction) : super(instruction);
 
   @override
-  List<int> apply(List<int> memory) {
-    return [memory[parameters[1].value]];
+  Object apply(Map<int, int> memory, relativeBase) {
+    return parameters[1].withMode(memory, relativeBase);
   }
 }
 
@@ -159,11 +167,11 @@ class JumpIfTrue extends Instruction {
   }
 
   @override
-  List<int> apply(List<int> memory) {
-    lastInstructionPointer = (parameters[1].withMode(memory) != 0)
-        ? parameters[2].withMode(memory)
+  Object apply(Map<int, int> memory, relativeBase) {
+    lastInstructionPointer = (parameters[1].withMode(memory, relativeBase) != 0)
+        ? parameters[2].withMode(memory, relativeBase)
         : NO_CHANGE;
-    return super.apply(memory);
+    return super.apply(memory, relativeBase);
   }
 }
 
@@ -180,11 +188,11 @@ class JumpIfFalse extends Instruction {
   }
 
   @override
-  List<int> apply(List<int> memory) {
-    lastInstructionPointer = (parameters[1].withMode(memory) == 0)
-        ? parameters[2].withMode(memory)
+  Object apply(Map<int, int> memory, relativeBase) {
+    lastInstructionPointer = (parameters[1].withMode(memory, relativeBase) == 0)
+        ? parameters[2].withMode(memory, relativeBase)
         : NO_CHANGE;
-    return super.apply(memory);
+    return super.apply(memory, relativeBase);
   }
 }
 
@@ -192,9 +200,12 @@ class LessThan extends Instruction {
   LessThan(instruction) : super(instruction);
 
   @override
-  List<int> apply(List<int> memory) {
-    memory[parameters[3].value] =
-        parameters[1].withMode(memory) < parameters[2].withMode(memory) ? 1 : 0;
+  Object apply(Map<int, int> memory, relativeBase) {
+    memory[parameters[3].withMode(memory, relativeBase, true)] =
+        parameters[1].withMode(memory, relativeBase) <
+                parameters[2].withMode(memory, relativeBase)
+            ? 1
+            : 0;
     return memory;
   }
 }
@@ -203,12 +214,22 @@ class Equals extends Instruction {
   Equals(instruction) : super(instruction);
 
   @override
-  List<int> apply(List<int> memory) {
-    memory[parameters[3].value] =
-        parameters[1].withMode(memory) == parameters[2].withMode(memory)
+  Object apply(Map<int, int> memory, relativeBase) {
+    memory[parameters[3].withMode(memory, relativeBase, true)] =
+        parameters[1].withMode(memory, relativeBase) ==
+                parameters[2].withMode(memory, relativeBase)
             ? 1
             : 0;
     return memory;
+  }
+}
+
+class RelativeBase extends Instruction {
+  RelativeBase(instruction) : super(instruction);
+
+  @override
+  Object apply(Map<int, int> memory, relativeBase) {
+    return relativeBase + parameters[1].withMode(memory, relativeBase);
   }
 }
 
@@ -217,22 +238,24 @@ class Halt extends Instruction {
 }
 
 class Computer {
-  List<int> memory;
+  Map<int, int> memory = {};
   bool halted = false;
   bool firstRun = true;
   var instructionPointer = 0;
   int output;
+  int relativeBase = 0;
 
-  Computer(data) {
-    memory = List.from(data);
+  Computer(List<int> data) {
+    data.asMap().forEach((k, v) => memory[k] = v);
   }
 
-  List getInstructionParams(opcodeId) => memory
+  List getInstructionParams(opcodeId) => memory.values
+      .toList()
       .getRange(instructionPointer,
           instructionPointer + Opcode.opcodeMap[opcodeId].length)
       .toList();
 
-  void run(List<int> input, [exitOnOuput = false]) {
+  void run([List<int> input, exitOnOuput = false]) {
     var opcodeId;
     List<int> params;
     while (true) {
@@ -249,11 +272,16 @@ class Computer {
         if (firstRun) firstRun = false;
       }
 
-      var result = instruction.apply(memory);
+      var result = instruction.apply(memory, relativeBase);
       instructionPointer = instruction.nextPointer(instructionPointer);
 
+      if (opcodeId == Opcode.RELATIVE_BASE) {
+        relativeBase = result;
+      }
+
       if (opcodeId == Opcode.OUTPUT) {
-        output = result.first;
+        output = result;
+        print('output: $output');
         if (exitOnOuput) break;
       }
     }

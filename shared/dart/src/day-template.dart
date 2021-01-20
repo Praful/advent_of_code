@@ -14,10 +14,16 @@ void printAndAssert(actual, [expected]) {
 
 Object part1(String header, List input) {
   printHeader(header);
+
+  //TODO return something
+  return null;
 }
 
 Object part2(String header, List input) {
   printHeader(header);
+
+  //TODO return something
+  return null;
 }
 
 void main(List<String> arguments) {

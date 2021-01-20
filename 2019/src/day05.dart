@@ -13,30 +13,30 @@ void printAndAssert(actual, [expected]) {
   }
 }
 
-List run(program, returnAddress, input) {
+List run(List<int> program, int returnAddress, input) {
   var c = Computer(program);
   c.run(input);
   return [c.memory[returnAddress], c.output];
 }
 
-int part1Day2(String header, List program) {
+int part1Day2(String header, List<int> program) {
   printHeader(header);
   var writeInput = 1;
   var returnAddress = 0;
   return run(program, returnAddress, [writeInput])[0];
 }
 
-int general(String header, List program, int initValue) {
+int general(String header, List<int> program, int initValue) {
   printHeader(header);
   var returnAddress = 0;
   return run(program, returnAddress, [initValue])[1];
 }
 
-int part1(String header, List program, int initValue) {
+int part1(String header, List<int> program, int initValue) {
   return general(header, program, initValue);
 }
 
-int part2(String header, List program, int initValue) {
+int part2(String header, List<int> program, int initValue) {
   return general(header, program, initValue);
 }
 
