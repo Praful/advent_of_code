@@ -16,7 +16,7 @@ void printAndAssert(actual, [expected]) {
 List run(List<int> program, int returnAddress, input) {
   var c = Computer(program);
   c.run(input);
-  return [c.memory[returnAddress], c.output];
+  return [c.memory[returnAddress], c.output.isEmpty ? null : c.output.last];
 }
 
 int part1Day2(String header, List<int> program) {
