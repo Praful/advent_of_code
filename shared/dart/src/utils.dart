@@ -10,8 +10,8 @@ void assertEqual(actual, expected, [doPrint = true]) {
     assert(actual == expected);
     if (doPrint) print('Assert passed: $actual found');
   } catch (e, stacktrace) {
-    print(
-        'Failed assertion: found $actual, expected $expected\n\n${stacktrace}');
+    print('Failed assertion: found $actual, expected $expected');
+    // print('Failed assertion: found $actual, expected $expected\n\n${stacktrace}');
   }
 }
 
@@ -46,9 +46,9 @@ extension String2 on String {
   Iterable<String> where(bool Function(String element) test) =>
       split('').where(test);
 
-  int toInt() {
-    return int.parse(this);
-  }
+  double toDouble() => double.parse(this);
+
+  int toInt() => int.parse(this);
 }
 
 class NumUtils {
@@ -80,6 +80,12 @@ extension Num2 on num {
   bool isBetweenX(num from, num to) => from < this && this < to;
 }
 
+extension Precision on double {
+  double toPrecision(int fractionDigits) {
+    double mod = math.pow(10, fractionDigits.toDouble());
+    return ((this * mod).round().toDouble() / mod);
+  }
+}
 //Two ways for range. See
 // https://stackoverflow.com/questions/37798397/dart-create-a-list-from-0-to-n
 // See quiver package for useful libaries.

@@ -95,7 +95,7 @@ class Parameter {
   final _relativeBase;
   Parameter(this._value, this._mode, this._memory, this._relativeBase);
 
-  //The value returned depends on the mode and whether the caller
+  //The number returned depends on the mode and whether the caller
   //is going to use the returned value for writing to (=>asAddress) or
   //reading from (=>asValue) memory.
   int get asAddress => _value + (_mode == Mode.relative ? _relativeBase : 0);
@@ -116,7 +116,7 @@ class Parameter {
   }
 
   @override
-  String toString() => 'value: $_value, mode: $_mode';
+  String toString() => 'value: $_value, mode: $_mode, relbase: $_relativeBase';
 }
 
 class Add extends Instruction {
