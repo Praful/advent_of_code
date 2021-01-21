@@ -23,7 +23,49 @@ void test2() {
   print('eeeeddabcde'.where((c) => c == 'c').length);
 }
 
+void test3() {
+  print(3.1450000001.compareTo(3.145000002));
+}
+
+void test4() {
+  // double d = 2.3456789;
+  double d = 5.550;
+  double d1 = d.toPrecision(1); // 2.3
+  double d2 = d.toPrecision(2); // 2.35
+  double d3 = d.toPrecision(3); // 2.345
+  double d4 = d.toPrecision(4); // 2.345
+  print(d1);
+  print(d2);
+  print(d3);
+  print(d4);
+  print(d.toStringAsFixed(1));
+  print(d.toStringAsFixed(2));
+  print(d.toStringAsFixed(3));
+  print(d.toStringAsFixed(4));
+}
+
+void test5() {
+  var p1 = math.Point(11, 13);
+  print(p1.distanceTo(math.Point(11, 2)));
+  print(p1.distanceTo(math.Point(11, 3)));
+  print(p1.distanceTo(math.Point(11, 4)));
+  print(p1.distanceTo(math.Point(11, 5)));
+  print(p1.distanceTo(math.Point(11, 6)));
+  print(p1.distanceTo(math.Point(11, 7)));
+  print(p1.distanceTo(math.Point(11, 8)));
+  print(p1.distanceTo(math.Point(11, 9)));
+  print(p1.distanceTo(math.Point(11, 10)));
+  print(p1.distanceTo(math.Point(11, 11)));
+  print(p1.distanceTo(math.Point(11, 12)));
+  print(p1.distanceTo(math.Point(11, 14)));
+  print(p1.distanceTo(math.Point(11, 16)));
+  print(p1.distanceTo(math.Point(11, 17)));
+}
+
 void main(List<String> args) {
   // test1();
-  test2();
+  // test2();
+  // test3();
+  // test4();
+  test5();
 }
