@@ -15,6 +15,9 @@ void assertEqual(actual, expected, [doPrint = true]) {
   }
 }
 
+List<List> TwoDimArray(rows, cols) =>
+    List.generate(rows, (i) => List(cols), growable: false);
+
 class FileUtils {
   static String asString(input) => File(input).readAsStringSync().trim();
 

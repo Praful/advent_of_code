@@ -18,16 +18,16 @@ List part1(String header, List<int> program, [List<int> input]) {
   printHeader(header);
   var c = Computer(program);
   c.run(input);
-  print('output: ${c.output}');
-  return c.output;
+  print('output: ${c.output()}');
+  return c.output();
 }
 
 int part2(String header, List<int> program, [List<int> input]) {
   printHeader(header);
   var c = Computer(program);
   c.run(input);
-  print('output: ${c.output}');
-  return c.output.last;
+  print('output: ${c.output()}');
+  return c.output().last;
 }
 
 void main(List<String> arguments) {

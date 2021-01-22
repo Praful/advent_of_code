@@ -18,7 +18,7 @@ int run1(program, input) {
   var c = Computer(program);
   c.run(input);
   // print(c.output);
-  return c.output.last;
+  return c.output().last;
 }
 
 Object part1(String header, List input) {
@@ -50,7 +50,7 @@ Object part2(String header, List input) {
         signal = run2(amps[i], phase[i], signal);
       }
     }
-    return amps[4].output.last;
+    return amps[4].output().last;
   }).max;
 }
 

@@ -252,11 +252,21 @@ class Computer {
   bool halted = false;
   bool _firstRun = true;
   var _instructionPointer = 0;
-  List<int> output = [];
+  List<int> _output = [];
   int _relativeBase = 0;
+  int Function() _inputProvider;
+  bool requiresInput;
 
-  Computer(List<int> program) {
+  Computer(List<int> program, [int Function() inputProvider]) {
     program.asMap().forEach((k, v) => memory[k] = v);
+    _inputProvider = inputProvider;
+  }
+
+  List<int> output([clearOnRead = false]) {
+    var result = List<int>.from(_output);
+
+    if (clearOnRead) _output.clear();
+    return result;
   }
 
   List getInstructionParams(opcodeId) => memory.values
@@ -265,9 +275,18 @@ class Computer {
           _instructionPointer + Opcode.opcodeMap[opcodeId].length)
       .toList();
 
-  List run([List<int> input, exitOnOuput = false]) {
+  List run([List<int> input, exitOnOuput = false, exitOnInput = false]) {
+    int readInput() {
+      if (_inputProvider == null) {
+        return _firstRun ? input[0] : input[1];
+      } else {
+        return _inputProvider();
+      }
+    }
+
     var opcodeId;
     List<int> params;
+    requiresInput = false;
     while (true) {
       opcodeId = Opcode.opcodeId(memory[_instructionPointer]);
       if (opcodeId == Opcode.HALT) {
@@ -279,7 +298,8 @@ class Computer {
           Instruction.create(opcodeId, params, memory, _relativeBase);
 
       if (opcodeId == Opcode.WRITE) {
-        (instruction as Write).input = _firstRun ? input[0] : input[1];
+        (instruction as Write).input = readInput();
+        // (instruction as Write).input = _firstRun ? input[0] : input[1];
         if (_firstRun) _firstRun = false;
       }
 
@@ -291,11 +311,11 @@ class Computer {
       }
 
       if (opcodeId == Opcode.OUTPUT) {
-        output.add(result);
-        // print('output: $output');
+        _output.add(result);
+        // print('output: $_output');
         if (exitOnOuput) break;
       }
     }
-    return output;
+    return output();
   }
 }
