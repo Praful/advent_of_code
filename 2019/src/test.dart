@@ -62,10 +62,22 @@ void test5() {
   print(p1.distanceTo(math.Point(11, 17)));
 }
 
+enum Direction { north, east, south, west }
+void test6() {
+  print(Direction.values[0]);
+  print('${-1 % 4}');
+  // print(Direction.north.index);
+  // print(Direction.west.index);
+  var facing = Direction.north;
+  print(Direction.values[(facing.index - 1) % 4]);
+  print(Direction.values[(facing.index + 1) % 4]);
+}
+
 void main(List<String> args) {
   // test1();
   // test2();
   // test3();
   // test4();
-  test5();
+  // test5();
+  test6();
 }
