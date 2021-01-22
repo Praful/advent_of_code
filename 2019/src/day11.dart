@@ -16,35 +16,33 @@ void printAndAssert(actual, [expected]) {
 
 enum Turn { left, right }
 enum Direction { north, east, south, west }
+enum Panel { black, white }
 
 class Robot {
-  Map<Point, int> grid = {};
-  static const BLACK_PANEL = 0;
-  static const WHITE_PANEL = 1;
-  final program;
-  Point currentPosition = Point(0, 0);
-  Computer computer;
+  final Map<Point, Panel> _visitedPanels = {};
+  final _program;
+  Point _currentPosition = Point(0, 0);
+  Computer _computer;
   bool _firstRun = true;
-  Direction facing = Direction.north;
-  int _startPanelColour;
-  int _defaultPanelColour;
+  Direction _facing = Direction.north;
+  Panel _startPanelColour;
+  Panel _defaultPanelColour;
 
-  Robot(this.program) {
-    computer = Computer(program, () => ioProcessor());
+  Robot(this._program) {
+    _computer = Computer(_program, () => ioProcessor());
   }
 
-  void start(
-      [startPanelColour = BLACK_PANEL, defaultPanelColour = BLACK_PANEL]) {
-    _defaultPanelColour = defaultPanelColour;
-    _startPanelColour = startPanelColour;
-    computer.run();
+  void start([startPanelColour, defaultPanelColour]) {
+    _defaultPanelColour = defaultPanelColour ?? Panel.black;
+    _startPanelColour = startPanelColour ?? Panel.black;
+    _computer.run();
   }
 
-  Point TurnAndMove(turn) {
-    var x = currentPosition.x;
-    var y = currentPosition.y;
+  List turnAndMove(turn) {
+    var x = _currentPosition.x;
+    var y = _currentPosition.y;
 
-    switch (facing) {
+    switch (_facing) {
       case Direction.north:
         x = x + (turn == Turn.left ? -1 : 1);
         break;
@@ -58,38 +56,42 @@ class Robot {
         y = y + (turn == Turn.left ? -1 : 1);
         break;
       default:
-        throw 'Facing nowhere';
+        throw 'Facing nowhere!';
     }
 
-    facing = turn == Turn.left
-        ? Direction.values[(facing.index - 1) % 4]
-        : Direction.values[(facing.index + 1) % 4];
+    var facing = turn == Turn.left
+        ? Direction.values[(_facing.index - 1) % 4]
+        : Direction.values[(_facing.index + 1) % 4];
 
-    return Point(x, y);
+    return [Point(x, y), facing];
   }
 
   //Provide input and process output of program being run by Robot.
   int ioProcessor() {
     var currentPanelColour;
-    var output = computer.output(true);
+    var output = _computer.output(true);
 
     if (output.isNotEmpty) {
-      grid[currentPosition] = output[0];
-      currentPosition = TurnAndMove(output[1] == 0 ? Turn.left : Turn.right);
-      currentPanelColour = grid[currentPosition] ?? _defaultPanelColour;
+      _visitedPanels[_currentPosition] = Panel.values[output[0]];
+      var newLocation = turnAndMove(Turn.values[output[1]]);
+      _currentPosition = newLocation[0];
+      _facing = newLocation[1];
+      currentPanelColour =
+          _visitedPanels[_currentPosition] ?? _defaultPanelColour;
     } else {
       currentPanelColour = _firstRun ? _startPanelColour : _defaultPanelColour;
       if (_firstRun) _firstRun = false;
     }
-    return currentPanelColour;
+
+    return currentPanelColour.index;
   }
 
   void printImage() {
     var pixel = {}
-      ..[BLACK_PANEL] = '\u2588'
-      ..[WHITE_PANEL] = '\u2591';
+      ..[Panel.black] = '\u2588'
+      ..[Panel.white] = '\u2591';
 
-    var points = grid.keys; //The panels the Robot went on.
+    var points = _visitedPanels.keys; //The panels the Robot went on.
     var cols =
         (points.map((v) => v.x).max - points.map((v) => v.x).min).abs() + 1;
     var rows =
@@ -99,12 +101,12 @@ class Robot {
 
     //Initialise image's pixels to black
     range(0, rows)
-        .forEach((row) => image[row] = (pixel[BLACK_PANEL] * cols).split(''));
+        .forEach((row) => image[row] = (pixel[Panel.black] * cols).split(''));
 
     //Fill in white pixels: y's absolute values are taken because the image
     //coords start with (0,0) at top left.
-    grid.entries
-        .where((kv) => kv.value == WHITE_PANEL)
+    _visitedPanels.entries
+        .where((kv) => kv.value == Panel.white)
         .forEach((p) => image[(p.key.y).abs()][p.key.x] = pixel[p.value]);
 
     //Print image
@@ -116,13 +118,13 @@ Object part1(String header, List input) {
   printHeader(header);
   var r = Robot(input);
   r.start();
-  return r.grid.length;
+  return r._visitedPanels.length;
 }
 
 Object part2(String header, List input) {
   printHeader(header);
   var r = Robot(input);
-  r.start(Robot.WHITE_PANEL, Robot.BLACK_PANEL);
+  r.start(Panel.white, Panel.black);
   r.printImage();
 
   return '';
