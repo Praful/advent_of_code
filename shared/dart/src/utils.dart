@@ -10,7 +10,7 @@ void assertEqual(actual, expected, [doPrint = true]) {
     assert(actual == expected);
     if (doPrint) print('Assert passed: $actual found');
   } catch (e, stacktrace) {
-    print('Failed assertion: found $actual, expected $expected');
+    print('Assert FAILED: found $actual, expected $expected');
     // print('Failed assertion: found $actual, expected $expected\n\n${stacktrace}');
   }
 }
@@ -56,7 +56,19 @@ extension String2 on String {
 
 class NumUtils {
   static T sum<T extends num>(T a, T b) => a + b;
+
   static T multiply<T extends num>(T a, T b) => a * b;
+
+  static int lcm(int a, int b) => (a * b) ~/ gcd(a, b);
+
+  static int gcd(int a, int b) {
+    while (b != 0) {
+      var t = b;
+      b = a % t;
+      a = t;
+    }
+    return a;
+  }
 }
 
 extension IterableNum<T extends num> on Iterable<T> {
