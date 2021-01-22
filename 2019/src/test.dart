@@ -73,11 +73,22 @@ void test6() {
   print(Direction.values[(facing.index + 1) % 4]);
 }
 
+void test7() {
+  var input = '<x=-8, y=-10, z=0>\n'
+      '<x=5, y=5, z=10>\n'
+      '<x=2, y=-7, z=3>\n '
+      '<x=9, y=-8, z=-3>';
+
+  // var regex = RegExp('x\=(?\<x\>-?\d*), y\=(?\<y\>-?\d*), z\=(?\<z\>-?\d*)\>');
+  var regex = RegExp(r'x\=(?<x>-?\d*), y\=(?<y>-?\d*), z=(?<z>-?\d*)\>');
+  // var match = regex.firstMatch(input);
+  regex.allMatches(input).forEach((match) {
+    print(match.namedGroup('x'));
+    print(match.namedGroup('y'));
+    print(match.namedGroup('z'));
+  });
+}
+
 void main(List<String> args) {
-  // test1();
-  // test2();
-  // test3();
-  // test4();
-  // test5();
-  test6();
+  test7();
 }
