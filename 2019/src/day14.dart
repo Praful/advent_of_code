@@ -19,13 +19,17 @@ int roundUp(int numToRound, int multipleOf) {
 }
 
 class Recipe {
+  //Example, for reaction [4 A, 5 B => 12 F]:
+  // ingredients are (4 A, 5 B)
+  // incrementAmount is 12
+  // chemical is F
   final List<Ingredient> ingredients;
-  final int minAmount;
+  final int incrementAmount;
   final String chemical;
-  Recipe(this.chemical, this.minAmount, this.ingredients);
+  Recipe(this.chemical, this.incrementAmount, this.ingredients);
 
   @override
-  String toString() => '$ingredients => $minAmount $chemical';
+  String toString() => '$ingredients => $incrementAmount $chemical';
 }
 
 class Ingredient {
@@ -63,11 +67,11 @@ class NanoFactory {
   }
 
   int produce(Ingredient toMake) {
-    int newAmount(make, min, amount) => (make ~/ min) * amount;
+    int newAmount(make, inc, amount) => (make ~/ inc) * amount;
 
     var recipe = _recipes[toMake.chemical];
 
-    var min = _recipes[toMake.chemical].minAmount;
+    var incAmount = _recipes[toMake.chemical].incrementAmount;
     var credit = _extra[toMake.chemical] ?? 0;
     var result = 0;
 
@@ -76,7 +80,7 @@ class NanoFactory {
     if (make < 0) {
       credit = -make;
     } else {
-      var rounded = roundUp(make, min);
+      var rounded = roundUp(make, incAmount);
       credit = rounded - make;
       make = rounded;
     }
@@ -85,14 +89,14 @@ class NanoFactory {
 
     if (make > 0) {
       if (recipe.ingredients[0].chemical == 'ORE') {
-        result = newAmount(make, min, recipe.ingredients[0].amount);
+        result = newAmount(make, incAmount, recipe.ingredients[0].amount);
       } else {
         result = recipe.ingredients.fold(
             0,
             (acc, i) =>
                 acc +
-                produce(
-                    Ingredient(newAmount(make, min, i.amount), i.chemical)));
+                produce(Ingredient(
+                    newAmount(make, incAmount, i.amount), i.chemical)));
       }
     }
     return result;
@@ -106,7 +110,7 @@ Object part1(String header, List input) {
 
 const ONE_TRILLION = 1000000000000;
 
-//Brute force - takes about 10 minutes.
+//Brute force - takes about 30 minutes.
 Object part2a(String header, List input, int orePerFuel) {
   printHeader(header);
   var nf = NanoFactory(input);
@@ -122,14 +126,16 @@ Object part2a(String header, List input, int orePerFuel) {
 }
 
 //Binary search - takes 1 sec.
-Object part2(String header, List input, int orePerFuel) {
+Object part2(String header, List input, int orePerFuel,
+    [oreAvailable = ONE_TRILLION]) {
   printHeader(header);
   var nf = NanoFactory(input);
   var min = 1;
-  var max = ONE_TRILLION;
+  var max = oreAvailable;
+
   while (max - min > 1) {
     var mid = (min + max) ~/ 2;
-    if (nf.produce(Ingredient(mid, 'FUEL')) > ONE_TRILLION) {
+    if (nf.produce(Ingredient(mid, 'FUEL')) > oreAvailable) {
       max = mid;
     } else {
       min = mid;
@@ -153,7 +159,6 @@ void main(List<String> arguments) {
   assertEqual(part1('14 test part 1d', testInputD), 180697);
   assertEqual(part1('14 test part 1e', testInputE), 2210736);
 
-  // assertEqual(part2('14 test part 2', testInput), 1);
   assertEqual(part2('14 test part 2c', testInputC, 13312), 82892753);
   assertEqual(part2('14 test part 2d', testInputD, 180697), 5586022);
   assertEqual(part2('14 test part 2e', testInputE, 2210736), 460664);
