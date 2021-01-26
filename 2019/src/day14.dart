@@ -104,11 +104,38 @@ Object part1(String header, List input) {
   return NanoFactory(input).produce(Ingredient(1, 'FUEL'));
 }
 
-Object part2(String header, List input) {
-  printHeader(header);
+const ONE_TRILLION = 1000000000000;
 
-  //TODO return something
-  return null;
+//Brute force - takes about 10 minutes.
+Object part2a(String header, List input, int orePerFuel) {
+  printHeader(header);
+  var nf = NanoFactory(input);
+  var old = 1;
+  var next = 2;
+
+  while (nf.produce(Ingredient(next, 'FUEL')) < ONE_TRILLION) {
+    if (next % 1000000 == 0) print(next);
+    old = next;
+    next++;
+  }
+  return old;
+}
+
+//Binary search - takes 1 sec.
+Object part2(String header, List input, int orePerFuel) {
+  printHeader(header);
+  var nf = NanoFactory(input);
+  var min = 1;
+  var max = ONE_TRILLION;
+  while (max - min > 1) {
+    var mid = (min + max) ~/ 2;
+    if (nf.produce(Ingredient(mid, 'FUEL')) > ONE_TRILLION) {
+      max = mid;
+    } else {
+      min = mid;
+    }
+  }
+  return min;
 }
 
 void main(List<String> arguments) {
@@ -127,7 +154,10 @@ void main(List<String> arguments) {
   assertEqual(part1('14 test part 1e', testInputE), 2210736);
 
   // assertEqual(part2('14 test part 2', testInput), 1);
+  assertEqual(part2('14 test part 2c', testInputC, 13312), 82892753);
+  assertEqual(part2('14 test part 2d', testInputD, 180697), 5586022);
+  assertEqual(part2('14 test part 2e', testInputE, 2210736), 460664);
 
   printAndAssert(part1('14 part 1', mainInput), 261960);
-  // printAndAssert(part2('14 part 2', mainInput));
+  printAndAssert(part2('14 part 2', mainInput, 261960), 4366186);
 }
