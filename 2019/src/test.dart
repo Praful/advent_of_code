@@ -89,6 +89,18 @@ void test7() {
   });
 }
 
+int roundUp(int numToRound, int multiple) {
+  return ((numToRound + multiple - 1) ~/ multiple) * multiple;
+}
+
+void test8() {
+  print(roundUp(8, 3));
+  print(roundUp(3, 3));
+  print(roundUp(2, 3));
+  print(roundUp(1, 3));
+  print(roundUp(8, 4));
+}
+
 void main(List<String> args) {
-  test7();
+  test8();
 }
