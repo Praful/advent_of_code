@@ -1,7 +1,6 @@
 import '../../shared/dart/src/utils.dart';
 import './intcode_computer.dart';
 import 'dart:math';
-import 'package:console/console.dart';
 
 /// Puzzle description: https://adventofcode.com/2019/day/4
 

@@ -1,4 +1,6 @@
 import 'dart:math' as math;
+import 'package:console/console.dart';
+
 import '../../shared/dart/src/utils.dart';
 
 // extension IterableNum<T extends num> on Iterable<T> {
@@ -29,11 +31,11 @@ void test3() {
 
 void test4() {
   // double d = 2.3456789;
-  double d = 5.550;
-  double d1 = d.toPrecision(1); // 2.3
-  double d2 = d.toPrecision(2); // 2.35
-  double d3 = d.toPrecision(3); // 2.345
-  double d4 = d.toPrecision(4); // 2.345
+  var d = 5.550;
+  var d1 = d.toPrecision(1); // 2.3
+  var d2 = d.toPrecision(2); // 2.35
+  var d3 = d.toPrecision(3); // 2.345
+  var d4 = d.toPrecision(4); // 2.345
   print(d1);
   print(d2);
   print(d3);
@@ -101,6 +103,14 @@ void test8() {
   print(roundUp(8, 4));
 }
 
+void test9() {
+  var cursor = Cursor();
+  //col, row
+  cursor.writeAt(0, 0, 'o');
+  cursor.writeAt(1, 1, '1');
+  cursor.writeAt(2, 2, '2');
+}
+
 void main(List<String> args) {
-  test8();
+  test9();
 }
