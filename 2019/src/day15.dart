@@ -105,16 +105,17 @@ class SpaceStation {
     }
   }
 
-  void addVisit(visited, previous, previousOutput) =>
-      visited[coords(previous.location, previous.direction)] = previousOutput;
+  void addVisit(visited, previousNode, previousOutput) =>
+      visited[coords(previousNode.location, previousNode.direction)] =
+          previousOutput;
 
-  Node nextMove(visited, previous, previousOutput) {
+  Node nextMove(visited, previousNode, previousOutput) {
     //If we moved last time, get current locaton and enqueue its adjacent
     //nodes to explore later
     if (previousOutput == DroidStatus.path) {
-      var newLocation = coords(previous.location, previous.direction);
-      enqueueAdjacent(
-          visited, Node(newLocation, null, previous.distance, _droid.state));
+      var newLocation = coords(previousNode.location, previousNode.direction);
+      enqueueAdjacent(visited,
+          Node(newLocation, null, previousNode.distance, _droid.state));
     }
     return _exploreQueue.isEmpty ? null : _exploreQueue.removeFirst();
   }
@@ -177,7 +178,6 @@ class SpaceStation {
         : null;
 
     printLayout(visited, oxygenLocation);
-    // print('$previousNode (oxygen: $oxygenLocation');
 
     return TraversalResult(visited, oxygenLocation, previousNode.distance);
   }
