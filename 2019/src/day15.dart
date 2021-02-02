@@ -50,17 +50,17 @@ enum Direction { north, south, west, east }
 
 enum DroidStatus { wall, path, oxygen, unknown }
 
-class Droid {
+class SpaceStation {
   final _input;
   final Point _start = Point(0, 0);
   final Queue<Node> _exploreQueue = Queue();
-  Computer computer;
+  Computer _droid;
 
-  Droid(this._input) {
-    computer = Computer(_input);
+  SpaceStation(this._input) {
+    _droid = Computer(_input);
   }
 
-  void printStation(Map<Point, DroidStatus> visited, oxygenLocation) {
+  void printLayout(Map<Point, DroidStatus> visited, oxygenLocation) {
     var pixel = {}
       ..[DroidStatus.wall] = '\u2588' // '#'
       ..[DroidStatus.path] = '.'
@@ -114,7 +114,7 @@ class Droid {
     if (previousOutput == DroidStatus.path) {
       var newLocation = coords(previous.location, previous.direction);
       enqueueAdjacent(
-          visited, Node(newLocation, null, previous.distance, computer.state));
+          visited, Node(newLocation, null, previous.distance, _droid.state));
     }
     return _exploreQueue.isEmpty ? null : _exploreQueue.removeFirst();
   }
@@ -141,30 +141,30 @@ class Droid {
     return result;
   }
 
-  TraversalResult shortestPath() => traverseStation();
+  TraversalResult shortestPath() => traverse();
 
-  TraversalResult traverseStation([bool stopWhenOxygenFound = true]) {
+  TraversalResult traverse([bool stopWhenOxygenFound = true]) {
     var visited = <Point, DroidStatus>{};
     var previousNode;
     var previousOutput;
-    enqueueAdjacent(visited, Node(_start, null, 0, computer.state));
+    enqueueAdjacent(visited, Node(_start, null, 0, _droid.state));
     visited[_start] = DroidStatus.path;
 
-    while (!computer.halted) {
+    while (!_droid.halted) {
       if (stopWhenOxygenFound && previousOutput == DroidStatus.oxygen) break;
 
       var nextNode = nextMove(visited, previousNode, previousOutput);
       if (nextNode == null) break;
 
-      computer
+      _droid
         ..input = nextNode.direction.index + 1
         ..state = nextNode.computerState
         ..run([], true);
 
       previousNode = nextNode;
 
-      if (computer.output().isNotEmpty) {
-        previousOutput = DroidStatus.values[computer.output(true)[0]];
+      if (_droid.output().isNotEmpty) {
+        previousOutput = DroidStatus.values[_droid.output(true)[0]];
       }
 
       if (previousOutput != null) {
@@ -176,14 +176,14 @@ class Droid {
         ? coords(previousNode.location, previousNode.direction)
         : null;
 
-    printStation(visited, oxygenLocation);
+    printLayout(visited, oxygenLocation);
     // print('$previousNode (oxygen: $oxygenLocation');
 
     return TraversalResult(visited, oxygenLocation, previousNode.distance);
   }
 
   int fillWithOxygen(oxygenLocation) {
-    var traversalResult = traverseStation(false);
+    var traversalResult = traverse(false);
     var path =
         Map<Point, DroidStatus>.fromEntries(traversalResult.visited.entries);
 
@@ -210,7 +210,7 @@ class Droid {
       }
     }
 
-    printStation(path, oxygenLocation);
+    printLayout(path, oxygenLocation);
 
     //subtract 1 to exclude the starting point, which has oxygen
     return minutes - 1;
@@ -219,19 +219,21 @@ class Droid {
 
 TraversalResult part1(String header, List input) {
   printHeader(header);
-  var droid = Droid(input);
-  return droid.shortestPath();
+  var station = SpaceStation(input);
+  return station.shortestPath();
 }
 
 int part2(String header, List input, oxygenLocation) {
   printHeader(header);
-  var droid = Droid(input);
-  return droid.fillWithOxygen(oxygenLocation);
+  var station = SpaceStation(input);
+  return station.fillWithOxygen(oxygenLocation);
 }
 
 void main(List<String> arguments) {
   List mainInput = FileUtils.asInt('../data/day15.txt', ',');
   var part1Result = part1('15 part 1', mainInput);
-  printAndAssert('${part1Result.shortestPath}, ${part1Result.oxygenLocation}');
-  printAndAssert(part2('15 part 2', mainInput, part1Result.oxygenLocation));
+  print('Oxygen location: ${part1Result.oxygenLocation}');
+  printAndAssert(part1Result.shortestPath, 204);
+  printAndAssert(
+      part2('15 part 2', mainInput, part1Result.oxygenLocation), 340);
 }
