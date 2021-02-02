@@ -1,7 +1,7 @@
 import '../../shared/dart/src/utils.dart';
 // import 'package:trotter/trotter.dart';
 
-enum Mode { position, immediate, relative }
+enum ParameterMode { position, immediate, relative }
 
 class Opcode {
   static const ADD = 1;
@@ -44,9 +44,9 @@ class Opcode {
 
 abstract class Instruction {
   static final modeMap = {}
-    ..[0] = Mode.position
-    ..[1] = Mode.immediate
-    ..[2] = Mode.relative;
+    ..[0] = ParameterMode.position
+    ..[1] = ParameterMode.immediate
+    ..[2] = ParameterMode.relative;
 
   //instruction consists of code, param1, param2 [,param3]
   //code is of form ABCDE where
@@ -90,7 +90,7 @@ abstract class Instruction {
 
 class Parameter {
   final int _value;
-  final Mode _mode;
+  final ParameterMode _mode;
   final _memory;
   final _relativeBase;
   Parameter(this._value, this._mode, this._memory, this._relativeBase);
@@ -98,16 +98,17 @@ class Parameter {
   //The number returned depends on the mode and whether the caller
   //is going to use the returned value for writing to (=>asAddress) or
   //reading from (=>asValue) memory.
-  int get asAddress => _value + (_mode == Mode.relative ? _relativeBase : 0);
+  int get asAddress =>
+      _value + (_mode == ParameterMode.relative ? _relativeBase : 0);
   int get asValue {
     switch (_mode) {
-      case Mode.position:
+      case ParameterMode.position:
         return _memory[_value] ?? 0;
         break;
-      case Mode.immediate:
+      case ParameterMode.immediate:
         return _value;
         break;
-      case Mode.relative:
+      case ParameterMode.relative:
         return _memory[_relativeBase + _value] ?? 0;
         break;
       default:
@@ -247,19 +248,34 @@ class Halt extends Instruction {
       : super(instruction, memory, relativeBase);
 }
 
+class ComputerState {
+  final memory, instructionPointer, relativeBase;
+  ComputerState(this.memory, this.instructionPointer, this.relativeBase);
+}
+
 class Computer {
   Map<int, int> memory = {};
   bool halted = false;
   bool _firstRun = true;
   var _instructionPointer = 0;
-  List<int> _output = [];
+  final List<int> _output = [];
   int _relativeBase = 0;
   int Function() _inputProvider;
   bool requiresInput;
+  Object input;
 
   Computer(List<int> program, [int Function() inputProvider]) {
     program.asMap().forEach((k, v) => memory[k] = v);
     _inputProvider = inputProvider;
+  }
+
+  ComputerState get state =>
+      ComputerState(Map.from(memory), _instructionPointer, _relativeBase);
+
+  set state(ComputerState state) {
+    memory = Map.from(state.memory);
+    _instructionPointer = state.instructionPointer;
+    _relativeBase = state.relativeBase;
   }
 
   List<int> output([clearOnRead = false]) {
@@ -275,10 +291,12 @@ class Computer {
           _instructionPointer + Opcode.opcodeMap[opcodeId].length)
       .toList();
 
-  List run([List<int> input, exitOnOuput = false, exitOnInput = false]) {
+  List run([List<int> program, exitOnOuput = false]) {
     int readInput() {
-      if (_inputProvider == null) {
-        return _firstRun ? input[0] : input[1];
+      if (input != null) {
+        return input;
+      } else if (_inputProvider == null) {
+        return _firstRun ? program[0] : program[1];
       } else {
         return _inputProvider();
       }
@@ -294,12 +312,13 @@ class Computer {
         break;
       }
       params = getInstructionParams(opcodeId);
+      // print('$opcodeId, $params');
       var instruction =
           Instruction.create(opcodeId, params, memory, _relativeBase);
 
       if (opcodeId == Opcode.WRITE) {
         (instruction as Write).input = readInput();
-        // (instruction as Write).input = _firstRun ? input[0] : input[1];
+        // print('input ${(instruction as Write).input}');
         if (_firstRun) _firstRun = false;
       }
 
