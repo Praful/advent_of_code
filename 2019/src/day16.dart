@@ -81,10 +81,13 @@ void main(List<String> arguments) {
           .substring(0, 8),
       '52432133');
 
-  // assertEqual(part2('16 test part 2', testInput), 1);
+  assertEqual(part1('16 test part 2', '03036732577212944063491565474664', 100),
+      84462026);
 
-  printAndAssert(
-      part1('16 part 1', mainInput, 100).substring(0, 8), '52611030');
+  assertEqual(part1('16 test part 2', '00000000', 100), 1);
+
+  // printAndAssert(
+  // part1('16 part 1', mainInput, 100).substring(0, 8), '52611030');
 
   //Answer:
   // printAndAssert(part2('16 part 2', mainInput));
