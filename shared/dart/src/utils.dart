@@ -8,7 +8,7 @@ void printHeader(String header) =>
 void assertEqual(actual, expected, [doPrint = true]) {
   try {
     assert(actual == expected);
-    if (doPrint) print('Assert passed: $actual found');
+    if (doPrint) print('Assert passed: $actual');
   } catch (e, stacktrace) {
     print('Assert FAILED: found $actual, expected $expected');
     // print('Failed assertion: found $actual, expected $expected\n\n${stacktrace}');

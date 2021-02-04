@@ -1,6 +1,42 @@
 import '../../shared/dart/src/utils.dart';
 
 /// Puzzle description: https://adventofcode.com/2019/day/16
+///
+/// Part 1 uses brute force to find the result.
+/// This can't be used (it would be too slow) for part 2 because the
+/// signal is too long. However, there are two aspects of part 2 that
+/// help you short circuit the calculation: (1) you can skip
+/// some (most) of the signal by using the offset; (2) the pattern
+/// and offset have been chosen carefully for us.
+///
+/// For part 2, look at this example for a 13-digit signal:
+///
+/// 1  2  3  4  5  6  7  8  9 10 11 12 13 | Phase output
+/// --------------------------------------+-------------
+/// 1  0 -1  0  1  0 -1  0  1  0 -1  0  1 | a
+/// 0  1  1  0  0 -1 -1  0  0  1  1  0  0 | b
+/// 0  0  1  1  1  0  0  0 -1 -1 -1  0  0 | c
+/// 0  0  0  1  1  1  1  0  0  0  0 -1 -1 | d
+/// 0  0  0  0  1  1  1  1  1  0  0  0  0 | e
+/// 0  0  0  0  0  1  1  1  1  1  1  0  0 | f
+/// 0  0  0  0  0  0  1  1  1  1  1  1  1 | g
+/// 0  0  0  0  0  0  0  1  1  1  1  1  1 | h
+/// 0  0  0  0  0  0  0  0  1  1  1  1  1 | i
+/// 0  0  0  0  0  0  0  0  0  1  1  1  1 | j
+/// 0  0  0  0  0  0  0  0  0  0  1  1  1 | k
+/// 0  0  0  0  0  0  0  0  0  0  0  1  1 | l
+/// 0  0  0  0  0  0  0  0  0  0  0  0  1 | m
+///
+/// There are 13 columns, one for each digit. The right column is the
+/// output of a phase: abcdefghijklm.
+///
+/// The rows show the repeating pattern [0,1,0,-1]. Notice that
+/// for half the rows (g-m), the outputs are produced using just the
+/// final digits (cols 7-13). So we can calculate g-m without
+/// having to apply the pattern to cols 1-6. To compute the next phase,
+/// m is the last digit of the signal. l is the last digit added to
+/// the second last digit, and so on. See phasePart2() for full
+/// implementation.
 
 const bool DEBUG = false;
 
@@ -12,61 +48,61 @@ void printAndAssert(actual, [expected]) {
   }
 }
 
-//for a digit return list of length count eg for inputs 3 and 5,
-//return [3,3,3,3,3]
-List repeatDigit(digit, count) => [for (var _ in range(0, count)) digit];
-
-//if list is [1,2,3,4], return [1,2,3,4,1,2,3,4,...] repeated count times
-List<int> repeatList(List<int> list, int count) =>
-    [for (var _ in range(0, count)) ...list];
-
-List<int> basePattern(int pos, int len) {
-  var basePattern = [0, 1, 0, -1];
-
-  var valueRepeat = List<int>.from(
-      basePattern.map(((p) => repeatDigit(p, pos))).expand((e) => e));
-
-  var groupRepeatCount = len ~/ valueRepeat.length;
-
-  var result = repeatList(valueRepeat, groupRepeatCount + 1);
-
-  result.removeAt(0);
-  return result;
+String fftPart1(String input, int phaseCount) {
+  var signal = input.split('').map((e) => e.toInt()).toList();
+  range(0, phaseCount).forEach((_) => signal = phasePart1(signal));
+  return signal.join();
 }
 
-String lastDigit(int n) => n.toString().last;
+List<int> phasePart1(List<int> signal) {
+  var pattern = [0, 1, 0, -1];
+  return List<int>.from(range(0, signal.length).map((pos) =>
+      (range(0, signal.length).fold(
+          0,
+          (acc, i) =>
+              acc +
+              signal[i].toInt() * pattern[((i + 1) ~/ (pos + 1)) % 4])).abs() %
+      10));
+}
 
-String fft(String input, int phaseCount) {
-  var phaseResult = input;
-  for (var _ in range(0, phaseCount)) {
-    var signal = phaseResult;
-    phaseResult = range(0, input.length).map((j) {
-      var pattern = basePattern(j + 1, input.length);
+String fftPart2(String input, int signalCount, int phaseCount) {
+  var offset = input.substring(0, 7).toInt();
+  var signal = (input * signalCount)
+      .substring(offset)
+      .split('')
+      .map((e) => e.toInt())
+      .toList();
 
-      return lastDigit(range(0, input.length)
-          .fold(0, (acc, i) => acc + signal[i].toInt() * pattern[i]));
-    }).join();
+  range(0, phaseCount).forEach((_) => signal = phasePart2(signal));
+  return signal.getRange(0, 8).join();
+}
+
+List<int> phasePart2(List<int> signal) {
+  var previous = 0;
+  var result = List.generate(signal.length, (i) => 0, growable: false);
+
+  //compute cumulative sum starting from end of signal
+  for (var i = signal.length - 1; i >= 0; i--) {
+    previous = (signal[i] + previous) % 10;
+    result[i] = previous;
   }
-  return phaseResult;
+  return result;
 }
 
 String part1(String header, input, phaseCount) {
   printHeader(header);
-
-  return fft(input, phaseCount);
+  return fftPart1(input, phaseCount);
 }
 
-Object part2(String header, List input) {
+Object part2(String header, String input,
+    [int signalCount = 10000, int phaseCount = 100]) {
   printHeader(header);
-
-  //TODO return something
-  return null;
+  return fftPart2(input, signalCount, phaseCount);
 }
 
 void main(List<String> arguments) {
   var mainInput = FileUtils.asString('../data/day16.txt');
 
-  //Answer:
   assertEqual(part1('16 test part 1', '12345678', 4), '01029498');
   assertEqual(
       part1('16 test part 1a', '80871224585914546619083218645595', 100)
@@ -81,14 +117,17 @@ void main(List<String> arguments) {
           .substring(0, 8),
       '52432133');
 
-  assertEqual(part1('16 test part 2', '03036732577212944063491565474664', 100),
-      84462026);
+  assertEqual(
+      part2('16 test part 2a', '03036732577212944063491565474664'), '84462026');
 
-  assertEqual(part1('16 test part 2', '00000000', 100), 1);
+  assertEqual(
+      part2('16 test part 2b', '02935109699940807407585447034323'), '78725270');
 
-  // printAndAssert(
-  // part1('16 part 1', mainInput, 100).substring(0, 8), '52611030');
+  assertEqual(
+      part2('16 test part 2c', '03081770884921959731165446850517'), '53553731');
 
-  //Answer:
-  // printAndAssert(part2('16 part 2', mainInput));
+  printAndAssert(
+      part1('16 part 1', mainInput, 100).substring(0, 8), '52611030');
+
+  printAndAssert(part2('16 part 2', mainInput), '52541026');
 }
