@@ -30,13 +30,9 @@ void main(List<String> arguments) {
   List testInput = FileUtils.asLines('../data/dayXX-test.txt');
   List mainInput = FileUtils.asLines('../data/dayXX.txt');
 
-  //Answer:
   assertEqual(part1('XX test part 1', testInput), 1);
-  //Answer:
   // assertEqual(part2('XX test part 2', testInput), 1);
 
-  //Answer:
   // printAndAssert(part1('XX part 1', mainInput));
-  //Answer:
   // printAndAssert(part2('XX part 2', mainInput));
 }
