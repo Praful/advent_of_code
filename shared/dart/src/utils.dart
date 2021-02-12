@@ -42,6 +42,22 @@ extension String2 on String {
   String replaceCharAt(int index, String newChar) =>
       substring(0, index) + newChar + substring(index + 1);
 
+  //remove leading and trailing char from s; spaces are trimmed too.
+  String trimChar(String char) {
+    assert(char.length == 1);
+
+    var result = trim();
+    for (var i in range(0, length)) {
+      if (result[i] != char) break;
+      result = result.replaceCharAt(i, ' ');
+    }
+    for (var i = result.length - 1; i >= 0; i--) {
+      if (result[i] != char) break;
+      result = result.replaceCharAt(i, ' ');
+    }
+    return result.trim();
+  }
+
   String get reversed => split('').reversed.join('');
   String get last => split('').last;
   String get first => split('').first;
@@ -52,6 +68,7 @@ extension String2 on String {
   double toDouble() => double.parse(this);
 
   int toInt() => int.parse(this);
+
 }
 
 class NumUtils {
