@@ -1,7 +1,10 @@
+import 'dart:collection';
 import 'dart:math' as math;
-import 'package:console/console.dart';
+// import 'package:console/console.dart';
 
 import '../../shared/dart/src/utils.dart';
+import 'package:basics/basics.dart' hide NumIterableBasics;
+import 'package:tuple/tuple.dart';
 
 // extension IterableNum<T extends num> on Iterable<T> {
 //   T get max => reduce(math.max);
@@ -103,14 +106,44 @@ void test8() {
   print(roundUp(8, 4));
 }
 
-void test9() {
-  var cursor = Cursor();
-  //col, row
-  cursor.writeAt(0, 0, 'o');
-  cursor.writeAt(1, 1, '1');
-  cursor.writeAt(2, 2, '2');
+// void test9() {
+//   var cursor = Cursor();
+//   //col, row
+//   cursor.writeAt(0, 0, 'o');
+//   cursor.writeAt(1, 1, '1');
+//   cursor.writeAt(2, 2, '2');
+// }
+
+RegExp regexLowerCase = RegExp(r'^[a-z]$');
+RegExp regexUpperCase = RegExp(r'^[A-Z]$');
+bool isKey(String s) => regexLowerCase.hasMatch(s);
+bool isLockedDoor(String s) => regexUpperCase.hasMatch(s);
+
+void test10() {
+  void check(s) {
+    print('$s, key: ${isKey(s)}, lock: ${isLockedDoor(s)}');
+  }
+
+  check('a');
+  check('B');
+  check('~');
+  check('4');
+  check('Z');
+  check('aa');
+  check('BB');
+}
+
+void test11() {
+  var a = HashSet<String>();
+  a.add('a');
+  a.add('b');
+
+  var b = HashSet<String>();
+  b.add('a');
+  b.add('b');
+  print(a.isEqualTo(b));
 }
 
 void main(List<String> args) {
-  test9();
+  test11();
 }
