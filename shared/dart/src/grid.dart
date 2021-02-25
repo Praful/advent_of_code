@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'utils.dart';
 
 enum Direction { up, down, left, right }
 
@@ -42,6 +43,12 @@ List<Point> adjacentPoints(Point p) {
     result.add(adjPos);
   }
   return result;
+}
+
+void printGrid(List<String> g) {
+  for (var row in range(0, g.length)) {
+    print(g[row]);
+  }
 }
 
 class Node {
