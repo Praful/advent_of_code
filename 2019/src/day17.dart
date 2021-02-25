@@ -1,6 +1,7 @@
 import 'dart:math';
 import '../../shared/dart/src/utils.dart';
 import './intcode_computer.dart';
+import '../../shared/dart/src/grid.dart';
 
 /// Puzzle description: https://adventofcode.com/2019/day/17
 ///
@@ -58,13 +59,11 @@ void printAndAssert(actual, [expected]) {
   }
 }
 
-enum Direction { up, down, left, right }
-
 class Scaffold {
-  final input;
-  RobotPosition robotStartPosition;
+  final program;
+  Position robotStartPosition;
 
-  Scaffold(this.input);
+  Scaffold(this.program);
 
   var robotSymbol = <String, Direction>{
     '<': Direction.left,
@@ -73,53 +72,21 @@ class Scaffold {
     '^': Direction.up
   };
 
-  Direction opposite(Direction dir) {
-    switch (dir) {
-      case Direction.up:
-        return Direction.down;
-        break;
-      case Direction.down:
-        return Direction.up;
-        break;
-      case Direction.left:
-        return Direction.right;
-        break;
-      case Direction.right:
-        return Direction.left;
-        break;
-      default:
-        throw 'Unrecognised direction $dir';
-    }
-  }
-
-  final adjacentPoints = {}
-    ..[Direction.right] = Point(1, 0)
-    ..[Direction.left] = Point(-1, 0)
-    ..[Direction.up] = Point(0, -1)
-    ..[Direction.down] = Point(0, 1);
-
-  Map<Direction, Direction> rightTurns = {
-    Direction.up: Direction.right,
-    Direction.down: Direction.left,
-    Direction.right: Direction.down,
-    Direction.left: Direction.up
-  };
-
-  RobotPosition nextTurn(scaffold, RobotPosition pos) {
+  Position nextTurn(scaffold, Position pos) {
     var turn = Direction.values
         .where((d) =>
-            scaffold.containsKey(pos.xy + adjacentPoints[d]) &&
-            d != opposite(pos.dir))
+            scaffold.containsKey(pos.xy + adjacentVector[d]) &&
+            d != oppositeDirection(pos.dir))
         .toList();
-    return RobotPosition(pos.xy, turn.isEmpty ? null : turn.first);
+    return Position(pos.xy, turn.isEmpty ? null : turn.first);
   }
 
-  RobotPosition nextMove(Map scaffold, RobotPosition pos) {
-    var next = pos.xy + adjacentPoints[pos.dir];
-    return RobotPosition(scaffold.containsKey(next) ? next : null, pos.dir);
+  Position nextMove(Map scaffold, Position pos) {
+    var next = pos.xy + adjacentVector[pos.dir];
+    return Position(scaffold.containsKey(next) ? next : null, pos.dir);
   }
 
-  String turnCode(RobotPosition pos1, RobotPosition pos2) =>
+  String turnCode(Position pos1, Position pos2) =>
       (rightTurns[pos1.dir] == pos2.dir ? 'R' : 'L');
 
   //Construct path to visit each point, eg L,12,R,4,R,8,....
@@ -131,15 +98,15 @@ class Scaffold {
     var result = [];
     var steps = 0;
 
-    while (pos.canTurn) {
+    while (pos.hasDirection) {
       var next = nextMove(scaffold, pos);
-      if (!next.canMove) {
+      if (next.hasLocation) {
+        steps++;
+      } else {
         next = nextTurn(scaffold, pos);
         if (steps > 0) result.add(steps);
-        if (next.canTurn) result.add(turnCode(pos, next));
+        if (next.hasDirection) result.add(turnCode(pos, next));
         steps = 0;
-      } else {
-        steps++;
       }
       pos = next;
     }
@@ -174,8 +141,8 @@ class Scaffold {
       LF
     ];
 
-    input[0] = 2;
-    var robot = Computer(input, () => inputCommands.removeAt(0));
+    program[0] = 2;
+    var robot = Computer(program, () => inputCommands.removeAt(0));
     var response = '';
     var result = 0;
     var output;
@@ -198,7 +165,7 @@ class Scaffold {
   }
 
   Map<Point, int> traverse() {
-    var robot = Computer(input);
+    var robot = Computer(program);
     var view = '';
     var x = 0, y = 0;
     var scaffold = <Point, int>{};
@@ -210,7 +177,7 @@ class Scaffold {
         view += char;
 
         if (robotSymbol.keys.contains(char)) {
-          robotStartPosition = RobotPosition(Point(x, y), robotSymbol[char]);
+          robotStartPosition = Position(Point(x, y), robotSymbol[char]);
         }
 
         if (output.first == LF) {
@@ -233,7 +200,7 @@ class Scaffold {
   }
 
   bool isIntersection(Map scaffold, Point p) => Direction.values
-      .every((d) => scaffold.containsKey(p + adjacentPoints[d]));
+      .every((d) => scaffold.containsKey(p + adjacentVector[d]));
 
   int calcAlignmentParameters(Map scaffold) => scaffold.keys
       .fold(0, (acc, p) => acc + (isIntersection(scaffold, p) ? p.x * p.y : 0));
@@ -241,10 +208,10 @@ class Scaffold {
 
 class Compressor {
   //Max length of movement function (A, B, C)
-  static const int MAX_FN_CHARS = 21;
+  static const int MAX_FN_CHARS = 20;
 
-  final input;
-  Compressor(this.input);
+  final inputString;
+  Compressor(this.inputString);
 
   String mainRoutine;
   String functionA;
@@ -262,7 +229,7 @@ class Compressor {
     functionB = b.trimChar(DELIM);
     functionC = c.trimChar(DELIM);
 
-    mainRoutine = input
+    mainRoutine = inputString
         .join(DELIM)
         .replaceAll(functionA, 'A')
         .replaceAll(functionB, 'B')
@@ -273,15 +240,15 @@ class Compressor {
   //We're done when all that's left is a number of commas ie every
   //repeating group has been removed from the original path.
   bool run() {
-    var originalPath = input.join(DELIM) + DELIM;
+    var originalInput = inputString.join(DELIM) + DELIM;
 
-    for (var iA in range(3, MAX_FN_CHARS)) {
-      var funcA = originalPath.substring(0, iA);
-      var pathB = originalPath.replaceAll(funcA, '');
-      for (var iB in range(3, MAX_FN_CHARS)) {
+    for (var iA in range(3, MAX_FN_CHARS + 1)) {
+      var funcA = originalInput.substring(0, iA);
+      var pathB = originalInput.replaceAll(funcA, '');
+      for (var iB in range(3, MAX_FN_CHARS + 1)) {
         var funcB = pathB.substring(0, iB);
         var pathC = pathB.replaceAll(funcB, '');
-        for (var iC in range(3, MAX_FN_CHARS)) {
+        for (var iC in range(3, MAX_FN_CHARS + 1)) {
           var funcC = pathC.substring(0, iC);
           var pathFinal = pathC.replaceAll(funcC, '');
           if (_isCompressed(pathFinal)) {
@@ -294,18 +261,6 @@ class Compressor {
 
     return false;
   }
-}
-
-class RobotPosition {
-  final Point xy;
-  final Direction dir;
-  RobotPosition(this.xy, this.dir);
-
-  bool get canMove => xy != null;
-  bool get canTurn => dir != null;
-
-  @override
-  String toString() => '$xy, $dir';
 }
 
 Object part1(String header, List input) {
