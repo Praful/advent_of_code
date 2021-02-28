@@ -70,8 +70,8 @@ class Vault {
   bool isDoor(String s) => regexUpperCase.hasMatch(s);
   bool isEntrance(String s) => s == ENTRANCE;
   bool isWall(String s) => s == WALL;
-  bool isLockedDoor(Set keys, String s) =>
-      (isDoor(s) && !keys.contains(s.toLowerCase()));
+  bool isLockedDoor(Set<String> heldKeys, String s) =>
+      (isDoor(s) && !heldKeys.contains(s.toLowerCase()));
 
   int shortestPath() {
     var result = walk();
@@ -85,7 +85,7 @@ class Vault {
     // bool isOnMap(Point p) => p.y.isBetween(0, maxY) && p.x.isBetween(0, maxX);
     // bool canMoveTo(Point p) => !isWall(tunnelObject(p)) && isOnMap(p);
 
-    String keysToStr(Set s) {
+    String keysToStr(Set<String> s) {
       var result = s.toList();
       result.sort();
       return result.join();
@@ -101,24 +101,25 @@ class Vault {
       if (visited.contains(visitId)) continue;
       visited.add(visitId);
 
-      var thing = tunnelObject(qObj.item1);
+      var tile = tunnelObject(qObj.item1);
       if (isPart2) {
-        if (isDoor(thing) &&
-            _allDoorKeys.contains(thing.toLowerCase()) &&
-            isLockedDoor(qObj.item2, thing)) {
+        if (isDoor(tile) &&
+            _allDoorKeys.contains(tile.toLowerCase()) &&
+            isLockedDoor(qObj.item2, tile)) {
           continue;
         }
-      } else if (isLockedDoor(qObj.item2, thing)) continue;
+      } else if (isLockedDoor(qObj.item2, tile)) continue;
 
       var newDoorKeys = Set<String>.from(qObj.item2);
 
-      if (isDoorKey(thing)) {
-        newDoorKeys.add(thing);
+      if (isDoorKey(tile)) {
+        newDoorKeys.add(tile);
         if (newDoorKeys.isEqualTo(_allDoorKeys)) return qObj;
       }
 
-      adjacentPoints(qObj.item1).where((p) => !isWall(tunnelObject(p))).forEach(
-          (adjPt) => queue.add(QueuedNode(adjPt, newDoorKeys, qObj.item3 + 1)));
+      queue.addAll(adjacentPoints(qObj.item1)
+          .where((p) => !isWall(tunnelObject(p)))
+          .map((adjPt) => QueuedNode(adjPt, newDoorKeys, qObj.item3 + 1)));
     }
     throw 'Shortest path not found';
   }
@@ -143,7 +144,7 @@ class VisitedNode extends Tuple2 {
       other is VisitedNode && other.item1 == item1 && other.item2 == item2;
 }
 
-Map<int, List<String>> splitVault(List<String> input, [subst = false]) {
+Map<int, List<String>> splitVault(List<String> input, [bool subst = false]) {
   String replace(grid, x, y, replacement) =>
       grid[y].replaceRange(x, x + replacement.length, replacement);
 
@@ -174,7 +175,7 @@ int part1(String header, List input) {
   return Vault(input).shortestPath();
 }
 
-int part2(String header, List input, [subst = false]) {
+int part2(String header, List input, [bool subst = false]) {
   printHeader(header);
   return splitVault(input, subst)
       .values
