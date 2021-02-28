@@ -318,6 +318,7 @@ class Computer {
 
       if (opcodeId == Opcode.WRITE) {
         (instruction as Write).input = readInput();
+        // print((instruction as Write).input);
         // print('input ${(instruction as Write).input}');
         if (_firstRun) _firstRun = false;
       }
