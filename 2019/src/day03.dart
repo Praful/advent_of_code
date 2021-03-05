@@ -35,9 +35,9 @@ class Move {
 
   static final RegExp regex = RegExp(r'(?<direction>.)(?<steps>\d*)');
   static Move parse(s) {
-    var parsed = regex.firstMatch(s);
+    var parsed = regex.firstMatch(s)!;
     return Move(
-        parsed.namedGroup('direction'), parsed.namedGroup('steps').toInt());
+        parsed.namedGroup('direction'), parsed.namedGroup('steps')!.toInt());
   }
 
   @override
@@ -45,7 +45,7 @@ class Move {
 }
 
 class Wire {
-  List<Move> path;
+  late final List<Move> path;
 
   Wire(input) {
     path = parse(input);
@@ -74,7 +74,7 @@ class Wire {
       .toList();
 }
 
-int manhattan(Point p) => p.x.abs() + p.y.abs();
+int manhattan(Point p) => p.x.abs() + p.y.abs() as int;
 
 int minManhattan(List<Point> path1, List<Point> path2) =>
     path1.intersection(path2).map((p) => manhattan(p)).min;
@@ -102,10 +102,10 @@ int part2(String header, List<String> input) {
 }
 
 void main(List<String> arguments) {
-  List testInput = FileUtils.asLines('../data/day03-test.txt');
-  List testInput3b = FileUtils.asLines('../data/day03b-test.txt');
-  List testInput3c = FileUtils.asLines('../data/day03c-test.txt');
-  List mainInput = FileUtils.asLines('../data/day03.txt');
+  var testInput = FileUtils.asLines('../data/day03-test.txt');
+  var testInput3b = FileUtils.asLines('../data/day03b-test.txt');
+  var testInput3c = FileUtils.asLines('../data/day03c-test.txt');
+  var mainInput = FileUtils.asLines('../data/day03.txt');
 
   assertEqual(part1('03 test part 1', testInput), 6);
   assertEqual(part1('03 test part 1b', testInput3b), 159);
@@ -115,6 +115,6 @@ void main(List<String> arguments) {
   assertEqual(part2('03 test part 2b', testInput3b), 610);
   assertEqual(part2('03 test part 2c', testInput3c), 410);
 
-  print(part1('03 part 1', mainInput)); //1519
-  print(part2('03 part 2', mainInput)); //14358
+  printAndAssert(part1('03 part 1', mainInput),1519); //1519
+  printAndAssert(part2('03 part 2', mainInput),14358); //14358
 }

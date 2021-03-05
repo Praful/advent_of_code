@@ -27,7 +27,7 @@ class TraversalResult {
 
 class Node {
   Point location;
-  Direction direction;
+  Direction? direction;
   int distance;
   ComputerState computerState;
 
@@ -38,14 +38,6 @@ class Node {
       'location: $location, direction: $direction, distance: $distance';
 }
 
-void printAndAssert(actual, [expected]) {
-  if (expected != null) {
-    assertEqual(actual, expected);
-  } else {
-    print(actual);
-  }
-}
-
 enum Direction { north, south, west, east }
 
 enum DroidStatus { wall, path, oxygen, unknown }
@@ -54,7 +46,7 @@ class SpaceStation {
   final _input;
   final Point _start = Point(0, 0);
   final Queue<Node> _exploreQueue = Queue();
-  Computer _droid;
+  late final Computer _droid;
 
   SpaceStation(this._input) {
     _droid = Computer(_input);
@@ -71,19 +63,19 @@ class SpaceStation {
     var ymin = points.map((v) => v.y).min;
 
     var cols =
-        (points.map((v) => v.x).max - points.map((v) => v.x).min).abs() + 1;
+        (points.map((v) => v.x).max - points.map((v) => v.x).min).abs() + 1 as int;
     var rows =
-        (points.map((v) => v.y).min - points.map((v) => v.y).max).abs() + 1;
+        (points.map((v) => v.y).min - points.map((v) => v.y).max).abs() + 1 as int;
 
     var image = TwoDimArray(rows, cols);
 
     //Initialise image's pixels to space
     range(0, rows).forEach((row) => image[row] = (' ' * cols).split(''));
-    visited.entries.forEach((p) => image[(p.key.y + ymin.abs()).abs()]
-        [p.key.x + xmin.abs()] = pixel[p.value]);
+    visited.entries.forEach((p) => image[(p.key.y + ymin.abs()).abs() as int]
+        [p.key.x + xmin.abs() as int] = pixel[p.value]);
 
     //start/end
-    image[0 + ymin.abs()][0 + xmin.abs()] = 'S';
+    image[0 + ymin.abs() as int][0 + xmin.abs() as int] = 'S';
     if (oxygenLocation != null) {
       image[oxygenLocation.y + ymin.abs()][oxygenLocation.x + xmin.abs()] = 'O';
     }
@@ -109,7 +101,7 @@ class SpaceStation {
       visited[coords(previousNode.location, previousNode.direction)] =
           previousOutput;
 
-  Node nextMove(visited, previousNode, previousOutput) {
+  Node? nextMove(visited, previousNode, previousOutput) {
     //If we moved last time, get current locaton and enqueue its adjacent
     //nodes to explore later
     if (previousOutput == DroidStatus.path) {
@@ -158,7 +150,7 @@ class SpaceStation {
       if (nextNode == null) break;
 
       _droid
-        ..input = nextNode.direction.index + 1
+        ..input = nextNode.direction!.index + 1
         ..state = nextNode.computerState
         ..run([], true);
 

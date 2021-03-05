@@ -6,15 +6,7 @@ import 'package:collection/collection.dart';
 
 const bool DEBUG = false;
 
-void printAndAssert(actual, [expected]) {
-  if (expected != null) {
-    assertEqual(actual, expected);
-  } else {
-    print(actual);
-  }
-}
-
-List part1(String header, List<int> program, [List<int> input]) {
+List part1(String header, List<int> program, [List<int>? input]) {
   printHeader(header);
   var c = Computer(program);
   c.run(input);
@@ -22,7 +14,7 @@ List part1(String header, List<int> program, [List<int> input]) {
   return c.output();
 }
 
-int part2(String header, List<int> program, [List<int> input]) {
+int part2(String header, List<int> program, [List<int>? input]) {
   printHeader(header);
   var c = Computer(program);
   c.run(input);
@@ -31,10 +23,10 @@ int part2(String header, List<int> program, [List<int> input]) {
 }
 
 void main(List<String> arguments) {
-  List testInput = FileUtils.asInt('../data/day09-test.txt', ',');
-  List testInputb = FileUtils.asInt('../data/day09b-test.txt', ',');
-  List testInputc = FileUtils.asInt('../data/day09c-test.txt', ',');
-  List mainInput = FileUtils.asInt('../data/day09.txt', ',');
+  var testInput = FileUtils.asInt('../data/day09-test.txt', ',');
+  var testInputb = FileUtils.asInt('../data/day09b-test.txt', ',');
+  var testInputc = FileUtils.asInt('../data/day09c-test.txt', ',');
+  var mainInput = FileUtils.asInt('../data/day09.txt', ',');
 
   assertEqual(
       DeepCollectionEquality()

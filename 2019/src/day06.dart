@@ -63,7 +63,7 @@ void main(List<String> arguments) {
   assertEqual(part2('06 test part 2', testInputb), 4);
 
   //Answer:171213
-  print(part1('06 part 1', mainInput));
+  printAndAssert(part1('06 part 1', mainInput),171213);
   //Answer: 292
-  print(part2('06 part 2', mainInput));
+  printAndAssert(part2('06 part 2', mainInput),292);
 }

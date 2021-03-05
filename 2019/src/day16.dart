@@ -40,14 +40,6 @@ import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
 
-void printAndAssert(actual, [expected]) {
-  if (expected != null) {
-    assertEqual(actual, expected);
-  } else {
-    print(actual);
-  }
-}
-
 String fftPart1(String input, int phaseCount) {
   var signal = input.split('').map((e) => e.toInt()).toList();
   range(0, phaseCount).forEach((_) => signal = phasePart1(signal));
@@ -59,7 +51,7 @@ List<int> phasePart1(List<int> signal) {
   return List<int>.from(range(0, signal.length).map((pos) =>
       (range(0, signal.length).fold(
           0,
-          (acc, i) =>
+          (dynamic acc, i) =>
               acc +
               signal[i].toInt() * pattern[((i + 1) ~/ (pos + 1)) % 4])).abs() %
       10));

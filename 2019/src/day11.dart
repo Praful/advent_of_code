@@ -6,14 +6,6 @@ import 'intcode_computer.dart';
 
 const bool DEBUG = false;
 
-void printAndAssert(actual, [expected]) {
-  if (expected != null) {
-    assertEqual(actual, expected);
-  } else {
-    print(actual);
-  }
-}
-
 enum Turn { left, right }
 enum Direction { north, east, south, west }
 enum Panel { black, white }
@@ -22,11 +14,11 @@ class Robot {
   final Map<Point, Panel> _visitedPanels = {};
   final _program;
   Point _currentPosition = Point(0, 0);
-  Computer _computer;
+  late Computer _computer;
   bool _firstRun = true;
   Direction _facing = Direction.north;
-  Panel _startPanelColour;
-  Panel _defaultPanelColour;
+  late Panel _startPanelColour;
+  late Panel _defaultPanelColour;
 
   Robot(this._program) {
     _computer = Computer(_program, () => ioProcessor());
@@ -93,9 +85,9 @@ class Robot {
 
     var points = _visitedPanels.keys; //The panels the Robot went on.
     var cols =
-        (points.map((v) => v.x).max - points.map((v) => v.x).min).abs() + 1;
+        (points.map((v) => v.x).max - points.map((v) => v.x).min).abs() + 1 as int;
     var rows =
-        (points.map((v) => v.y).min - points.map((v) => v.y).max).abs() + 1;
+        (points.map((v) => v.y).min - points.map((v) => v.y).max).abs() + 1 as int;
 
     var image = TwoDimArray(rows, cols);
 
@@ -107,7 +99,7 @@ class Robot {
     //coords start with (0,0) at top left.
     _visitedPanels.entries
         .where((kv) => kv.value == Panel.white)
-        .forEach((p) => image[(p.key.y).abs()][p.key.x] = pixel[p.value]);
+        .forEach((p) => image[(p.key.y).abs() as int][p.key.x as int] = pixel[p.value]);
 
     //Print image
     image.forEach((row) => print(row.join()));

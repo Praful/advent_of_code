@@ -1,10 +1,6 @@
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
-
-List TEST_INPUT;
-List TEST_INPUT2;
-List MAIN_INPUT;
 
 const int DIVIDER = 20201227;
 
@@ -42,8 +38,8 @@ void runPart2(String name, List input) {
 }
 
 void main(List<String> arguments) {
-  TEST_INPUT = fileAsString('../data/day25-test.txt');
-  MAIN_INPUT = fileAsString('../data/day25.txt');
+  var TEST_INPUT = FileUtils.asLines('../data/day25-test.txt');
+  var MAIN_INPUT = FileUtils.asLines('../data/day25.txt');
 
   //Answer: 8, 11, 14897079
   runPart1('25 test part 1', TEST_INPUT);

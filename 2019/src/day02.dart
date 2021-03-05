@@ -1,6 +1,7 @@
 import '../../shared/dart/src/utils.dart';
 import 'package:trotter/trotter.dart';
 
+
 /// Puzzle description: https://adventofcode.com/2019/day/2
 
 const bool DEBUG = false;
@@ -11,7 +12,7 @@ class Computer {
   static const OPCODE_HALT = 99;
   static const OP_LENGTH = 4;
 
-  List<int> program;
+  late final List<int> program;
   Computer(data) {
     program = List.from(data);
   }
@@ -82,7 +83,7 @@ Object part2(String header, List input, int targetOutput) {
       return (100 * nounVerb[0]) + nounVerb[1];
     }
   }
-  return null;
+  throw 'Part 2 answer not found';
 }
 
 void main(List<String> arguments) {
@@ -104,8 +105,8 @@ void main(List<String> arguments) {
       30); // => 30,1,1,4,2,5,6,0,99.
 
   //Answer: 4023471
-  print(part1('02 part 1', initProgram(mainInput, 12, 2)));
+  printAndAssert(part1('02 part 1', initProgram(mainInput, 12, 2)),4023471);
 
   //Answer: 8051
-  print(part2a('02 part 2', mainInput, 19690720));
+  printAndAssert(part2a('02 part 2', mainInput, 19690720),8051);
 }

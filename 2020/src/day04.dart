@@ -1,5 +1,5 @@
 import 'dart:io';
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 //mapping lists and maps: https://bezkoder.com/dart-convert-list-map/
 
@@ -56,13 +56,13 @@ bool hasMatch(String s, RegExp re) => re.hasMatch(s);
 
 bool isValidPassportPart2(Map<String, String> passport) =>
     isValidPassportPart1(passport) &&
-    isNumberInRange(passport['byr'], 1920, 2002) &&
-    isNumberInRange(passport['iyr'], 2010, 2020) &&
-    isNumberInRange(passport['eyr'], 2020, 2030) &&
-    isValidHeight(passport['hgt'], 150, 193, 59, 76) &&
-    hasMatch(passport['hcl'], VALID_HAIR_COLOR_REGEX) &&
-    isValidEyeColor(passport['ecl']) &&
-    hasMatch(passport['pid'], VALID_PASSPORT_PID_REGEX);
+    isNumberInRange(passport['byr']!, 1920, 2002) &&
+    isNumberInRange(passport['iyr']!, 2010, 2020) &&
+    isNumberInRange(passport['eyr']!, 2020, 2030) &&
+    isValidHeight(passport['hgt']!, 150, 193, 59, 76) &&
+    hasMatch(passport['hcl']!, VALID_HAIR_COLOR_REGEX) &&
+    isValidEyeColor(passport['ecl']!) &&
+    hasMatch(passport['pid']!, VALID_PASSPORT_PID_REGEX);
 
 void test4a() {
   printHeader('4a test');

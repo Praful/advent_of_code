@@ -1,16 +1,12 @@
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
-
-List TEST_INPUT;
-List TEST_INPUT2;
-List MAIN_INPUT;
 
 enum RuleType { nonterminal, terminal }
 
 class Rule {
-  RuleType type;
-  String value;
+  late RuleType type;
+  late String value;
   List mappings = [];
 
   Rule(String input) {
@@ -64,7 +60,7 @@ class Rules {
     //rules/data may not work.
     var r8 = range(1, 10).map((i) => '$r42{$i}$r31{$i}').join('|');
 
-    return '(?:${r8})';
+    return '(?:$r8)';
   }
 
   Object createRegex([start = 0, part2 = false]) {
@@ -83,7 +79,7 @@ class Rules {
         .join('|');
 
     //Use non-capturing groups (?:) otherwise it's slow.
-    return '(?:${regex})';
+    return '(?:$regex)';
   }
 
   @override
@@ -92,25 +88,25 @@ class Rules {
   }
 }
 
-void runPart(String name, List input, [isPart2 = false]) {
+void runPart(String name, List<String> input, [isPart2 = false]) {
   printHeader(name);
 
   var rules = Rules(input);
   var rulesRegexStr = '^${rules.createRegex(0, isPart2)}\$';
   var regexRule0 = RegExp(rulesRegexStr);
   var result = rules.messages
-      .fold(0, (acc, m) => acc + (regexRule0.hasMatch(m) ? 1 : 0));
+      .fold(0, (dynamic acc, m) => acc + (regexRule0.hasMatch(m) ? 1 : 0));
   print(result);
 }
 
 void main(List<String> arguments) {
-  TEST_INPUT = fileAsString('../data/day19-test.txt');
-  TEST_INPUT2 = fileAsString('../data/day19b-test.txt');
-  MAIN_INPUT = fileAsString('../data/day19.txt');
+  var TEST_INPUT = FileUtils.asLines('../data/day19-test.txt');
+  var TEST_INPUT2 = FileUtils.asLines('../data/day19b-test.txt');
+  var MAIN_INPUT = FileUtils.asLines('../data/day19.txt');
 
   //Answer: 2
   runPart('19 test part 1', TEST_INPUT);
-  //Answer:
+  //Answer: 12
   runPart('19 test part 2', TEST_INPUT2, true);
 
   //Answer: 165

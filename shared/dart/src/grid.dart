@@ -7,16 +7,12 @@ Direction oppositeDirection(Direction dir) {
   switch (dir) {
     case Direction.up:
       return Direction.down;
-      break;
     case Direction.down:
       return Direction.up;
-      break;
     case Direction.left:
       return Direction.right;
-      break;
     case Direction.right:
       return Direction.left;
-      break;
     default:
       throw 'Unrecognised direction $dir';
   }
@@ -65,8 +61,8 @@ class Node {
 }
 
 class Position {
-  final Point xy;
-  final Direction dir;
+  final Point? xy;
+  final Direction? dir;
   Position(this.xy, this.dir);
 
   bool get hasLocation => xy != null;

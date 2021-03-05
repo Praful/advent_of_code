@@ -1,11 +1,7 @@
-import './utils.dart';
 import 'dart:collection';
+import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
-
-List TEST_INPUT;
-List TEST_INPUT2;
-List MAIN_INPUT;
 
 List parseInput(input) {
   void addCard(player, card) => player.addBottom(int.parse(card));
@@ -160,8 +156,8 @@ void runPart2(String name, List input) {
 }
 
 void main(List<String> arguments) {
-  TEST_INPUT = fileAsString('../data/day22-test.txt');
-  MAIN_INPUT = fileAsString('../data/day22.txt');
+  var TEST_INPUT = FileUtils.asLines('../data/day22-test.txt');
+  var MAIN_INPUT = FileUtils.asLines('../data/day22.txt');
 
   //Answer: 306
   runPart1('22 test part 1', TEST_INPUT);

@@ -1,5 +1,5 @@
 import 'dart:io';
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
 
@@ -13,7 +13,7 @@ Iterable<String> findOuterBags(input, bag) {
   RegExp(r'(?<outerBag>.*)s contain.*' + bag)
       .allMatches(input)
       .forEach((match) {
-    var outerBag = match.namedGroup('outerBag');
+    var outerBag = match.namedGroup('outerBag')!;
     result.add(outerBag);
     result.addAll(findOuterBags(input, outerBag));
   });
@@ -25,11 +25,11 @@ int findInnerBagCount(input, bag) {
   RegExp(bag + r's contain (?<innerBags>.*).')
       .allMatches(input)
       .forEach((match) {
-    match.namedGroup('innerBags').split(',').forEach((innerBags) {
+    match.namedGroup('innerBags')!.split(',').forEach((innerBags) {
       RegExp(r'(?<count>\d+) (?<name>.*bag)s?')
           .allMatches(innerBags)
           .forEach((bag) {
-        var count = int.parse(bag.namedGroup('count'));
+        var count = int.parse(bag.namedGroup('count')!);
         result +=
             count + (count * findInnerBagCount(input, bag.namedGroup('name')));
       });

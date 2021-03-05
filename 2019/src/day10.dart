@@ -13,14 +13,6 @@ import 'package:trotter/trotter.dart';
 ///to their distance from the monitoring station.
 const bool DEBUG = false;
 
-void printAndAssert(actual, [expected]) {
-  if (expected != null) {
-    assertEqual(actual, expected);
-  } else {
-    print(actual);
-  }
-}
-
 class MonitoringStation {
   static const ASTEROID = '#';
   static const DELTA = 0.000000001;
@@ -32,7 +24,7 @@ class MonitoringStation {
     asteroids = asteroidCoords();
   }
 
-  List asteroidCoords() {
+  List<Point> asteroidCoords() {
     var result = <Point>[];
     aerialMap.asMap().entries.forEach((entry) {
       var y = entry.key;
@@ -117,7 +109,7 @@ class MonitoringStation {
 
     while (vaporized < vaporizeCount) {
       for (var angle in pointAnglesSorted) {
-        var aligned = pointAngles[angle];
+        var aligned = pointAngles[angle]!;
         if (aligned.isNotEmpty) {
           result = aligned.removeAt(0);
           vaporized++;
@@ -129,13 +121,13 @@ class MonitoringStation {
   }
 }
 
-Object part1(String header, List input) {
+Object part1(String header, List<String> input) {
   printHeader(header);
   var ms = MonitoringStation(input);
   return ms.maxAsteroidsVisible();
 }
 
-Object part2(String header, List input, Point location, vaporizeCount) {
+Object part2(String header, List<String> input, Point location, vaporizeCount) {
   printHeader(header);
   var ms = MonitoringStation(input);
   var result = ms.vaporize(location, vaporizeCount);
@@ -143,15 +135,15 @@ Object part2(String header, List input, Point location, vaporizeCount) {
 }
 
 void main(List<String> arguments) {
-  List testInput = FileUtils.asLines('../data/day10-test.txt');
-  List testInputb = FileUtils.asLines('../data/day10b-test.txt');
-  List testInputc = FileUtils.asLines('../data/day10c-test.txt');
-  List testInputd = FileUtils.asLines('../data/day10d-test.txt');
-  List testInpute = FileUtils.asLines('../data/day10e-test.txt');
+  var testInput = FileUtils.asLines('../data/day10-test.txt');
+  var testInputb = FileUtils.asLines('../data/day10b-test.txt');
+  var testInputc = FileUtils.asLines('../data/day10c-test.txt');
+  var testInputd = FileUtils.asLines('../data/day10d-test.txt');
+  var testInpute = FileUtils.asLines('../data/day10e-test.txt');
 
   // List testInputf = FileUtils.asLines('../data/day10f-test.txt');
 
-  List mainInput = FileUtils.asLines('../data/day10.txt');
+  var mainInput = FileUtils.asLines('../data/day10.txt');
 
   assertEqual(part1('10 test part 1', testInput), 8); //(3,4)
   assertEqual(part1('10 test part 1b', testInputb), 33); //(5,8)

@@ -1,4 +1,4 @@
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = true;
 const int TURN_COUNT_1 = 2020;

@@ -6,13 +6,6 @@ import './intcode_computer.dart';
 
 const bool DEBUG = false;
 
-void printAndAssert(actual, [expected]) {
-  if (expected != null) {
-    assertEqual(actual, expected);
-  } else {
-    print(actual);
-  }
-}
 
 int run1(program, input) {
   var c = Computer(program);
@@ -38,7 +31,7 @@ int run2(Computer amp, int phase, int signal) {
   // return amp.output;
 }
 
-Object part2(String header, List input) {
+Object part2(String header, List<int> input) {
   printHeader(header);
   var perms = Permutations(5, range(5, 10).toList());
 
@@ -55,12 +48,12 @@ Object part2(String header, List input) {
 }
 
 void main(List<String> arguments) {
-  List testInput = FileUtils.asInt('../data/day07-test.txt', ',');
-  List testInput1b = FileUtils.asInt('../data/day07b-test.txt', ',');
-  List testInput1c = FileUtils.asInt('../data/day07c-test.txt', ',');
-  List testInput2a = FileUtils.asInt('../data/day07d-test.txt', ',');
-  List testInput2b = FileUtils.asInt('../data/day07e-test.txt', ',');
-  List mainInput = FileUtils.asInt('../data/day07.txt', ',');
+  var testInput = FileUtils.asInt('../data/day07-test.txt', ',');
+  var testInput1b = FileUtils.asInt('../data/day07b-test.txt', ',');
+  var testInput1c = FileUtils.asInt('../data/day07c-test.txt', ',');
+  var testInput2a = FileUtils.asInt('../data/day07d-test.txt', ',');
+  var testInput2b = FileUtils.asInt('../data/day07e-test.txt', ',');
+  var mainInput = FileUtils.asInt('../data/day07.txt', ',');
 
   assertEqual(part1('07 test part 1', testInput), 43210);
   assertEqual(part1('07 test part 1b', testInput1b), 54321);

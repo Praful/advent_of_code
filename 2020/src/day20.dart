@@ -1,5 +1,5 @@
-import './utils.dart';
 import 'dart:math' as math;
+import '../../shared/dart/src/utils.dart';
 
 //Requires following line to be added as dependency in pubspec.yaml:
 //   trotter: any
@@ -42,9 +42,9 @@ class Edge {
 
 class Tile {
   final _input;
-  int id;
-  List<String> tile;
-  Map<String, Edge> possibleEdges;
+  late int id;
+  late List<String> tile;
+  late Map<String, Edge> possibleEdges;
   final Map<int, AdjacentTile> adjacentTiles = {};
   bool aligned = false;
   final Map<Location, int> edges = {};
@@ -97,7 +97,7 @@ class Tile {
   //Return true if we managed to find tile border at the location
   bool alignSharedBorder(Location location, String border) {
     for (var _ in range(0, Tile.SIDES_COUNT)) {
-      if (border == _locationToBorderMapping[location]()) return true;
+      if (border == _locationToBorderMapping[location]!()) return true;
       rotate90();
     }
     return false;
@@ -141,15 +141,15 @@ class Tile {
 
   @override
   String toString() =>
-      '$id: ${edges}${adjacentTiles.values}\n${tile.join('\n')}';
+      '$id: $edges${adjacentTiles.values}\n${tile.join('\n')}';
 }
 
 class Image {
-  Map<int, Tile> tiles;
+  late Map<int, Tile> tiles;
   final String _input;
   var tileIdGrid;
-  List<String> mergedImage;
-  int monsterCount;
+  late List<String> mergedImage;
+  late int monsterCount;
 
   static const SEA_MONSTER = '                  # '
       '#    ##    ##    ###'
@@ -221,14 +221,14 @@ class Image {
   }
 
   void createMergedImage() {
-    var trimmedTileLength = tiles[tiles.keys.first].withoutBorder.length;
+    var trimmedTileLength = tiles[tiles.keys.first]!.withoutBorder.length;
 
     mergedImage = List<String>.generate(
         tileIdGrid.length * trimmedTileLength, (int i) => '');
 
     for (var row in range(0, tileIdGrid.length)) {
       for (var col in range(0, tileIdGrid.length)) {
-        var trimmedTile = tiles[tileIdGrid[row][col]].withoutBorder;
+        var trimmedTile = tiles[tileIdGrid[row][col]]!.withoutBorder;
         for (var tileIndex in range(0, trimmedTile.length)) {
           var mergedIndex = row * trimmedTileLength + tileIndex;
           mergedImage[mergedIndex] += trimmedTile[tileIndex];
@@ -249,19 +249,19 @@ class Image {
   // 5456 4643 4322
   void _createTileIdGrid(Tile start, Point pos) {
     start.edges.entries.forEach((t) {
-      var newPos = pos + Image._directionVector[t.key];
+      var newPos = pos + Image._directionVector[t.key]!;
       tileIdGrid[newPos.row][newPos.col] = t.value;
-      _createTileIdGrid(tiles[t.value], newPos);
+      _createTileIdGrid(tiles[t.value]!, newPos);
     });
   }
 
   //tile1 must be aligned before this method is invoked
   void _alignAdjacent(Tile tile1) {
     for (var adjacent in tile1.adjacentTiles.values) {
-      var tile2 = tiles[adjacent.id];
+      var tile2 = tiles[adjacent.id]!;
       if (!tile2.aligned) {
         var edge = tile1.edge(adjacent.sharedBorder);
-        var targetLocation = Tile.alignsWith[edge.location];
+        var targetLocation = Tile.alignsWith[edge.location]!;
         tile1.edges[edge.location] = tile2.id;
 
         if (!tile2.alignSharedBorder(targetLocation, edge.border)) {
@@ -310,19 +310,19 @@ class Image {
   int get waterRoughness {
     int count(list) => list.fold(0, (sum, v) => sum + (v == '#' ? 1 : 0));
 
-    var total = mergedImage.fold(0, (sum, v) => sum + (count(v.split(''))));
+    var total = mergedImage.fold(0, (dynamic sum, v) => sum + (count(v.split(''))));
     var perMonster = count(SEA_MONSTER.split(''));
     return total - (perMonster * monsterCount);
   }
 
   void printMergedImageWithBorders() {
-    var tileLength = tiles[tiles.keys.first].tile.length;
+    var tileLength = tiles[tiles.keys.first]!.tile.length;
     var merged =
         List<String>.generate(tileIdGrid.length * tileLength, (int i) => '');
 
     for (var row in range(0, tileIdGrid.length)) {
       for (var col in range(0, tileIdGrid.length)) {
-        var tile = tiles[tileIdGrid[row][col]].tile;
+        var tile = tiles[tileIdGrid[row][col]]!.tile;
         for (var tileIndex in range(0, tile.length)) {
           var mergedIndex = row * tileLength + tileIndex;
           merged[mergedIndex] += tile[tileIndex] + ' ';
@@ -364,8 +364,8 @@ void runPart2(String name, Image image) {
 }
 
 void main(List<String> arguments) {
-  var TEST_INPUT = Image(readFile('../data/day20-test.txt'));
-  var MAIN_INPUT = Image(readFile('../data/day20.txt'));
+  var TEST_INPUT = Image(FileUtils.asString('../data/day20-test.txt'));
+  var MAIN_INPUT = Image(FileUtils.asString('../data/day20.txt'));
 
   //Answer: 1951 * 3079 * 2971 * 1171 = 20899048083289
   runPart1('20 test part 1', TEST_INPUT);

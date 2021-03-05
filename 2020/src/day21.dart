@@ -1,10 +1,6 @@
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
-
-List TEST_INPUT;
-List TEST_INPUT2;
-List MAIN_INPUT;
 
 class Food {
   List input;
@@ -25,8 +21,8 @@ class Food {
   void parseInput() {
     input.forEach((line) {
       Food.REGEX_INPUT.allMatches(line).forEach((m) {
-        var ingredients = m.namedGroup('ingredients').split(' ').toSet();
-        var allergens = m.namedGroup('allergens').split(', ');
+        var ingredients = m.namedGroup('ingredients')!.split(' ').toSet();
+        var allergens = m.namedGroup('allergens')!.split(', ');
 
         allIngredients.addAll(ingredients);
         allergens.forEach((a) {
@@ -46,7 +42,7 @@ class Food {
     allergensToIngredientsMap.entries.forEach((kv) {
       kv.value.forEach((ingSet) {
         allergenCandidates[kv.key] =
-            allergenCandidates[kv.key].intersection(ingSet);
+            allergenCandidates[kv.key]!.intersection(ingSet);
       });
     });
 
@@ -73,7 +69,7 @@ class Food {
 
     allergenCandidates.keys.toList()
       ..sort()
-      ..forEach((k) => result += '${allergenCandidates[k].first},');
+      ..forEach((k) => result += '${allergenCandidates[k]!.first},');
 
     return result;
   }
@@ -87,8 +83,8 @@ void runPart1and2(String name, List input) {
 }
 
 void main(List<String> arguments) {
-  TEST_INPUT = fileAsString('../data/day21-test.txt');
-  MAIN_INPUT = fileAsString('../data/day21.txt');
+  var TEST_INPUT = FileUtils.asLines('../data/day21-test.txt');
+  var MAIN_INPUT = FileUtils.asLines('../data/day21.txt');
 
   //Answer: 5
   //Answer: mxmxvkd,sqjhc,fvjkl,

@@ -77,8 +77,8 @@ void main(List<String> arguments) {
   assertEqual(isPasswordValid2('111122', 0, 999999), true);
 
   //Answer:
-  print(part1('04 part 1', 248345, 746315));
-  print(part2('04 part 1', 248345, 746315));
+  printAndAssert(part1('04 part 1', 248345, 746315),1019);
+  printAndAssert(part2('04 part 2', 248345, 746315),660);
 
   //Answer:
   // print(part2('04 part 2', mainInput));

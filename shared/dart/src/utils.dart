@@ -5,10 +5,20 @@ import 'dart:collection' show Queue;
 void printHeader(String header) =>
     print('=== Day $header ====================');
 
+
+void printAndAssert(actual, [expected]) {
+  if (expected != null) {
+    assertEqual(actual, expected);
+  } else {
+    print(actual);
+  }
+}
+
 void assertEqual(actual, expected, [doPrint = true]) {
   try {
     assert(actual == expected);
     if (doPrint) print('Assert passed: $actual');
+  // ignore: unused_catch_stack
   } catch (e, stacktrace) {
     print('Assert FAILED: found $actual, expected $expected');
     // print('Failed assertion: found $actual, expected $expected\n\n${stacktrace}');
@@ -16,7 +26,7 @@ void assertEqual(actual, expected, [doPrint = true]) {
 }
 
 List<List> TwoDimArray(rows, cols) =>
-    List.generate(rows, (i) => List(cols), growable: false);
+    List.generate(rows, (i) => List.filled(cols,null), growable: false);
 
 class FileUtils {
   static String asString(input) => File(input).readAsStringSync().trim();
@@ -76,9 +86,9 @@ extension String2 on String {
 }
 
 class NumUtils {
-  static T sum<T extends num>(T a, T b) => a + b;
+  static T sum<T extends num>(T a, T b) => a + b as T;
 
-  static T multiply<T extends num>(T a, T b) => a * b;
+  static T multiply<T extends num>(T a, T b) => a * b as T;
 
   static int lcm(int a, int b) => (a * b) ~/ gcd(a, b);
 
@@ -118,7 +128,7 @@ extension Num2 on num {
 
 extension Precision on double {
   double toPrecision(int fractionDigits) {
-    double mod = math.pow(10, fractionDigits.toDouble());
+    var mod = math.pow(10, fractionDigits.toDouble()) as double;
     return ((this * mod).round().toDouble() / mod);
   }
 }

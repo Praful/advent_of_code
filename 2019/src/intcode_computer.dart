@@ -43,6 +43,8 @@ class Opcode {
 }
 
 abstract class Instruction {
+  static final NO_RESULT = -1;
+
   static final modeMap = {}
     ..[0] = ParameterMode.position
     ..[1] = ParameterMode.immediate
@@ -52,19 +54,19 @@ abstract class Instruction {
   //code is of form ABCDE where
   //DE = opcode id, C = mode of param1, B = mode of param2, A = mode of param3
   List<int> _instruction;
-  Opcode opcode;
+  late Opcode opcode;
   final Map<int, Parameter> parameters = {};
-  final Map<int, int> _memory;
+  final Map<int, int?> _memory;
   final int _relativeBase;
   @override
   String toString() => 'param: $_instruction\nparams: $parameters';
-  Object apply() => null;
+  Object apply() => NO_RESULT;
   int get length => opcode.length;
 
   int nextPointer(current) => current + opcode.length;
 
   Instruction(this._instruction, this._memory, this._relativeBase) {
-    opcode = Opcode.opcodeMap[Opcode.opcodeId(_instruction[0])];
+    opcode = Opcode.opcodeMap[Opcode.opcodeId(_instruction[0])]!;
     var modes = _parseModes(_instruction[0]);
     for (var i in range(1, opcode.length)) {
       parameters[i] =
@@ -84,7 +86,7 @@ abstract class Instruction {
   //Return a specific Instruction object eg Add, Multiply, Halt, etc,
   factory Instruction.create(int code, List<int> instruction,
           Map<int, int> memory, int relativeBase) =>
-      Opcode.opcodeMap[Opcode.opcodeId(code)]
+      Opcode.opcodeMap[Opcode.opcodeId(code)]!
           .create(instruction, memory, relativeBase);
 }
 
@@ -99,18 +101,16 @@ class Parameter {
   //is going to use the returned value for writing to (=>asAddress) or
   //reading from (=>asValue) memory.
   int get asAddress =>
-      _value + (_mode == ParameterMode.relative ? _relativeBase : 0);
+      _value + (_mode == ParameterMode.relative ? _relativeBase : 0) as int;
+
   int get asValue {
     switch (_mode) {
       case ParameterMode.position:
         return _memory[_value] ?? 0;
-        break;
       case ParameterMode.immediate:
         return _value;
-        break;
       case ParameterMode.relative:
         return _memory[_relativeBase + _value] ?? 0;
-        break;
       default:
         throw 'Invalid mode $_mode';
     }
@@ -126,8 +126,8 @@ class Add extends Instruction {
 
   @override
   Object apply() {
-    _memory[parameters[3].asAddress] =
-        parameters[1].asValue + parameters[2].asValue;
+    _memory[parameters[3]!.asAddress] =
+        parameters[1]!.asValue + parameters[2]!.asValue;
     return _memory;
   }
 }
@@ -138,20 +138,20 @@ class Multiply extends Instruction {
 
   @override
   Object apply() {
-    _memory[parameters[3].asAddress] =
-        parameters[1].asValue * parameters[2].asValue;
+    _memory[parameters[3]!.asAddress] =
+        parameters[1]!.asValue * parameters[2]!.asValue;
     return _memory;
   }
 }
 
 class Write extends Instruction {
-  int input;
+  late int input;
   Write(instruction, memory, relativeBase)
       : super(instruction, memory, relativeBase);
 
   @override
   Object apply() {
-    _memory[parameters[1].asAddress] = input;
+    _memory[parameters[1]!.asAddress] = input;
     return _memory;
   }
 }
@@ -162,13 +162,13 @@ class Output extends Instruction {
 
   @override
   Object apply() {
-    return parameters[1].asValue;
+    return parameters[1]!.asValue;
   }
 }
 
 class JumpIfTrue extends Instruction {
   static const NO_CHANGE = -1;
-  int lastInstructionPointer;
+  late int lastInstructionPointer;
 
   JumpIfTrue(instruction, memory, relativeBase)
       : super(instruction, memory, relativeBase);
@@ -183,14 +183,14 @@ class JumpIfTrue extends Instruction {
   @override
   Object apply() {
     lastInstructionPointer =
-        (parameters[1].asValue != 0) ? parameters[2].asValue : NO_CHANGE;
+        (parameters[1]!.asValue != 0) ? parameters[2]!.asValue : NO_CHANGE;
     return super.apply();
   }
 }
 
 class JumpIfFalse extends Instruction {
   static const NO_CHANGE = -1;
-  int lastInstructionPointer;
+  late int lastInstructionPointer;
   JumpIfFalse(instruction, memory, relativeBase)
       : super(instruction, memory, relativeBase);
 
@@ -204,7 +204,7 @@ class JumpIfFalse extends Instruction {
   @override
   Object apply() {
     lastInstructionPointer =
-        (parameters[1].asValue == 0) ? parameters[2].asValue : NO_CHANGE;
+        (parameters[1]!.asValue == 0) ? parameters[2]!.asValue : NO_CHANGE;
     return super.apply();
   }
 }
@@ -215,8 +215,8 @@ class LessThan extends Instruction {
 
   @override
   Object apply() {
-    _memory[parameters[3].asAddress] =
-        parameters[1].asValue < parameters[2].asValue ? 1 : 0;
+    _memory[parameters[3]!.asAddress] =
+        parameters[1]!.asValue < parameters[2]!.asValue ? 1 : 0;
     return _memory;
   }
 }
@@ -227,8 +227,8 @@ class Equals extends Instruction {
 
   @override
   Object apply() {
-    _memory[parameters[3].asAddress] =
-        parameters[1].asValue == parameters[2].asValue ? 1 : 0;
+    _memory[parameters[3]!.asAddress] =
+        parameters[1]!.asValue == parameters[2]!.asValue ? 1 : 0;
     return _memory;
   }
 }
@@ -239,7 +239,7 @@ class RelativeBase extends Instruction {
 
   @override
   Object apply() {
-    return _relativeBase + parameters[1].asValue;
+    return _relativeBase + parameters[1]!.asValue;
   }
 }
 
@@ -260,11 +260,11 @@ class Computer {
   var _instructionPointer = 0;
   final List<int> _output = [];
   int _relativeBase = 0;
-  int Function() _inputProvider;
-  bool requiresInput;
-  Object input;
+  int Function()? _inputProvider;
+  bool requiresInput = false;
+  int? input;
 
-  Computer(List<int> program, [int Function() inputProvider]) {
+  Computer(List<int> program, [int Function()? inputProvider]) {
     program.asMap().forEach((k, v) => memory[k] = v);
     _inputProvider = inputProvider;
   }
@@ -285,20 +285,20 @@ class Computer {
     return result;
   }
 
-  List getInstructionParams(opcodeId) => memory.values
+  List<int> getInstructionParams(opcodeId) => memory.values
       .toList()
       .getRange(_instructionPointer,
-          _instructionPointer + Opcode.opcodeMap[opcodeId].length)
+          _instructionPointer + Opcode.opcodeMap[opcodeId]!.length as int)
       .toList();
 
-  List run([List<int> program, exitOnOuput = false]) {
+  List run([List<int>? program, exitOnOuput = false]) {
     int readInput() {
       if (input != null) {
-        return input;
+        return input!;
       } else if (_inputProvider == null) {
-        return _firstRun ? program[0] : program[1];
+        return _firstRun ? program![0] : program![1];
       } else {
-        return _inputProvider();
+        return _inputProvider!();
       }
     }
 
@@ -306,7 +306,7 @@ class Computer {
     List<int> params;
     requiresInput = false;
     while (true) {
-      opcodeId = Opcode.opcodeId(memory[_instructionPointer]);
+      opcodeId = Opcode.opcodeId(memory[_instructionPointer]!);
       if (opcodeId == Opcode.HALT) {
         halted = true;
         break;
@@ -327,11 +327,11 @@ class Computer {
       _instructionPointer = instruction.nextPointer(_instructionPointer);
 
       if (opcodeId == Opcode.RELATIVE_BASE) {
-        _relativeBase = result;
+        _relativeBase = result as int;
       }
 
       if (opcodeId == Opcode.OUTPUT) {
-        _output.add(result);
+        _output.add(result as int);
         // print('output: $_output');
         if (exitOnOuput) break;
       }

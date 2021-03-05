@@ -1,5 +1,5 @@
 import 'dart:io';
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
 
@@ -27,8 +27,6 @@ class Computer {
       r'^(?<instruction>(nop|acc|jmp))\s(?<operator>(\+|\-))(?<value>\d+)$');
 
   int run() {
-    assert(input != null);
-
     var visited = <int>{};
 
     int increment(start, op, value) =>
@@ -36,10 +34,10 @@ class Computer {
 
     while (!visited.contains(_pc) && _pc < input.length) {
       visited.add(_pc);
-      var match = INSTRUCTION_REGEX.firstMatch(input[_pc]);
+      var match = INSTRUCTION_REGEX.firstMatch(input[_pc])!;
       var instruction = match.namedGroup('instruction');
       var op = match.namedGroup('operator');
-      var value = int.parse(match.namedGroup('value'));
+      var value = int.parse(match.namedGroup('value')!);
       switch (instruction) {
         case 'nop':
           _pc++;

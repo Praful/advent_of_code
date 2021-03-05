@@ -1,5 +1,5 @@
 import 'dart:io';
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 //Add the following to pubspec.yaml for the DeepEquality feature
 // dependencies:
@@ -7,10 +7,6 @@ import './utils.dart';
 import 'package:collection/collection.dart';
 
 const bool DEBUG = false;
-
-List TEST_INPUT;
-List TEST_INPUT2;
-List MAIN_INPUT;
 
 //Add these vectors to a cell to reach its adjacent cells.
 List toGrid(String input) {
@@ -137,8 +133,8 @@ void runPart2(String name, List input) {
 }
 
 void main(List<String> arguments) {
-  TEST_INPUT = toGrid('../data/day11-test.txt');
-  MAIN_INPUT = toGrid('../data/day11.txt');
+  var TEST_INPUT = toGrid('../data/day11-test.txt');
+  var MAIN_INPUT = toGrid('../data/day11.txt');
 
   //Answer: 37
   runPart1('11 test part 1', TEST_INPUT);

@@ -31,18 +31,10 @@ const String PASSAGE = '.';
 const String WALL = '#';
 const String ENTRANCE = '@';
 
-void printAndAssert(actual, [expected]) {
-  if (expected != null) {
-    assertEqual(actual, expected);
-  } else {
-    print(actual);
-  }
-}
-
 class Vault {
   final List _tunnelMap;
   final Set<String> _allDoorKeys = {}; //all keys eg a,b,c,etc
-  Point _start;
+  late Point _start;
   final isPart2;
 
   Vault(this._tunnelMap, [this.isPart2 = false]) {
@@ -175,7 +167,7 @@ int part1(String header, List input) {
   return Vault(input).shortestPath();
 }
 
-int part2(String header, List input, [bool subst = false]) {
+int part2(String header, List<String> input, [bool subst = false]) {
   printHeader(header);
   return splitVault(input, subst)
       .values
@@ -183,12 +175,12 @@ int part2(String header, List input, [bool subst = false]) {
 }
 
 void main(List<String> arguments) {
-  List testInput = FileUtils.asLines('../data/day18-test.txt');
-  List testInputb = FileUtils.asLines('../data/day18b-test.txt');
-  List testInputc = FileUtils.asLines('../data/day18c-test.txt');
-  List testInputd = FileUtils.asLines('../data/day18d-test.txt');
-  List testInpute = FileUtils.asLines('../data/day18e-test.txt');
-  List mainInput = FileUtils.asLines('../data/day18.txt');
+  var testInput = FileUtils.asLines('../data/day18-test.txt');
+  var testInputb = FileUtils.asLines('../data/day18b-test.txt');
+  var testInputc = FileUtils.asLines('../data/day18c-test.txt');
+  var testInputd = FileUtils.asLines('../data/day18d-test.txt');
+  var testInpute = FileUtils.asLines('../data/day18e-test.txt');
+  var mainInput = FileUtils.asLines('../data/day18.txt');
 
   assertEqual(part1('18 test part 1', testInput), 8);
   assertEqual(part1('18 test part 1b', testInputb), 86);
@@ -198,10 +190,11 @@ void main(List<String> arguments) {
 
   printAndAssert(part1('18 part 1', mainInput), 6098);
 
-  List testInput2a = FileUtils.asLines('../data/day18p2a-test.txt');
-  List testInput2b = FileUtils.asLines('../data/day18p2b-test.txt');
-  List testInput2c = FileUtils.asLines('../data/day18p2c-test.txt');
-  List testInput2d = FileUtils.asLines('../data/day18p2d-test.txt');
+  var testInput2a = FileUtils.asLines('../data/day18p2a-test.txt');
+  var testInput2b = FileUtils.asLines('../data/day18p2b-test.txt');
+  // ignore: unused_local_variable
+  var testInput2c = FileUtils.asLines('../data/day18p2c-test.txt');
+  var testInput2d = FileUtils.asLines('../data/day18p2d-test.txt');
 
   assertEqual(part2('18 test part 2a', testInput2a), 8);
   assertEqual(part2('18 test part 2b', testInput2b), 24);

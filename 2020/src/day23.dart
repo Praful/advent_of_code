@@ -1,6 +1,5 @@
 import 'dart:collection';
-
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
 
@@ -15,9 +14,9 @@ class CupEntry<T> extends LinkedListEntry<CupEntry> {
 class Cups {
   final List<int> input;
   final int picksPerMove;
-  int maxCupValue;
-  int minCupValue;
-  CupEntry currentCup;
+  late int maxCupValue;
+  late int minCupValue;
+  late CupEntry currentCup;
 
   LinkedList<CupEntry> cups = LinkedList();
   Map<int, CupEntry> cupIndex = {};
@@ -65,7 +64,7 @@ class Cups {
       destCupValue--;
       if (destCupValue < minCupValue) destCupValue = maxCupValue;
     }
-    return cupIndex[destCupValue];
+    return cupIndex[destCupValue]!;
   }
 
   void placeCup(CupEntry destCup, List<CupEntry> pickedCups) {
@@ -106,7 +105,7 @@ class Cups {
 
   String playResult1() {
     var result = '';
-    var next = cupIndex[1];
+    var next = cupIndex[1]!;
     while (result.length < input.length - 1) {
       next = nextCup(next);
       result += '${next.value}';
@@ -121,7 +120,7 @@ class Cups {
   }
 
   int playResult2() {
-    var first = nextCup(cupIndex[1]);
+    var first = nextCup(cupIndex[1]!);
     var second = nextCup(first);
     // print('first: $first, second: $second');
     return first.value * second.value;
