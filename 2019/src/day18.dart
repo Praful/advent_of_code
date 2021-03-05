@@ -3,7 +3,7 @@ import '../../shared/dart/src/grid.dart';
 import 'dart:collection';
 import 'dart:math';
 import 'package:tuple/tuple.dart';
-import 'package:basics/basics.dart';
+// import 'package:basics/basics.dart';
 
 /// Puzzle description: https://adventofcode.com/2019/day/18
 /// Part 1 uses BFS to walk the vault. A Vault class is used to
