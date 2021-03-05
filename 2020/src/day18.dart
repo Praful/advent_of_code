@@ -1,10 +1,6 @@
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
-
-List TEST_INPUT;
-List TEST_INPUT2;
-List MAIN_INPUT;
 
 class Calculator {
   final Stack stack = Stack();
@@ -24,7 +20,7 @@ class Calculator {
   bool isNumber(c) => int.tryParse(c) != null;
 
   int getNumber(s) =>
-      int.parse(REGEX_NUMBER.firstMatch(s).namedGroup('number'));
+      int.parse(REGEX_NUMBER.firstMatch(s)!.namedGroup('number')!);
 
   String getSubexpression(String s) {
     var level = 0;
@@ -80,17 +76,17 @@ class Calculator {
           postfix.add(operatorStack.pop());
           operatorStack.push(ch);
         }
-        i += ch.length;
+        i += ch.length as int;
       } else if (ch == BRACKET_OPENING) {
         operatorStack.push(ch);
-        i += ch.length;
+        i += ch.length as int;
       } else if (ch == BRACKET_CLOSING) {
         while (true) {
           var opCh = operatorStack.pop();
           if (opCh == BRACKET_OPENING) break;
           postfix.add(opCh);
         }
-        i += ch.length;
+        i += ch.length as int;
       }
     }
     while (operatorStack.isNotEmpty) {
@@ -126,7 +122,7 @@ class Calculator {
         i += rhsNumber.toString().length;
       } else if (isOperator(ch)) {
         lastOperator = ch;
-        i += ch.length;
+        i += ch.length as int;
       } else if (ch == BRACKET_OPENING) {
         var subexpression = getSubexpression(expression.substring(i));
         // print('subexp = $subexpression');
@@ -190,8 +186,8 @@ void runPart2(String name, List input) {
 }
 
 void main(List<String> arguments) {
-  TEST_INPUT = fileAsString('../data/day18-test.txt');
-  MAIN_INPUT = fileAsString('../data/day18.txt');
+  var TEST_INPUT = FileUtils.asLines('../data/day18-test.txt');
+  var MAIN_INPUT = FileUtils.asLines('../data/day18.txt');
 
   //Answers: total = 26406
   // 1 + 2 * 3 + 4 * 5 + 6 = 71

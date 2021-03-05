@@ -1,10 +1,6 @@
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
-
-List TEST_INPUT;
-List TEST_INPUT2;
-List MAIN_INPUT;
 
 enum Section { property, yourTicket, nearByTickets }
 
@@ -62,7 +58,7 @@ class FlightInfo {
     }
   }
 
-  bool _isInRange(int v, int min, int max) => v.isBetweenI(min, max);
+  bool _isInRange(int v, int min, int max) => v.isBetween(min, max);
 
   bool _isInEitherRange(n, MapEntry kv) =>
       (_isInRange(n, kv.value[0][0], kv.value[0][1])) ||
@@ -148,14 +144,14 @@ class FlightInfo {
 //   }
 }
 
-void runPart1(String name, List input) {
+void runPart1(String name, List<String> input) {
   printHeader(name);
   var flightInfo = FlightInfo(input);
   print(flightInfo.ticketScanningErrorRate());
   // print(flightInfo.validTickets());
 }
 
-void runPart2(String name, List input) {
+void runPart2(String name, List<String> input) {
   printHeader(name);
   var flightInfo = FlightInfo(input);
   var fieldLabels = flightInfo.determineFieldLabels();
@@ -163,9 +159,9 @@ void runPart2(String name, List input) {
 }
 
 void main(List<String> arguments) {
-  TEST_INPUT = fileAsString('../data/day16-test.txt');
-  TEST_INPUT2 = fileAsString('../data/day16b-test.txt');
-  MAIN_INPUT = fileAsString('../data/day16.txt');
+  var TEST_INPUT = FileUtils.asLines('../data/day16-test.txt');
+  var TEST_INPUT2 = FileUtils.asLines('../data/day16b-test.txt');
+  var MAIN_INPUT = FileUtils.asLines('../data/day16.txt');
 
   //Answer: 71
   runPart1('16 test part 1', TEST_INPUT);

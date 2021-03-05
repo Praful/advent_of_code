@@ -1,12 +1,9 @@
 import 'dart:io';
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
+// import './utils.dart';
 
 const bool DEBUG = false;
 const int MAX_DIFF = 3;
-
-List<int> TEST_INPUT;
-List<int> TEST_INPUT2;
-List<int> MAIN_INPUT;
 
 List<int> file(input) {
   var result = File(input).readAsLinesSync().map((l) => int.parse(l)).toList();
@@ -52,8 +49,8 @@ class AdapterNode {
 }
 
 class Graph {
-  Map<int, AdapterNode> _graph;
-  AdapterNode root;
+  late Map<int, AdapterNode> _graph;
+  AdapterNode? root;
 
   Graph(List<int> input) {
     _graph = buildGraph(input);
@@ -65,7 +62,7 @@ class Graph {
 
     input.forEach((adapterJolt) {
       graph[adapterJolt] = AdapterNode(input
-          .where((e) => e.isBetween(adapterJolt, adapterJolt + MAX_DIFF + 1))
+          .where((e) => e.isBetweenX(adapterJolt, adapterJolt + MAX_DIFF + 1))
           .toList());
     });
     // print(graph);
@@ -77,7 +74,7 @@ class Graph {
     if (adapterNode.linkedAdapterJolts.isEmpty) return 1; //end reached
 
     return adapterNode.linkedAdapterJolts.fold(0, (acc, adapterJolt) {
-      var linkedAdapterNode = _graph[adapterJolt];
+      var linkedAdapterNode = _graph[adapterJolt]!;
       if (!linkedAdapterNode.wasCalculated) {
         linkedAdapterNode.pathCount = pathsFromAdapter(linkedAdapterNode);
       }
@@ -95,14 +92,14 @@ void runPart1(String name, List<int> input) {
 void runPart2(String name, List<int> input) {
   printHeader(name);
   var graph = Graph(input);
-  print(graph.pathsFromAdapter(graph.root));
+  print(graph.pathsFromAdapter(graph.root!));
   // print(graph._graph);
 }
 
 void main(List<String> arguments) {
-  TEST_INPUT = file('../data/day10-test.txt');
-  TEST_INPUT2 = file('../data/day10b-test.txt');
-  MAIN_INPUT = file('../data/day10.txt');
+  var TEST_INPUT = file('../data/day10-test.txt');
+  var TEST_INPUT2 = file('../data/day10b-test.txt');
+  var MAIN_INPUT = file('../data/day10.txt');
 
   //Answer: 35
   runPart1('10 test 1a', TEST_INPUT);

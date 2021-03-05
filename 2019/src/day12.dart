@@ -8,8 +8,8 @@ const bool DEBUG = false;
 class Moon {
   List<int> velocity = [0, 0, 0];
   List<int> position;
-  List<int> originalPosition;
-  List<int> originalVelocity;
+  late List<int> originalPosition;
+  late List<int> originalVelocity;
   Moon(this.position) {
     originalPosition = List.from(position);
     originalVelocity = List.from(velocity);
@@ -35,7 +35,7 @@ class Moon {
 
 class Space {
   final _input;
-  List<Moon> moons;
+  late final List<Moon> moons;
   Space(this._input) {
     moons = parse(_input);
   }
@@ -48,9 +48,9 @@ class Space {
     var regex = RegExp(r'x\=(?<x>-?\d*), y\=(?<y>-?\d*), z=(?<z>-?\d*)\>');
     var result = <Moon>[];
     regex.allMatches(input).forEach((m) => result.add(Moon([
-          m.namedGroup('x').toInt(),
-          m.namedGroup('y').toInt(),
-          m.namedGroup('z').toInt()
+          m.namedGroup('x')!.toInt(),
+          m.namedGroup('y')!.toInt(),
+          m.namedGroup('z')!.toInt()
         ])));
     return result;
   }
@@ -110,14 +110,6 @@ class Space {
     var timeStepZ = simulateXYorZ(2);
 
     return NumUtils.lcm(timeStepX, NumUtils.lcm(timeStepY, timeStepZ));
-  }
-}
-
-void printAndAssert(actual, [expected]) {
-  if (expected != null) {
-    assertEqual(actual, expected);
-  } else {
-    print(actual);
   }
 }
 

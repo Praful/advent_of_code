@@ -51,17 +51,9 @@ const bool DEBUG = false;
 const DELIM = ',';
 const LF = 10;
 
-void printAndAssert(actual, [expected]) {
-  if (expected != null) {
-    assertEqual(actual, expected);
-  } else {
-    print(actual);
-  }
-}
-
 class Scaffold {
   final program;
-  Position robotStartPosition;
+  late Position robotStartPosition;
 
   Scaffold(this.program);
 
@@ -75,14 +67,14 @@ class Scaffold {
   Position nextTurn(scaffold, Position pos) {
     var turn = Direction.values
         .where((d) =>
-            scaffold.containsKey(pos.xy + adjacentVector[d]) &&
-            d != oppositeDirection(pos.dir))
+            scaffold.containsKey(pos.xy! + adjacentVector[d]) &&
+            d != oppositeDirection(pos.dir!))
         .toList();
     return Position(pos.xy, turn.isEmpty ? null : turn.first);
   }
 
   Position nextMove(Map scaffold, Position pos) {
-    var next = pos.xy + adjacentVector[pos.dir];
+    var next = pos.xy! + adjacentVector[pos.dir];
     return Position(scaffold.containsKey(next) ? next : null, pos.dir);
   }
 
@@ -166,6 +158,7 @@ class Scaffold {
 
   Map<Point, int> traverse() {
     var robot = Computer(program);
+    // ignore: unused_local_variable
     var view = '';
     var x = 0, y = 0;
     var scaffold = <Point, int>{};
@@ -203,7 +196,7 @@ class Scaffold {
       .every((d) => scaffold.containsKey(p + adjacentVector[d]));
 
   int calcAlignmentParameters(Map scaffold) => scaffold.keys
-      .fold(0, (acc, p) => acc + (isIntersection(scaffold, p) ? p.x * p.y : 0));
+      .fold(0, (acc, p) => acc + (isIntersection(scaffold, p) ? p.x * p.y : 0) as int);
 }
 
 class Compressor {
@@ -213,10 +206,10 @@ class Compressor {
   final inputString;
   Compressor(this.inputString);
 
-  String mainRoutine;
-  String functionA;
-  String functionB;
-  String functionC;
+  late final String mainRoutine;
+  late final String functionA;
+  late final String functionB;
+  late final String functionC;
 
   //Whilst trying to compress, if we're left with just commas, the string
   //has been fully compressed.

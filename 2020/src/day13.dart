@@ -1,9 +1,6 @@
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
-
-String TEST_INPUT;
-String MAIN_INPUT;
 
 String OUT_OF_SERVICE = 'x';
 
@@ -11,7 +8,7 @@ String OUT_OF_SERVICE = 'x';
 // 939
 // 7,13,x,x,59,x,31,19
 List parseInput1(input) {
-  var raw = fileAsString(input);
+  var raw = FileUtils.asLines(input);
   var departTime = int.parse(raw[0]);
   var busIds = raw[1]
       .split(',')
@@ -22,7 +19,7 @@ List parseInput1(input) {
 }
 
 List parseInput2(input) {
-  var raw = fileAsString(input);
+  var raw = FileUtils.asLines(input);
   var busIds = raw[1]
       .split(',')
       .map((l) => l != OUT_OF_SERVICE ? int.parse(l) : l)
@@ -49,8 +46,7 @@ void runPart2(String name, List input) {
       input.asMap().entries.where((e) => e.value != OUT_OF_SERVICE).toList();
   print(buses);
 
-  bool busScheduled(bus, timestamp) =>
-      (timestamp + bus.key) % bus.terminal == 0;
+  bool busScheduled(bus, timestamp) => (timestamp + bus.key) % bus.value == 0;
 
   var timestamp = 0;
   var inc = 1;
@@ -59,15 +55,15 @@ void runPart2(String name, List input) {
     while (!busScheduled(bus, timestamp)) {
       timestamp += inc;
     }
-    inc *= bus.value;
+    inc *= bus.value as int;
   });
 
   print(timestamp);
 }
 
 void main(List<String> arguments) {
-  TEST_INPUT = '../data/day13-test.txt';
-  MAIN_INPUT = '../data/day13.txt';
+  var TEST_INPUT = '../data/day13-test.txt';
+  var MAIN_INPUT = '../data/day13.txt';
 
   //Answer:295
   runPart1('13 test part 1', parseInput1(TEST_INPUT));

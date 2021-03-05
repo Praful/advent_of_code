@@ -1,20 +1,12 @@
 import '../../shared/dart/src/utils.dart';
 import 'package:collection/collection.dart';
 
-/// Puzzle description: https://adventofcode.com/2019/day/4
+/// Puzzle description: https://adventofcode.com/2019/day/8
 
 const bool DEBUG = false;
 const BLACK = '0';
 const WHITE = '1';
 const TRANSPARENT = '2';
-
-void printAndAssert(actual, [expected]) {
-  if (expected != null) {
-    assertEqual(actual, expected);
-  } else {
-    print(actual);
-  }
-}
 
 Map<int, String> toLayers(String input, int width, int height) {
   var totalPixels = width * height;
@@ -31,7 +23,7 @@ Object part1(String header, String input, int width, int height) {
   var layers = toLayers(input, width, height);
   var zeroCounts =
       layers.values.map((l) => l.where((c) => c == BLACK).length).toList();
-  var minZerosLayer = layers[zeroCounts.indexOf(zeroCounts.min)];
+  var minZerosLayer = layers[zeroCounts.indexOf(zeroCounts.min)]!;
   return minZerosLayer.where((c) => c == WHITE).length *
       minZerosLayer.where((c) => c == TRANSPARENT).length;
 }
@@ -59,5 +51,5 @@ void main(List<String> arguments) {
   var mainInput = FileUtils.asString('../data/day08.txt');
 
   printAndAssert(part1('08 part 1', mainInput, 25, 6), 2286);
-  part2('08 part 2', mainInput, 25, 6);
+  part2('08 part 2', mainInput, 25, 6); //CJZLP
 }

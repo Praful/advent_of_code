@@ -1,5 +1,5 @@
 import 'dart:io';
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
 
@@ -31,7 +31,7 @@ int findOutlier(List<int> input, int preambleLength) {
       return input[i];
     }
   }
-  return null;
+  throw 'outlier not found';
 }
 
 int findEncryptionWeakness(List<int> input, int target) {
@@ -54,7 +54,7 @@ int findEncryptionWeakness(List<int> input, int target) {
       return (continguousList.min + continguousList.max);
     }
   }
-  return null;
+  throw 'encryption weakness not found';
 }
 
 void test() {

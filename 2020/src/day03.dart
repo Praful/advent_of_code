@@ -1,5 +1,5 @@
 import 'dart:io';
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 class Vector {
   final int x;
@@ -68,7 +68,7 @@ int treesForMultipleSlopes(
 int treesOnCourse(final List<String> course, final Vector slope) {
   var courseWidth = course[0].length;
   if (DEBUG) {
-    print('course length ${course.length}\ncourse width ${courseWidth}');
+    print('course length ${course.length}\ncourse width $courseWidth');
   }
 
   Vector nextLocation(final Vector current) {

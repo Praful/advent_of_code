@@ -6,14 +6,6 @@ import '../../shared/dart/src/grid.dart';
 
 const bool DEBUG = false;
 
-void printAndAssert(actual, [expected]) {
-  if (expected != null) {
-    assertEqual(actual, expected);
-  } else {
-    print(actual);
-  }
-}
-
 const BEAM_WIDTH = 50;
 const BEAM_HEIGHT = BEAM_WIDTH;
 
@@ -59,16 +51,16 @@ Object part2(String header, List input) {
   printHeader(header);
 
   //TODO return something
-  return null;
+  return 0;
 }
 
 void main(List<String> arguments) {
   // List testInput = FileUtils.asLines('../data/day19-test.txt');
-  List mainInput = FileUtils.asInt('../data/day19.txt', ',');
+  var mainInput = FileUtils.asInt('../data/day19.txt', ',');
 
   // assertEqual(part1('19 test part 1', testInput), 1);
   // assertEqual(part2('19 test part 2', testInput), 1);
 
-  printAndAssert(part1('19 part 1', mainInput));
+  printAndAssert(part1('19 part 1', mainInput), 231);
   // printAndAssert(part2('19 part 2', mainInput));
 }

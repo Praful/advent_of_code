@@ -6,14 +6,6 @@ import 'dart:math';
 
 const bool DEBUG = false;
 
-void printAndAssert(actual, [expected]) {
-  if (expected != null) {
-    assertEqual(actual, expected);
-  } else {
-    print(actual);
-  }
-}
-
 enum Tile { empty, wall, block, paddle, ball }
 const X = 0;
 const Y = 1;
@@ -26,17 +18,17 @@ class Game {
   static const MOVE_NONE = 0;
 
   final input;
-  List<List<int>> output;
-  Point ballPosition;
-  Point paddlePosition;
+  // List<List<int>> output;
+  late Point ballPosition;
+  late Point paddlePosition;
 
   Game(this.input);
 
-  int inputProvider() => (ballPosition.x - paddlePosition.x).sign;
+  int inputProvider() => (ballPosition.x - paddlePosition.x).sign as int;
 
   int play() {
     input[0] = 2; //initialise game
-    int score;
+    late int score;
     var c = Computer(input, () => inputProvider());
     while (!c.halted) {
       c.run([], true);
@@ -56,9 +48,9 @@ class Game {
   }
 }
 
-Object part1(String header, List input) {
+Object part1(String header, List<int> program) {
   printHeader(header);
-  var c = Computer(input);
+  var c = Computer(program);
   var blockTiles = <Point>{};
   while (!c.halted) {
     c.run([], true);
@@ -79,7 +71,7 @@ Object part2(String header, List input) {
 }
 
 void main(List<String> arguments) {
-  List mainInput = FileUtils.asInt('../data/day13.txt', ',');
+  var mainInput = FileUtils.asInt('../data/day13.txt', ',');
 
   printAndAssert(part1('13 part 1', mainInput), 273);
   printAndAssert(part2('13 part 2', mainInput), 13140);

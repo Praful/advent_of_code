@@ -5,14 +5,6 @@ import './intcode_computer.dart';
 
 const bool DEBUG = false;
 
-void printAndAssert(actual, [expected]) {
-  if (expected != null) {
-    assertEqual(actual, expected);
-  } else {
-    print(actual);
-  }
-}
-
 List run(List<int> program, int returnAddress, input) {
   var c = Computer(program);
   c.run(input);
@@ -41,7 +33,7 @@ int part2(String header, List<int> program, int initValue) {
 }
 
 void main(List<String> arguments) {
-  List mainInput = FileUtils.asString('../data/day05.txt')
+  var mainInput = FileUtils.asString('../data/day05.txt')
       .split(',')
       .map((v) => v.toInt())
       .toList();

@@ -1,5 +1,5 @@
 import 'dart:io';
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 var verbose = false;
 var debug = false;
@@ -37,18 +37,18 @@ class PasswordEntry {
   static RegExp regex =
       RegExp(r'^(?<min>\d+)-(?<max>\d+) (?<char>.): (?<password>.+)$');
 
-  int minAppearances;
-  int maxAppearances;
-  String requiredChar;
-  String password;
+  late int minAppearances;
+  late int maxAppearances;
+  late String requiredChar;
+  late String password;
 
   PasswordEntry(String s) {
-    final match = PasswordEntry.regex.firstMatch(s);
+    final match = PasswordEntry.regex.firstMatch(s)!;
 
-    minAppearances = int.parse(match.namedGroup('min'));
-    maxAppearances = int.parse(match.namedGroup('max'));
+    minAppearances = int.parse(match.namedGroup('min')!);
+    maxAppearances = int.parse(match.namedGroup('max')!);
     requiredChar = match.namedGroup('char').toString();
-    password = match.namedGroup('password');
+    password = match.namedGroup('password')!;
   }
 
   @override

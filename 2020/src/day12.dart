@@ -1,10 +1,6 @@
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
-
-List TEST_INPUT;
-List TEST_INPUT2;
-List MAIN_INPUT;
 
 class Vector {
   int x;
@@ -114,8 +110,8 @@ int navigate1(List<String> input) {
 }
 
 int navigate2(List<String> input) {
-  var ship = Position(null);
-  var waypoint = Position(null);
+  var ship = Position(Compass.north);
+  var waypoint = Position(Compass.north);
 
   waypoint.moveByCompassPoint(Compass.east, 10);
   waypoint.moveByCompassPoint(Compass.north, 1);
@@ -155,19 +151,19 @@ void test() {
   turn('R', 90);
 }
 
-void runPart1(String name, List input) {
+void runPart1(String name, List<String> input) {
   printHeader(name);
   print(navigate1(input));
 }
 
-void runPart2(String name, List input) {
+void runPart2(String name, List<String> input) {
   printHeader(name);
   print(navigate2(input));
 }
 
 void main(List<String> arguments) {
-  TEST_INPUT = fileAsString('../data/day12-test.txt');
-  MAIN_INPUT = fileAsString('../data/day12.txt');
+  var TEST_INPUT = FileUtils.asLines('../data/day12-test.txt');
+  var MAIN_INPUT = FileUtils.asLines('../data/day12.txt');
 
   // test();
 

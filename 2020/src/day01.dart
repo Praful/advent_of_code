@@ -1,5 +1,5 @@
 import 'dart:io';
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 var verbose = true;
 var debug = true;

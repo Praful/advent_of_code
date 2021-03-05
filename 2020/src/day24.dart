@@ -1,10 +1,6 @@
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
-
-List TEST_INPUT;
-List TEST_INPUT2;
-List MAIN_INPUT;
 
 //Using cube coordinates: see https://www.redblobgames.com/grids/hexagons/
 class Location {
@@ -100,7 +96,7 @@ class Floor {
       daysBlackTiles.forEach((tile) {
         var adjBlackTiles =
             adjacentBlackTiles(daysBlackTiles, Location.parse(tile));
-        if (adjBlackTiles.isBetweenI(1, 2)) {
+        if (adjBlackTiles.isBetween(1, 2)) {
           nextDaysBlackTiles.add(tile.toString());
         }
         var flipWhite = findWhiteTilesThatNeedFlipping(daysBlackTiles);
@@ -133,7 +129,7 @@ class Floor {
   }
 }
 
-void runPart1(String name, List input) {
+void runPart1(String name, List<String> input) {
   printHeader(name);
   // var floor = Floor(['esew']);
   // var floor = Floor(['nwwswee']);
@@ -141,7 +137,7 @@ void runPart1(String name, List input) {
   print(floor.doFlips());
 }
 
-void runPart2(String name, List input, days) {
+void runPart2(String name, List<String> input, days) {
   printHeader(name);
   var floor = Floor(input);
   floor.doFlips();
@@ -149,8 +145,8 @@ void runPart2(String name, List input, days) {
 }
 
 void main(List<String> arguments) {
-  TEST_INPUT = fileAsString('../data/day24-test.txt');
-  MAIN_INPUT = fileAsString('../data/day24.txt');
+  var TEST_INPUT = FileUtils.asLines('../data/day24-test.txt');
+  var MAIN_INPUT = FileUtils.asLines('../data/day24.txt');
 
   //Answer: 10
   runPart1('24 test part 1', TEST_INPUT);

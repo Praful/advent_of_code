@@ -1,10 +1,6 @@
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
-
-List TEST_INPUT;
-List TEST_INPUT2;
-List MAIN_INPUT;
 
 class Point {
   final int x;
@@ -100,7 +96,7 @@ class PocketDimension {
             var updatePoint = Point(x, y, z, w);
             var activeCount = activeNeighbours(updatePoint);
             if (isActive(updatePoint)) {
-              if (activeCount.isBetweenI(2, 3)) {
+              if (activeCount.isBetween(2, 3)) {
                 makeActive(newGrid, updatePoint);
               }
             } else {
@@ -128,8 +124,8 @@ void runPart2(String name, List input) {
 }
 
 void main(List<String> arguments) {
-  TEST_INPUT = fileAsString('../data/day17-test.txt');
-  MAIN_INPUT = fileAsString('../data/day17.txt');
+  var TEST_INPUT = FileUtils.asLines('../data/day17-test.txt');
+  var MAIN_INPUT = FileUtils.asLines('../data/day17.txt');
 
   //Answer: 848
   runPart2('17 test part 2', TEST_INPUT);

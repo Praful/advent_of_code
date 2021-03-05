@@ -1,4 +1,4 @@
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 import 'dart:math' as math;
 
 const bool DEBUG = false;
@@ -25,7 +25,6 @@ class Computer {
   String addLeadingZeroes(s, count) => s.padLeft(count, '0');
 
   void run() {
-    assert(input != null);
     BigInt updatedValue(String mask, int value) {
       var result = BigInt.from(value);
       if (mask.isNotEmpty) {
@@ -42,9 +41,9 @@ class Computer {
       if (instruction.startsWith(MASK)) {
         mask = getMask(instruction);
       } else if (instruction.startsWith(MEM)) {
-        var match = MEM_REGEX.firstMatch(instruction);
-        var address = int.parse(match.namedGroup('address'));
-        var value = int.parse(match.namedGroup('value'));
+        var match = MEM_REGEX.firstMatch(instruction)!;
+        var address = int.parse(match.namedGroup('address')!);
+        var value = int.parse(match.namedGroup('value')!);
         memory[address] = updatedValue(mask, value);
       }
     });
@@ -89,8 +88,6 @@ class Computer {
   }
 
   void run2() {
-    assert(input != null);
-
     var mask = '';
     var memory = {};
 
@@ -98,9 +95,9 @@ class Computer {
       if (instruction.startsWith(MASK)) {
         mask = getMask(instruction);
       } else if (instruction.startsWith(MEM)) {
-        var match = MEM_REGEX.firstMatch(instruction);
-        var address = int.parse(match.namedGroup('address'));
-        var value = int.parse(match.namedGroup('value'));
+        var match = MEM_REGEX.firstMatch(instruction)!;
+        var address = int.parse(match.namedGroup('address')!);
+        var value = int.parse(match.namedGroup('value')!);
 
         memoryAddressesToUpdate(mask, address)
             .forEach((a) => memory[a] = BigInt.from(value));
@@ -111,20 +108,20 @@ class Computer {
   }
 }
 
-void runPart1(String name, List input) {
+void runPart1(String name, List<String> input) {
   printHeader(name);
   Computer(input).run();
 }
 
-void runPart2(String name, List input) {
+void runPart2(String name, List<String> input) {
   printHeader(name);
   Computer(input).run2();
 }
 
 void main(List<String> arguments) {
-  var TEST_INPUT = fileAsString('../data/day14-test.txt');
-  var TEST_INPUT2 = fileAsString('../data/day14b-test.txt');
-  var MAIN_INPUT = fileAsString('../data/day14.txt');
+  var TEST_INPUT = FileUtils.asLines('../data/day14-test.txt');
+  var TEST_INPUT2 = FileUtils.asLines('../data/day14b-test.txt');
+  var MAIN_INPUT = FileUtils.asLines('../data/day14.txt');
 
   //Answer: 165
   runPart1('14 test part 1', TEST_INPUT);

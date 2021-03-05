@@ -1,5 +1,5 @@
 import 'dart:io';
-import './utils.dart';
+import '../../shared/dart/src/utils.dart';
 
 //Part 1 here is long-winded. After writing, I saw that treating each row as a binary
 //representation (B, R=1 and F,L = 0) results in the largest binary number
@@ -16,6 +16,7 @@ final List<String> MAIN_INPUT = File('../data/day05.txt').readAsLinesSync();
 
 const ROW_RANGE = Range(0, 127);
 const COLUMN_RANGE = Range(0, 7);
+const NULL_RANGE = Range(0, 0);
 
 class Range {
   final upper;
@@ -64,7 +65,7 @@ int findRow(String passRows) {
         break;
       default:
         print('invalid direction for row');
-        return 0;
+        result = NULL_RANGE;
     }
     if (DEBUG) print('$oldResult: $direction => $result');
   });
@@ -85,7 +86,7 @@ int findColumn(String passColumns) {
         break;
       default:
         print('invalid direction for column');
-        return 0;
+        result = NULL_RANGE;
     }
     if (DEBUG) print('$oldResult: $direction => $result');
   });

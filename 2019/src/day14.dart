@@ -4,14 +4,6 @@ import '../../shared/dart/src/utils.dart';
 
 const bool DEBUG = false;
 
-void printAndAssert(actual, [expected]) {
-  if (expected != null) {
-    assertEqual(actual, expected);
-  } else {
-    print(actual);
-  }
-}
-
 //round numToRound to nearest multiple that is >= multipleOf
 //eg (8,3)-> 9, (2,3) -> 3
 int roundUp(int numToRound, int multipleOf) {
@@ -69,9 +61,9 @@ class NanoFactory {
   int produce(Ingredient toMake) {
     int newAmount(make, inc, amount) => (make ~/ inc) * amount;
 
-    var recipe = _recipes[toMake.chemical];
+    var recipe = _recipes[toMake.chemical]!;
 
-    var incAmount = _recipes[toMake.chemical].incrementAmount;
+    var incAmount = _recipes[toMake.chemical]!.incrementAmount;
     var credit = _extra[toMake.chemical] ?? 0;
     var result = 0;
 
@@ -81,7 +73,7 @@ class NanoFactory {
       credit = -make;
     } else {
       var rounded = roundUp(make, incAmount);
-      credit = rounded - make;
+      credit = rounded - make as int;
       make = rounded;
     }
 

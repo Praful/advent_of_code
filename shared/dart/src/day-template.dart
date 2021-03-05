@@ -1,4 +1,4 @@
-import '../../shared/dart/src/utils.dart';
+import './utils.dart';
 
 /// Puzzle description: https://adventofcode.com/2019/day/4
 
@@ -16,14 +16,14 @@ Object part1(String header, List input) {
   printHeader(header);
 
   //TODO return something
-  return null;
+  return 0;
 }
 
 Object part2(String header, List input) {
   printHeader(header);
 
   //TODO return something
-  return null;
+  return 0;
 }
 
 void main(List<String> arguments) {
