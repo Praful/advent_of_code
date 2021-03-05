@@ -44,8 +44,9 @@ class Seating {
   List nextRound(input, [recurseSearch = false, occupiedCount = 4]) {
     var rowCount = input.length;
     var colCount = input[0].length;
-    var result =
-        List.generate(rowCount, (i) => List(colCount), growable: false);
+    var result = List.generate(
+        rowCount, (i) => List.filled(colCount, LOCATION_FLOOR),
+        growable: false);
     // print(result);
     for (var r = 0; r < rowCount; r++) {
       for (var c = 0; c < colCount; c++) {

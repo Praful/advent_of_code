@@ -160,7 +160,8 @@ class Image {
 
     var size = math.sqrt(tiles.entries.length).round();
     //2D square array
-    tileIdGrid = List.generate(size, (i) => List(size), growable: false);
+    tileIdGrid =
+        List.generate(size, (i) => List.filled(size, 0), growable: false);
   }
 
   List<Tile> _parseInput() => _input

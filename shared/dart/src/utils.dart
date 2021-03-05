@@ -34,6 +34,11 @@ class FileUtils {
   }
 }
 
+extension Set2 on Set {
+  bool isEqualTo(Set<Object> other) =>
+      length == other.length && containsAll(other);
+}
+
 extension List2 on List {
   Set intersection(List other) => toSet().intersection(other.toSet());
 }
@@ -68,7 +73,6 @@ extension String2 on String {
   double toDouble() => double.parse(this);
 
   int toInt() => int.parse(this);
-
 }
 
 class NumUtils {

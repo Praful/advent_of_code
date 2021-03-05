@@ -29,17 +29,21 @@ int pointsInTractorBeam(program) {
   var drone = Computer(program, () => coords.removeAt(0));
   var originalState = drone.state;
   var beam = StringBuffer();
+  var line = 0;
+  var sentY = false;
   while (coords.isNotEmpty) {
     drone.run([], true);
     var output = drone.output(true);
     if (output.isNotEmpty) {
       if (output.first == 1) result++;
-      if (beam.length == BEAM_WIDTH) {
-        print(beam);
+      if (beam.length == BEAM_WIDTH ) {
+        print('${line.toString().padLeft(2, '0')} $beam');
         beam.clear();
+        line++;
       }
       beam.write(output.first == 1 ? '#' : '.');
     }
+    sentY = !sentY;
     drone.state = originalState; //reset program
   }
   return result;
