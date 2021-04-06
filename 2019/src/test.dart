@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:math' as math;
 // import 'package:console/console.dart';
+import 'package:collection/collection.dart';
 
 import '../../shared/dart/src/utils.dart';
 // import 'package:basics/basics.dart' hide NumIterableBasics;
@@ -13,7 +14,7 @@ import '../../shared/dart/src/utils.dart';
 // }
 
 void test1() {
-  print([1.2, 1.3, 5, 2.2].sum); //works
+  // print([1.2, 1.3, 5, 2.2].sum); //works
   print([1.2, 1.3, 5, 2.2].max); //works
   print([1.2, 1.3, 5.3, 2.2].min); //works
   print([1.2, 1.3, 5.0, 2.2].sum); //does not work
@@ -144,6 +145,10 @@ void test11() {
   print(a.isEqualTo(b));
 }
 
+void test12() {
+// IterableZip()
+}
+
 void main(List<String> args) {
-  test11();
+  test12();
 }
