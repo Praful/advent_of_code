@@ -4,14 +4,6 @@ import './utils.dart';
 
 const bool DEBUG = false;
 
-void printAndAssert(actual, [expected]) {
-  if (expected != null) {
-    assertEqual(actual, expected);
-  } else {
-    print(actual);
-  }
-}
-
 Object part1(String header, List input) {
   printHeader(header);
 
