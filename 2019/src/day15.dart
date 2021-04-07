@@ -107,7 +107,7 @@ class SpaceStation {
     if (previousOutput == DroidStatus.path) {
       var newLocation = coords(previousNode.location, previousNode.direction);
       enqueueAdjacent(visited,
-          Node(newLocation, null, previousNode.distance, _droid.state));
+          Node(newLocation, null, previousNode.steps, _droid.state));
     }
     return _exploreQueue.isEmpty ? null : _exploreQueue.removeFirst();
   }
@@ -171,7 +171,7 @@ class SpaceStation {
 
     printLayout(visited, oxygenLocation);
 
-    return TraversalResult(visited, oxygenLocation, previousNode.distance);
+    return TraversalResult(visited, oxygenLocation, previousNode.steps);
   }
 
   int fillWithOxygen(oxygenLocation) {

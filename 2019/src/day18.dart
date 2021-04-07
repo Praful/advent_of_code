@@ -21,7 +21,7 @@ import 'package:tuple/tuple.dart';
 /// quadrants would have walls around them and that isn't the case for
 /// example three. In example four, the order may be important and treating
 /// the robots as independent optimisers doesn't work. For now, I'll
-/// move on since the answer for part 2 is correct (probably by luck by I tried
+/// move on since the answer for part 2 is correct (probably by luck but I tried
 /// it on someone else's input and it worked too). At
 /// some point I'll return to fully solve this.
 
