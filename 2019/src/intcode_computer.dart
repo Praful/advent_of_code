@@ -317,7 +317,10 @@ class Computer {
           Instruction.create(opcodeId, params, memory, _relativeBase);
 
       if (opcodeId == Opcode.WRITE) {
-        (instruction as Write).input = readInput();
+        var input = readInput();
+        // print('input = $input');
+        (instruction as Write).input = input;
+        // (instruction as Write).input = readInput();
         // print((instruction as Write).input);
         // print('input ${(instruction as Write).input}');
         if (_firstRun) _firstRun = false;
