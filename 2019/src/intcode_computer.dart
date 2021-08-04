@@ -261,12 +261,16 @@ class Computer {
   final List<int> _output = [];
   int _relativeBase = 0;
   int Function()? _inputProvider;
+  bool Function(int)? _forceExit;
+
   bool requiresInput = false;
   int? input;
 
-  Computer(List<int> program, [int Function()? inputProvider]) {
+  Computer(List<int> program,
+      [int Function()? inputProvider, bool Function(int)? forceExit]) {
     program.asMap().forEach((k, v) => memory[k] = v);
     _inputProvider = inputProvider;
+    _forceExit = forceExit;
   }
 
   ComputerState get state =>
@@ -291,7 +295,7 @@ class Computer {
           _instructionPointer + Opcode.opcodeMap[opcodeId]!.length as int)
       .toList();
 
-  List run([List<int>? program, exitOnOuput = false]) {
+  List run([List<int>? program, exitOnOuput = false, exitCheck]) {
     int readInput() {
       if (input != null) {
         return input!;
@@ -305,6 +309,7 @@ class Computer {
     var opcodeId;
     List<int> params;
     requiresInput = false;
+    var lastInput = -1;
     while (true) {
       opcodeId = Opcode.opcodeId(memory[_instructionPointer]!);
       if (opcodeId == Opcode.HALT) {
@@ -317,7 +322,9 @@ class Computer {
           Instruction.create(opcodeId, params, memory, _relativeBase);
 
       if (opcodeId == Opcode.WRITE) {
+        // var input = readInput();
         var input = readInput();
+        lastInput = input;
         // print('input = $input');
         (instruction as Write).input = input;
         // (instruction as Write).input = readInput();
@@ -338,6 +345,7 @@ class Computer {
         // print('output: $_output');
         if (exitOnOuput) break;
       }
+      if (_forceExit != null && _forceExit!(lastInput)) break;
     }
     return output();
   }

@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:tuple/tuple.dart';
 import 'dart:math';
 
-/// Puzzle description: https://adventofcode.com/2019/day/4
+/// Puzzle description: https://adventofcode.com/2019/day/22
 
 const bool DEBUG = false;
 
