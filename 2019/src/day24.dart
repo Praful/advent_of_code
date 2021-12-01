@@ -61,14 +61,13 @@ Object part1(String header, List<String> input) {
   var grid = input;
 
   while (true) {
-    // print('----------------');
+    print('----------------');
     grid = evolve(grid);
-    // printGrid(grid);
+    printGrid(grid);
     var bd = biodiversity(grid);
     if (biodiversityHistory.contains(bd)) return bd;
     biodiversityHistory.add(bd);
   }
-  // return 0;
 }
 
 Object part2(String header, List input) {
@@ -86,5 +85,5 @@ void main(List<String> arguments) {
   // assertEqual(part2('24 test part 2', testInput), 1);
 
   printAndAssert(part1('24 part 1', mainInput), 17863711);
-  // printAndAssert(part2('24 part 2', mainInput));
+  // printAndAssert(part2('24 part 2', mainInput), 1937);
 }

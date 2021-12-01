@@ -30,3 +30,7 @@ The story of my Advent of Code 2020 is on my [blog](https://prafulkapadia.com/20
 ### Update 1
 
 Having completed AoC 2020, I'm slowly working my way through AoC 2019.
+
+## Update 2
+
+I have 1.5 problems remaining for Aoc 2019. However, AoC 2021 has arrived. I'm doing this in Julia, which I know nothing about; I haven't even read a tutorial! My solutions for 2021, therefore, are the first bits of code I've ever written in Julia. Initially, they will probably look generically procedural but hopefully will become more idiomatic Julia as I learn the language.
