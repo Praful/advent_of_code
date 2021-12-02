@@ -1,6 +1,6 @@
 using DelimitedFiles
 
-read_input(filename) = filename |> readlines .|> x -> parse(Int, x)
+# read_input(filename) = filename |> readlines .|> x -> parse(Int, x)
 
 function part1(input)
   prev = Inf
@@ -15,15 +15,17 @@ function part1(input)
   result
 end
 
-# Return array for sum of elements in sliding window of 3
-function part2(input)
-  result =[]
-  input_size = size(input,1)  
+# Return array for sum of elements in sliding window 
+function part2(input, window_size)
+  result = []
+  # input_size = size(input,1)  
+  input_size = length(input)
   for i in eachindex(input)
-    if i+2<=input_size
-      push!(result, input[i]+input[i+1]+input[i+2])
+    if i + 2 <= input_size
+      # push!(result, input[i]+input[i+1]+input[i+2])
+      push!(result, sum(input[i:i+window_size-1]))
     end
-  end 
+  end
   result
 end
 
@@ -31,14 +33,14 @@ function main()
   main_input = readdlm("../data/day01.txt", Int)
   test_input = readdlm("../data/day01-test.txt", Int)
 
-  @assert part1(test_input)== 7 "01 test part 1 should be 7"
-  @assert part1(part2(test_input)) == 5 "01 test part 2 should be 5"
+  @assert part1(test_input) == 7 "01 test part 1"
+  @assert part1(part2(test_input, 3)) == 5 "01 test part 2"
 
-  part1_solution = part1(main_input)
-  @show part1_solution
+  @show part1(main_input) #1292
+  # @show part1_solution
 
-  part2_solution = part1(part2(main_input))
-  @show part2_solution
+  @show part1(part2(main_input, 3)) #1262
+  # @show part2_solution
 
   # (part1_solution, part2_solution)
 end
