@@ -50,7 +50,7 @@ function part2(input_file)
 end
 
 function read_input(filename, include_diags = false)
-  lines = Vector{Line}(undef, 0)
+  lines = Vector{Line}()
 
   open(filename, "r") do f
     for line in readlines(f)
@@ -71,7 +71,7 @@ end
 function points_on_line(start, end_)
   x_start, x_end = sort([start.x, end_.x])
   y_start, y_end = sort([start.y, end_.y])
-  points = Vector{Point}(undef, 0)
+  points = Vector{Point}()
 
   if is_horiz(start, end_)
     [push!(points, Point(x, y_start)) for x = x_start:x_end]
