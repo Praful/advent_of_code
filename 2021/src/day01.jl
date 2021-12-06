@@ -1,5 +1,7 @@
 using DelimitedFiles
 
+# Puzzle description: https://adventofcode.com/2021/day/1
+
 # read_input(filename) = filename |> readlines .|> x -> parse(Int, x)
 
 function part1(input)

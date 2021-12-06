@@ -1,5 +1,7 @@
 using DelimitedFiles
 
+# Puzzle description: https://adventofcode.com/2021/day/5
+
 global max_x = max_y = 0
 
 struct Point
@@ -37,17 +39,14 @@ function plot(lines)
   length(diagram[diagram.>1])
 end
 
-function part1(input_file)
+function solve(input_file, part2 = false)
   global max_x = max_y = 0
-  lines = read_input(input_file)
+  lines = read_input(input_file, part2)
   plot(lines)
 end
 
-function part2(input_file)
-  global max_x = max_y = 0
-  lines = read_input(input_file, true)
-  plot(lines)
-end
+part1(input_file) = solve(input_file)
+part2(input_file) = solve(input_file, true)
 
 function read_input(filename, include_diags = false)
   lines = Vector{Line}()

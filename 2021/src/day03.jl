@@ -1,5 +1,7 @@
 using DelimitedFiles
 
+# Puzzle description: https://adventofcode.com/2021/day/3
+
 function part1(input)
   gamma_str = ""
   half_way = length(input) / 2

@@ -1,5 +1,7 @@
 using DelimitedFiles
 
+# Puzzle description: https://adventofcode.com/2021/day/2
+
 function part1(input)
   pos = depth = 0
   # @show size(input)

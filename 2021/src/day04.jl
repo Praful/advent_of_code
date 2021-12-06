@@ -1,5 +1,7 @@
 using DelimitedFiles
 
+# Puzzle description: https://adventofcode.com/2021/day/4
+
 # Return true if all elements in a row or column consists only of -1 values
 winner(board) = any(all(==(-1), board, dims = 1)) || any(all(==(-1), board, dims = 2))
 
