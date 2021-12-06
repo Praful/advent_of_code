@@ -21,6 +21,7 @@ end
 
 function part2(input_file)
   (draw, boards) = read_input(input_file)
+
   board_count = size(boards, 3)
   winners = []
 
@@ -58,4 +59,4 @@ function main()
   @show part2(main_input) # 2980 
 end
 
-main()
+@time main()
