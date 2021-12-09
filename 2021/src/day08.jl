@@ -33,12 +33,15 @@ function find_signal_mapping(patterns, perm)
   signal_pattern_to_digit_map = Dict{String,Int}()
   _, i = findmax(length, patterns)
   mangled_eight_pattern = patterns[i]
+
   for given_pat in patterns
     actual_digit_pattern = ""
     [actual_digit_pattern *= perm[findfirst(c, mangled_eight_pattern)]
      for c in given_pat]
+
     actual_digit_pattern = collect(actual_digit_pattern) |> sort |> join
     decoded_digit = findfirst(==(actual_digit_pattern), DIGITS)
+
     if isnothing(decoded_digit)
       break # this perm doesn't decode the patterns
     else
