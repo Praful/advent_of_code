@@ -4,17 +4,6 @@ using Combinatorics
 
 # Puzzle description: https://adventofcode.com/2021/day/8
 
-
-struct NoteEntry
-  signal_pattern::Vector{String}
-  output::Vector{String}
-  # function Point(s) # "x,y"
-  #   x, y = parse.(Int, split(s, ","))
-  #   new(x, y)
-  # end
-  # Point(x, y) = new(x, y)
-end
-
 function part1(notes)
   count1478 = 0
   output = notes[:, 2]
