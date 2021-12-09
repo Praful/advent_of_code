@@ -14,6 +14,7 @@ function part1(notes)
   @show count1478
 end
 
+# element 1 is segment pattern for digit 0, element 2 is for digit 1, etc
 const DIGITS = ["abcefg", "cf", "acdeg", "acdfg", "bcdf", "abdfg", "abdefg", "acf", "abcdefg", "abcdfg"]
 
 function decode_output(output_values, map)
@@ -48,23 +49,22 @@ function find_signal_mapping(patterns, perm)
   signal_pattern_to_digit_map
 end
 
-# A note is of format "<pattern1> <pattern2>, ...<pattern10>",
-#                     "<output pattern1>,...<output pattern4>"
-# eg "be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe"
+# A note is 2-element array, format:
+#     "<pattern1> <pattern2>, ..., <pattern10>",
+#     "<output pattern1>,..., <output pattern4>"
+# eg "be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb", "fdgacbe cefdb cefbgd gcbe"
 # Return sum of the decoded outputs.
 function output_value(note)
-  PATTERN_COL = 1
-  OUTPUT_COL = 2
   output_value_sum = 0
-  patterns = split(strip(note[PATTERN_COL]), " ")
+  patterns = split(strip(note[1]), " ")
   for perm in permutations("abcdefg")
     map = find_signal_mapping(patterns, perm)
     if length(map) == 10 # we've found the mapping
-      output_value_sum += decode_output(split(strip(note[OUTPUT_COL]), " "),
+      output_value_sum += decode_output(split(strip(note[2]), " "),
         map)
       break
     end
-  end # each input
+  end
   output_value_sum
 end
 
