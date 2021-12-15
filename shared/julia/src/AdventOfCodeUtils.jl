@@ -21,5 +21,25 @@ function read_string_matrix(input_file)
 end
 export read_string_matrix
 
+function adjacent(point, include_diagonals = false)
+  r, c = Tuple(point)
+  result = [
+    CartesianIndex(r - 1, c),
+    CartesianIndex(r + 1, c),
+    CartesianIndex(r, c + 1),
+    CartesianIndex(r, c - 1),
+  ]
+  if include_diagonals
+    union!(result, [
+      CartesianIndex(r - 1, c + 1),
+      CartesianIndex(r - 1, c - 1),
+      CartesianIndex(r + 1, c + 1),
+      CartesianIndex(r + 1, c - 1)
+    ])
+  end
+  result
+end
+export adjacent
+
 
 end
