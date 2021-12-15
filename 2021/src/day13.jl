@@ -31,18 +31,18 @@ end
 function solve(coords, folds)
   for f in folds
     (fx, fy) = Tuple(f)
-    is_xfold = f[1] > 0
+    is_xfold = fx > 0
+    new_coord = Tuple{Int,Int}
 
     for (i, c) in enumerate(coords)
       (cx, cy) = Tuple(c)
 
       if is_xfold
         new_coord = cx > fx ? (cx - (2 * (cx - fx)), cy) : (cx, cy)
-        coords[i] = CartesianIndex(new_coord)
       else
         new_coord = cy > fy ? (cx, cy - (2 * (cy - fy))) : (cx, cy)
-        coords[i] = CartesianIndex(new_coord)
       end
+      coords[i] = CartesianIndex(new_coord)
     end
     unique!(coords)
   end
