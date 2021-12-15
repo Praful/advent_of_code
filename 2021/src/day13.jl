@@ -22,10 +22,9 @@ function print_code(coords)
   output = reverse(rotl90(output), dims = (1))
 
   for r in eachrow(output)
-    println()
     [print(c) for c in r]
+    println()
   end
-  println()
 end
 
 function solve(coords, folds)
