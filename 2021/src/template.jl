@@ -7,9 +7,13 @@ using DelimitedFiles
 
 
 
-function part1(input) end
+function part1(input)
+  0
+end
 
-function part2(input) end
+function part2(input)
+  0
+end
 
 function read_input(input_file)
   readdlm(input_file, String)
