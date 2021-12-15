@@ -1,3 +1,4 @@
+using AdventOfCodeUtils
 using DelimitedFiles
 # using Memoize
 # using Combinatorics
@@ -22,7 +23,7 @@ function main()
   # @assert part2(test_input) == 0
 
   # @show part1(main_input) # 
-  # @show part2(test_input) # 
+  # @show part2(main_input) # 
 end
 
 @time main()

@@ -1,3 +1,5 @@
+using AdventOfCodeUtils
+
 using DelimitedFiles
 # using Memoize
 # using Combinatorics
@@ -61,13 +63,7 @@ function part2(input)
   end
 end
 
-function read_input(input_file)
-  input = readdlm(input_file, String)
-  # convert 1D matrix of strings to 2D matrix of ints
-  # https://discourse.julialang.org/t/converting-a-array-of-strings-to-an-array-of-char/35123/2
-  input = reduce(vcat, permutedims.(collect.(input)))
-  parse.(Int, input)
-end
+read_input(input_file)= read_string_matrix(input_file)
 
 function main()
   main_input = read_input("../data/day11.txt")
