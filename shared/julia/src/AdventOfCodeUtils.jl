@@ -42,4 +42,16 @@ end
 export adjacent
 
 
+hex2dec(s) = parse(BigInt, s, base = 16)
+export hex2dec
+
+dec2bin(n, padding = 1) = reverse(digits(n, base = 2, pad = padding))
+export dec2bin
+
+hex2bin(s) = dec2bin(hex2dec(s), length(s) * 4)
+export hex2bin
+
+bin2dec(n) = parse(Int, n |> join, base = 2)
+export bin2dec
+
 end
