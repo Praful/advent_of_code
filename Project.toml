@@ -2,3 +2,6 @@ name = "advent_of_code"
 uuid = "7a24f573-19a9-4d8d-95c9-3aa8eeadf017"
 authors = ["Praful <aaa@bbb.com>"]
 version = "0.1.0"
+
+[deps]
+ 
