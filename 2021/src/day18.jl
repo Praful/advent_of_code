@@ -2,6 +2,7 @@ using AdventOfCodeUtils
 using DelimitedFiles
 using Test
 using Combinatorics
+import Base: +
 
 # Puzzle description: https://adventofcode.com/2021/day/18
 
@@ -23,7 +24,7 @@ function deepest_nested_pair(s, target_depth = 4)
 end
 
 # Return start and end indces for value left of exploring pair. The
-# value can be more than one digits.
+# value can be more than one digit.
 # eg pair is [7,3] so return indices for 1 (9,9) for 
 # [[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]
 function left_num_index(s, from_index)
@@ -43,7 +44,7 @@ function left_num_index(s, from_index)
 end
 
 # Return start and end indices for value right of exploring pair. The
-# value can be one or two digits.
+# value can be more than one digit.
 # eg pair is [7,3] so return indices of 6 (21,21) for
 # [[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]
 function right_num_index(s, from_index)
@@ -62,12 +63,6 @@ function right_num_index(s, from_index)
   nothing
 end
 
-# Replace first match starting from index.
-function replace_from_index(s, regex, index)
-  left_text = s[1:index-1]
-  right_text = replace(s[index:end], regex; count = 1)
-  string(left_text, right_text)
-end
 
 function explode(s, nested_pair_index, left_num_index, right_num_index)
   m = match(r"\[(\d+),(\d+)\]", s[nested_pair_index[1]:nested_pair_index[2]])
@@ -102,8 +97,9 @@ function explode_wrapper(s)
   if !isnothing(nest_pair_index)
     left_value_index = left_num_index(s, nest_pair_index[1])
     right_value_index = right_num_index(s, nest_pair_index[2])
-    explode(s, nest_pair_index, left_value_index, right_value_index)
+    return explode(s, nest_pair_index, left_value_index, right_value_index)
   end
+  return nothing
 end
 
 can_split(s) = match(r"\d\d", s) !== nothing
@@ -111,7 +107,7 @@ can_explode(s) = deepest_nested_pair(s) !== nothing
 
 function split(s)
   m = match(r"\d\d", s)
-  isnothing(m) && return
+  isnothing(m) && return nothing
   num = parse(Int, s[m.offset:m.offset+1])
 
   string(s[1:m.offset-1], "[", Int(floor(num / 2)), ",",
@@ -144,13 +140,8 @@ function reduce(s)
   sfs
 end
 
-function reduce_list(l)
-  result = l[1]
-  for s in l[2:end]
-    result = reduce(add(result, s))
-  end
-  result
-end
+reduce_add(a, b) = reduce(add(a, b))
+reduce_list(l) = foldl(reduce_add, l[2:end]; init = l[1])
 
 function magnitude(s)
   while true

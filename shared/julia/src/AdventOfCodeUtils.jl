@@ -41,6 +41,13 @@ function adjacent(point, include_diagonals = false)
 end
 export adjacent
 
+# Replace first match starting from index.
+function replace_from_index(s, regex, index)
+  left_text = s[1:index-1]
+  right_text = replace(s[index:end], regex; count = 1)
+  string(left_text, right_text)
+end
+export replace_from_index
 
 hex2dec(s) = parse(BigInt, s, base = 16)
 export hex2dec

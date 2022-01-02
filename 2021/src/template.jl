@@ -1,5 +1,6 @@
 using AdventOfCodeUtils
 using DelimitedFiles
+using Test
 # using Memoize
 # using Combinatorics
 
@@ -24,8 +25,8 @@ function main()
   main_input = read_input("../data/dayXX.txt")
   test_input = read_input("../data/dayXX-test.txt")
 
-  @assert part1(test_input) == 0
-  # @assert part2(test_input) == 0
+  @test part1(test_input) == 0
+  @test_skip part2(test_input) == 0
 
   # @show part1(main_input) # 
   # @show part2(main_input) # 
