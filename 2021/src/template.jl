@@ -25,8 +25,8 @@ function main()
   main_input = read_input("../data/dayXX.txt")
   test_input = read_input("../data/dayXX-test.txt")
 
-  @test part1(test_input) == 0
-  @test_skip part2(test_input) == 0
+  @test part1(test_input) == 0 broken = true
+  @test_skip part2(test_input) == 0 broken = true
 
   # @show part1(main_input) # 
   # @show part2(main_input) # 
