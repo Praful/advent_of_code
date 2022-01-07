@@ -8,18 +8,24 @@ using Combinatorics
 
 # min overlapping beacons between two scanners if they overlap
 const MIN_MATCHES = 12
+
 # number of pairs we can expect to match between two scanners
 const PAIR_MATCHES = (MIN_MATCHES * (MIN_MATCHES - 1)) ÷ 2
 
+const Point = Vector{Int}
+
 mutable struct Scanner
-  beacons::Vector{Vector{Int}} # list of beacons
-  location # scanner location (x,y,z)
+  beacons::Vector{Point} # list of beacons
+  location # scanner location (x,y,z) 
   rotation # rotation matrix to align with first scanner
   distances::Vector{Int} # distances between pairs of beacons seen by this scanner
-  dist_beacon_map::Dict{Int,Vector{Vector{Int}}} # mapping between dist between two beacons and the pair of beacons
+  dist_beacon_map::Dict{Int,Vector{Point}} # mapping between dist between two beacons and the pair of beacons
+
+  Scanner(beacons) = new(beacons, nothing, nothing, [], Dict())
 end
 
-function get_rotations()
+
+function generate_rotations()
   R1 = [0 0 -1; 0 1 0; 1 0 0]
   R2 = [1 0 0; 0 0 -1; 0 1 0]
   R3 = [0 -1 0; 1 0 0; 0 0 1]
@@ -32,16 +38,16 @@ function get_rotations()
 end
 
 # Return scanner pairs with the beacons distances they share.
-function matches(scanners)
+function overlapping_scanners(scanners)
   is_matched(i, j) = haskey(result, [i, j]) ||
                      haskey(result, [j, i]) || i == j
+
   result = Dict{Vector{Int},Vector{Int}}()
   for (i, s1) in enumerate(scanners), (j, s2) in enumerate(scanners)
     is_matched(i, j) && continue
-    common_beacons = intersect(s1.distances, s2.distances)
-    if length(common_beacons) >= PAIR_MATCHES
-      result[[i, j]] = common_beacons
-      # println("$i and $j match")
+   common_beacon_distances = intersect(s1.distances, s2.distances)
+    if length(common_beacon_distances) >= PAIR_MATCHES
+      result[[i, j]] = common_beacon_distances
     end
   end
   result
@@ -49,10 +55,10 @@ end
 
 # Let A and B be beacons in scanner 1; C and D for scanner 2.
 # The distance between A and B = dist between C and D, as worked
-# out in matches(). So we know line AB is line CD. We just don't
-# know which ends match. This function works out whether beacon A
-# is C or D; and conversely whether beacon B is D or C by
-# comparing the differences.
+# out in overlapping_scanners(). So we know line AB is line CD.
+# We just don't know which ends match. This function works out 
+# whether beacon A # is C or D; and conversely whether beacon B is D 
+# or C by comparing the differences.
 # Below A = beacon_pair1[1], B = beacon_pair1[2]
 #       C = beacon_pair2[1], D = beacon_pair2[2]
 # If the differences don't match then the correct rotation hasn't 
@@ -73,17 +79,18 @@ function scanner_location(beacon_pair1, beacon_pair2)
 end
 
 # Return unqiue beacons and find locations of scanners
-function locations(scanners, matches)
+function unique_beacons(scanners)
   one_scanner_unprocessed(id1, id2) = xor(isnothing(scanners[id1].location), isnothing(scanners[id2].location))
+  found_rotation_and_location(location) = !isnothing(location)
 
-  rotations = get_rotations()
-  unique_beacons = Set(scanners[1].beacons)
+  rotations = generate_rotations()
+  overlaps = overlapping_scanners(scanners)
 
-  locations_found = 1
-  while (locations_found < length(scanners))
-    for (match, dist) in matches
-      id1, id2 = match[1], match[2]
+  result = Set(scanners[1].beacons)
 
+  scanners_processed = 1
+  while (scanners_processed < length(scanners))
+    for ((id1, id2), dist) in overlaps
       # We want one of the two scanners to not yet be processed
       !one_scanner_unprocessed(id1, id2) && continue
 
@@ -95,6 +102,7 @@ function locations(scanners, matches)
 
       # we only need to compare a pair from each scanner to work
       # out the second scanner's orientation and location.
+      # @show dist
       s1_beacon_pair = scanners[id1].dist_beacon_map[dist[1]]
       s2_beacon_pair = scanners[id2].dist_beacon_map[dist[1]]
 
@@ -104,25 +112,29 @@ function locations(scanners, matches)
         rotate2 = [r] .* s2_beacon_pair
         location = scanner_location(rotate1, rotate2)
 
-        if !isnothing(location) # we've found location for scanner 2
+        if found_rotation_and_location(location)
+          # We need to adjust the location so that it is relative to
+          # the first scanner (of them all, ie scanners[1]), which is
+          # what scanner[id1] has been aligned to.
           location += scanners[id1].location
+
           scanners[id2].location = location
           scanners[id2].rotation = r
 
-          union!(unique_beacons,
+          union!(result,
             Set([r] .* scanners[id2].beacons .+ [location]))
 
-          locations_found += 1
+          scanners_processed += 1
           break
         end
       end
     end
   end
-  unique_beacons
+  result
 end
 
 # Return number of unique beacons
-part1(scanners) = length(locations(scanners, matches(scanners)))
+part1(scanners) = length(unique_beacons(scanners))
 
 # Return max manhatten distance between scanners
 part2(scanners) = maximum((sum(abs.(s1.location - s2.location))
@@ -134,19 +146,19 @@ distance(p1, p2) = sum((p1 - p2) .^ 2)
 function read_input(input_file)
   input = readlines(input_file)
   scanners = Vector{Scanner}()
-  beacons = Vector{Vector{Int}}()
+  beacons = Vector{Point}()
 
   for l in input
     if contains(l, "scanner")
-      beacons = Vector{Vector{Int}}()
-      push!(scanners, Scanner(beacons, nothing, nothing, [], Dict()))
+      beacons = Vector{Point}()
+      push!(scanners, Scanner(beacons))
     elseif !isempty(l)
       push!(beacons, parse.(Int, split(l, ",")))
     end
   end
 
   scanners[1].location = [0, 0, 0] # fix to origin
-  # identity matrix: no rotation required for first scanner
+  # Identity matrix: no rotation required for first scanner
   scanners[1].rotation = Matrix{Int}(I, 3, 3)
 
   # calc distances between pairs of beacons for each scanner
