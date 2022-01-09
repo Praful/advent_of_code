@@ -11,9 +11,9 @@ using Combinatorics
 # representation, which turned out to be straightforward. The initial
 # nested pair (5-deep) is found by counting brackets. After that
 # the string is scanned on either side to find the numbers that need to
-# incremented. After that is a matter of finding and replacing elements
+# incremented. Then it's a matter of finding and replacing elements
 # in the string. 
-# The magnitude is also a repeated search and replace operaton.
+# The magnitude is also a repeated search and replace operation.
 
 
 const DIGITS = '0':'9'

@@ -29,7 +29,7 @@ function solve(input)
       simulation_max = yprobe > simulation_max ? yprobe : simulation_max
 
       if hit_target(xprobe, yprobe)
-        @show yvel
+        # @show yvel
         max = simulation_max > max ? simulation_max : max
         hit_target_count += 1
         break
