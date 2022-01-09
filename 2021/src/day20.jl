@@ -35,7 +35,7 @@ enhance_pixel(alg, square) = alg[bin2dec(replace(square, DARK => '0',
 # Return number of light pixels
 function enhance_image((algorithm, image), enhance_count = 1)
   background = DARK
-  border = enhance_border = enhance_count + 3
+  border = enhance_border = enhance_count + 1
   # We do this once to allow for all iterations of the enhancment process
   img = expand_image(image, background, border)
 

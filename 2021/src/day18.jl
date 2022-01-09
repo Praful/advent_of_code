@@ -2,9 +2,19 @@ using AdventOfCodeUtils
 using DelimitedFiles
 using Test
 using Combinatorics
-import Base: +
 
 # Puzzle description: https://adventofcode.com/2021/day/18
+
+# There are a number of ways to do this. Initially, I thought of building
+# a tree but thought it would be fiddly moving up and down it to find
+# various nodes. So I experimented with just manipulating the string
+# representation, which turned out to be straightforward. The initial
+# nested pair (5-deep) is found by counting brackets. After that
+# the string is scanned on either side to find the numbers that need to
+# incremented. After that is a matter of finding and replacing elements
+# in the string. 
+# The magnitude is also a repeated search and replace operaton.
+
 
 const DIGITS = '0':'9'
 

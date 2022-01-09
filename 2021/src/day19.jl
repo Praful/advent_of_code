@@ -6,6 +6,21 @@ using Combinatorics
 
 # Puzzle description: https://adventofcode.com/2021/day/19
 
+# This is more straightforward than it seems. The only maths you need
+# is how to rotate a point in 3D. For reference see
+# https://www.euclideanspace.com/maths/algebra/matrix/transforms/examples/index.htm
+# The algorithm is:
+# 1. For each scanner, find the square distance between each
+#    pair of beacons.
+# 2. Compare these distances between scanners. That tells you which 
+#    scanners overlap.
+# 3. For each of these overlapping scanners (s1 and s2, say), use a
+#    pair of beacons to find the correct rotation of beacons in s2
+#    so that they align to beacons in s1. As part of finding the 
+#    rotation, the location of the scanner (relative to the first scanner)
+#    pops out. 
+
+
 # min overlapping beacons between two scanners if they overlap
 const MIN_MATCHES = 12
 
@@ -45,7 +60,7 @@ function overlapping_scanners(scanners)
   result = Dict{Vector{Int},Vector{Int}}()
   for (i, s1) in enumerate(scanners), (j, s2) in enumerate(scanners)
     is_matched(i, j) && continue
-   common_beacon_distances = intersect(s1.distances, s2.distances)
+    common_beacon_distances = intersect(s1.distances, s2.distances)
     if length(common_beacon_distances) >= PAIR_MATCHES
       result[[i, j]] = common_beacon_distances
     end
@@ -53,19 +68,26 @@ function overlapping_scanners(scanners)
   result
 end
 
+# Return the location of the scanner.
+#
 # Let A and B be beacons in scanner 1; C and D for scanner 2.
 # The distance between A and B = dist between C and D, as worked
 # out in overlapping_scanners(). So we know line AB is line CD.
-# We just don't know which ends match. This function works out 
-# whether beacon A # is C or D; and conversely whether beacon B is D 
-# or C by comparing the differences.
+# We just don't know which ends match and we don't know their
+# orientations. This function works out whether beacon A is C or D;
+# and similarly whether beacon B is D or C by comparing the differences.
 # Below A = beacon_pair1[1], B = beacon_pair1[2]
 #       C = beacon_pair2[1], D = beacon_pair2[2]
 # If the differences don't match then the correct rotation hasn't 
 # been found, in which case return nothing.
-# To see why this works, look at the 2D example on AoC, find a 
+#
+# To see why this works, look at the 2D example on AoC. Find a 
 # common point and take the difference from the two scanners'
-# perspective.
+# perspective eg relative to S1 at [0,0], one B is at [4,1]. relative
+# to S2 at [5,2], B is at [-1,-1]. Then [4,1] - [-1,-1] = [5,2], which
+# is the location of S2. Note S2 is relative to S1 already so no
+# rotation is required.
+
 function scanner_location(beacon_pair1, beacon_pair2)
   loc1 = beacon_pair1[1] - beacon_pair2[1]
   loc2 = beacon_pair1[2] - beacon_pair2[2]
