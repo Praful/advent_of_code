@@ -114,7 +114,7 @@ function unique_beacons(scanners)
 
         if found_rotation_and_location(location)
           # We need to adjust the location so that it is relative to
-          # the first scanner (of them all, ie scanners[1]), which is
+          # the first scanner (ie scanners[1]), which is
           # what scanner[id1] has been aligned to.
           location += scanners[id1].location
 

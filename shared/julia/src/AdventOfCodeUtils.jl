@@ -2,6 +2,10 @@ module AdventOfCodeUtils
 
 using DelimitedFiles
 
+
+const BLOCK = '\u2588'
+export BLOCK
+
 is_lowercase(s) = !isnothing(match(r"^[a-z]+$", s))
 export is_lowercase
 
