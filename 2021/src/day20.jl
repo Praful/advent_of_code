@@ -20,11 +20,11 @@ print_image(image) = println.(image)
 # Return expanded image, padded out with background.
 function expand_image(image, background, width = 2)
   result = []
-  border_line = background^(length(image) + (width * 2))
+  border_row = background^(length(image[1]) + (width * 2))
 
-  [push!(result, border_line) for _ ∈ 1:width]
+  [push!(result, border_row) for _ ∈ 1:width]
   append!(result, map(r -> background^width * r * background^width, image))
-  [push!(result, border_line) for _ ∈ 1:width]
+  [push!(result, border_row) for _ ∈ 1:width]
 
   result
 end
