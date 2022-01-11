@@ -10,7 +10,7 @@ using Test
 # the expanded image in one go. This means I don't have to check whether
 # the bounds of the 3x3 box around a pixel being enhanced is within
 # bounds. I don't bother converting to bits either since the complete
-# run is about 2s, including part 2.
+# solution run in about 2s, including part 2.
 
 const DARK = '.'
 const LIGHT = '#'
@@ -36,7 +36,7 @@ enhance_pixel(alg, square) = alg[bin2dec(replace(square, DARK => '0',
 function enhance_image((algorithm, image), enhance_count = 1)
   background = DARK
   border = enhance_border = enhance_count + 1
-  # We do this once to allow for all iterations of the enhancment process
+  # We do this once to allow for all iterations of the enhancement process
   img = expand_image(image, background, border)
 
   for i ∈ 1:enhance_count
