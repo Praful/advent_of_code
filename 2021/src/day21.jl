@@ -7,12 +7,13 @@ using Printf
 
 # Puzzle description: https://adventofcode.com/2021/day/21
 
-# For the second part, I got help on Reddit. The method is, for each
-# combinaton of three dice (one die splitting into three dice), work out
-# the new position and score for each player.
+# For the second part, I got help on Reddit.
+# The method is, for each combinaton of three dice (one die
+# splitting into three dice), work out the new position
+# and score for each player.
 
 
-# Return new position
+# Return new position and score.
 function new_roll(pos, score, throw_value)
   new_pos = ((pos + throw_value - 1) % 10) + 1
   new_score = score + new_pos
