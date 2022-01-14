@@ -65,4 +65,6 @@ export hex2bin
 bin2dec(n) = parse(Int, n |> join, base = 2)
 export bin2dec
 
+to_int(s) = parse(Int, s)
+export to_int
 end
