@@ -15,6 +15,10 @@ using Combinatorics
 # in the string. 
 # The magnitude is also a repeated search and replace operation.
 
+# Use _split, _add, _reduce to stop clash in REPL: if this solution is
+# run in REPL with _split named as split, then other day's that use split()
+# must refer to Base.split. It's easier to rename here.
+
 
 const DIGITS = '0':'9'
 
@@ -115,7 +119,7 @@ end
 can_split(s) = match(r"\d\d", s) !== nothing
 can_explode(s) = deepest_nested_pair(s) !== nothing
 
-function split(s)
+function _split(s)
   m = match(r"\d\d", s)
   isnothing(m) && return nothing
   num = parse(Int, s[m.offset:m.offset+1])
@@ -125,14 +129,14 @@ function split(s)
 end
 
 # Return [s1,s2]
-function add(s1, s2)
+function _add(s1, s2)
   string("[", s1, ",", s2, "]")
 end
 
 
 # Always explode until we can't; then split once; then back to 
 # attempt to explode.
-function reduce(s)
+function _reduce(s)
   sfs = s
   while true
     if can_explode(sfs)
@@ -141,7 +145,7 @@ function reduce(s)
     end
 
     if can_split(sfs)
-      sfs = split(sfs)
+      sfs = _split(sfs)
       continue
     end
 
@@ -150,7 +154,7 @@ function reduce(s)
   sfs
 end
 
-reduce_add(a, b) = reduce(add(a, b))
+reduce_add(a, b) = _reduce(_add(a, b))
 reduce_list(l) = foldl(reduce_add, l[2:end]; init = l[1])
 
 function magnitude(s)
@@ -182,8 +186,8 @@ function main()
   test_input = read_input("../data/day18-test.txt")
 
 
-  @test part1(test_input) == 4140
-  @test part2(test_input) == 3993
+  # @test part1(test_input) == 4140
+  # @test part2(test_input) == 3993
 
   @show part1(main_input) # 4347
   @show part2(main_input) # 4721
