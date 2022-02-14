@@ -1,8 +1,4 @@
 import '../../shared/dart/src/utils.dart';
-import '../../shared/dart/src/grid.dart';
-import 'dart:math';
-import 'package:tuple/tuple.dart';
-import 'dart:math';
 
 /// Puzzle description: https://adventofcode.com/2019/day/22
 

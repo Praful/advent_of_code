@@ -31,8 +31,8 @@ final Map<Direction, Direction> rightTurns = {
   Direction.left: Direction.up
 };
 
-List<Point> adjacentPoints(Point p) {
-  var result = <Point>[];
+List<Point<int>> adjacentPoints(Point<int> p) {
+  var result = <Point<int>>[];
   for (var dir in Direction.values) {
     var adjPos = p + adjacentVector[dir];
     // if (isValid(adjPos)) result.add(adjPos);

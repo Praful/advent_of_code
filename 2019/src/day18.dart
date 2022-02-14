@@ -34,7 +34,7 @@ const String ENTRANCE = '@';
 class Vault {
   final List _tunnelMap;
   final Set<String> _allDoorKeys = {}; //all keys eg a,b,c,etc
-  late Point _start;
+  late Point<int> _start;
   final isPart2;
 
   Vault(this._tunnelMap, [this.isPart2 = false]) {
@@ -49,8 +49,8 @@ class Vault {
   void initialise() {
     for (var y in range(0, _tunnelMap.length - 1)) {
       for (var x in range(0, _tunnelMap[0].length - 1)) {
-        var char = tunnelObject(Point(x, y));
-        if (isEntrance(char)) _start = Point(x, y);
+        var char = tunnelObject(Point<int>(x, y));
+        if (isEntrance(char)) _start = Point<int>(x, y);
         if (isDoorKey(char)) _allDoorKeys.add(char);
       }
     }
@@ -118,7 +118,7 @@ class Vault {
 }
 
 class QueuedNode extends Tuple3 {
-  QueuedNode(Point p, Set<String> keys, int distance)
+  QueuedNode(Point<int> p, Set<String> keys, int distance)
       : super(p, keys, distance);
 
   @override
@@ -126,7 +126,7 @@ class QueuedNode extends Tuple3 {
 }
 
 class VisitedNode extends Tuple2 {
-  VisitedNode(Point a, String b) : super(a, b);
+  VisitedNode(Point<int> a, String b) : super(a, b);
 
   @override
   String toString() => '$item1, $item2';

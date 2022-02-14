@@ -51,7 +51,7 @@ int pointsInTractorBeam(List<int> coords, program, int width) {
   var beam = StringBuffer();
   while (coords.isNotEmpty) {
     var x = coords[0];
-    var y = coords[1];
+    // var y = coords[1];
     var drone = Computer(program, () => coords.removeAt(0));
     drone.run([], true);
     var output = drone.output(true);

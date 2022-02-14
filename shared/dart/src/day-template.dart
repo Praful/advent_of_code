@@ -7,20 +7,20 @@ const bool DEBUG = false;
 Object part1(String header, List input) {
   printHeader(header);
 
-  //TODO return something
+  //return something
   return 0;
 }
 
 Object part2(String header, List input) {
   printHeader(header);
 
-  //TODO return something
+  //return something
   return 0;
 }
 
 void main(List<String> arguments) {
   List testInput = FileUtils.asLines('../data/dayXX-test.txt');
-  List mainInput = FileUtils.asLines('../data/dayXX.txt');
+  // List mainInput = FileUtils.asLines('../data/dayXX.txt');
 
   assertEqual(part1('XX test part 1', testInput), 1);
   // assertEqual(part2('XX test part 2', testInput), 1);

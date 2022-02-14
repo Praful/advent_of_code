@@ -1,5 +1,4 @@
 import '../../shared/dart/src/utils.dart';
-import '../../shared/dart/src/grid.dart';
 import './intcode_computer.dart';
 
 /// Puzzle description: https://adventofcode.com/2019/day/23

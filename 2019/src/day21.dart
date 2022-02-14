@@ -41,7 +41,7 @@ Object surveyHull(program, command) {
 
 Object part1(String header, List input) {
   printHeader(header);
-  var command1 = 'NOT D J\nWALK\n';
+  // var command1 = 'NOT D J\nWALK\n';
   var command2 = '''
 NOT C J
 NOT A T
@@ -54,7 +54,7 @@ WALK
 
 Object part2(String header, List input) {
   printHeader(header);
-  var command1 = 'NOT D J\nRUN\n';
+  // var command1 = 'NOT D J\nRUN\n';
   var command4 = '''
 NOT C J
 NOT B T
@@ -69,13 +69,13 @@ AND T J
 RUN
 ''';
 
-  var command2 = '''
-NOT C J
-NOT A T
-OR T J
-AND D J
-RUN
-''';
+//   var command2 = '''
+// NOT C J
+// NOT A T
+// OR T J
+// AND D J
+// RUN
+// ''';
   return surveyHull(input, command4);
 }
 

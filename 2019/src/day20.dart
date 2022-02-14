@@ -3,7 +3,6 @@ import '../../shared/dart/src/grid.dart';
 import 'dart:collection';
 import 'dart:math';
 import 'package:tuple/tuple.dart';
-import 'dart:math';
 
 /// Puzzle description: https://adventofcode.com/2019/day/20
 /// Uses BFS to walk maze.
@@ -15,9 +14,9 @@ const String WALL = '#';
 
 class Maze {
   final List _maze;
-  late final Point _start;
-  late final Point _end;
-  late final Map<Point, Point> _portalMapping;
+  late final Point<int> _start;
+  late final Point<int> _end;
+  late final Map<Point<int>, Point<int>> _portalMapping;
 
   Maze(this._maze) {
     _portalMapping = findPortals(_maze);
@@ -29,19 +28,19 @@ class Maze {
   String mazeTile(Point p) => _maze[p.y.toInt()][p.x.toInt()];
 
   List<String> possiblePortals(int x, int y) => [
-        mazeTile(Point(x, y - 2)) + mazeTile(Point(x, y - 1)),
-        mazeTile(Point(x + 1, y)) + mazeTile(Point(x + 2, y)),
-        mazeTile(Point(x, y + 1)) + mazeTile(Point(x, y + 2)),
-        mazeTile(Point(x - 2, y)) + mazeTile(Point(x - 1, y))
+        mazeTile(Point<int>(x, y - 2)) + mazeTile(Point<int>(x, y - 1)),
+        mazeTile(Point<int>(x + 1, y)) + mazeTile(Point<int>(x + 2, y)),
+        mazeTile(Point<int>(x, y + 1)) + mazeTile(Point<int>(x, y + 2)),
+        mazeTile(Point<int>(x - 2, y)) + mazeTile(Point<int>(x - 1, y))
       ];
 
-  Map<Point, Point> findPortals(maze) {
-    var result = <Point, Point>{};
-    var portals = <String, Point>{};
+  Map<Point<int>, Point<int>> findPortals(maze) {
+    var result = <Point<int>, Point<int>>{};
+    var portals = <String, Point<int>>{};
 
     for (var y in range(0, maze.length - 1)) {
       for (var x in range(0, maze[0].length - 1)) {
-        var p = Point(x, y);
+        var p = Point<int>(x, y);
         if (isPassage(p)) {
           for (var candidatePortal in possiblePortals(x, y)) {
             if (isPortal(candidatePortal)) {
@@ -150,10 +149,10 @@ class Maze {
 }
 
 class QueuedNode extends Tuple3 {
-  QueuedNode(Point? location, int level, int steps)
+  QueuedNode(Point<int>? location, int level, int steps)
       : super(location, level, steps);
 
-  Point get location => item1;
+  Point<int> get location => item1;
   int get level => item2;
   int get steps => item3;
 
@@ -162,12 +161,12 @@ class QueuedNode extends Tuple3 {
 }
 
 Function isInnerPortal(minX, maxX, minY, maxY) =>
-    (Point p) => p.x.isBetween(minX, maxX) && p.y.isBetween(minY, maxY);
+    (Point<int> p) => p.x.isBetween(minX, maxX) && p.y.isBetween(minY, maxY);
 
 class VisitedNode extends Tuple2 {
-  VisitedNode(Point location, int level) : super(location, level);
+  VisitedNode(Point<int> location, int level) : super(location, level);
 
-  Point get location => item1;
+  Point<int> get location => item1;
   int get level => item2;
 
   @override
