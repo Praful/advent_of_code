@@ -325,7 +325,7 @@ class Computer {
         // var input = readInput();
         var input = readInput();
         lastInput = input;
-        // print('input = $input');
+        // print('========== input = $input');
         (instruction as Write).input = input;
         // (instruction as Write).input = readInput();
         // print((instruction as Write).input);
@@ -342,7 +342,6 @@ class Computer {
 
       if (opcodeId == Opcode.OUTPUT) {
         _output.add(result as int);
-        // print('output: $_output');
         if (exitOnOuput) break;
       }
       if (_forceExit != null && _forceExit!(lastInput)) break;

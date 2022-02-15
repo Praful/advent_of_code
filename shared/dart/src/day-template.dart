@@ -1,6 +1,6 @@
 import './utils.dart';
 
-/// Puzzle description: https://adventofcode.com/2019/day/4
+/// Puzzle description: https://adventofcode.com/2019/day/XX
 
 const bool DEBUG = false;
 
