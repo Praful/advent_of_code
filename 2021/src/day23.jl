@@ -9,9 +9,11 @@ using Memoize
 
 # Solution is based on this Python write-up:
 # https://github.com/mebeim/aoc/blob/master/2021/README.md#day-23---amphipod
-# The equivalent of Python generators is Julia Channel. There already
-# commented out sections that use Channel. The solution works but is slower
-# than using plain enumeration and passing the result.
+
+# The equivalent of Python generators is Julia channels or the ResumableFunctions
+# package. There are commented out sections that use channel and ResumableFunctions.
+# However, ResumableFunctions was similar speed to and channels much slower than 
+# using plain enumeration and passing the result.
 
 struct Home
   rooms::Vector{Vector{Int}}
@@ -25,7 +27,7 @@ ROOM_DISTANCE = [
   [8, 7, 5, 3, 1, 1, 2], # from/to room 4
 ]
 
-function done(rooms::Vector, room_size::Int)
+function done(rooms::Vector{Vector{Int}}, room_size::Int)
   for (r, room) in enumerate(rooms)
     if any(!=(r), room) || length(room) != room_size
       return false
@@ -45,7 +47,7 @@ const EMPTY = 0
 is_empty(occupant) = occupant == EMPTY
 
 # h is the hallway spot index; r is the room index
-function move_cost(room::Vector, hallway::Vector, r::Int, h::Int, room_size::Int, to_room = false)
+function move_cost(room::Vector{Int64}, hallway::Vector{Int64}, r::Int, h::Int, room_size::Int, to_room = false)
   start_ = 0
   end_ = 0
   if r + 1 < h
@@ -55,6 +57,7 @@ function move_cost(room::Vector, hallway::Vector, r::Int, h::Int, room_size::Int
     start_ = h + (to_room ? 1 : 0)
     end_ = r + 1
   end
+
   any(!is_empty, hallway[start_:end_]) && return Inf
 
   obj = to_room ? hallway[h] : room[1]
@@ -62,9 +65,9 @@ function move_cost(room::Vector, hallway::Vector, r::Int, h::Int, room_size::Int
   return 10^(obj - 1) * (ROOM_DISTANCE[r][h] + ((to_room ? 1 : 0) + room_size) - length(room))
 end
 
-function move_to_room(home, room_size)
+function move_to_room(home::Home, room_size::Int)
   # Channel() do channel
-  # Channel{Tuple{Int64,Home}}() do channel
+  # Channel{Tuple{Int64,Home}}(2) do channel
   result = []
   for (h, obj) in enumerate(home.hallway)
     is_empty(obj) && continue # hallway spot empty
@@ -80,16 +83,18 @@ function move_to_room(home, room_size)
     new_hallway = update_home(home.hallway, h, EMPTY)
 
     # put!(channel, (cost, Home(new_rooms, new_hallway)))
+    # @yield (cost, Home(new_rooms, new_hallway))
     push!(result, (cost, Home(new_rooms, new_hallway)))
   end
   # end
   result
 end
 
-function move_to_hallway(home, room_size)
+function move_to_hallway(home::Home, room_size::Int)
   result = []
 
   # Channel() do channel
+  # Channel{Tuple{Int64,Home}}(2) do channel
   for (r, room) in enumerate(home.rooms)
     all(==(r), room) && continue # occupants correct
 
@@ -102,6 +107,7 @@ function move_to_hallway(home, room_size)
       new_hallway = update_home(home.hallway, h, room[1])
 
       # put!(channel, (cost, Home(new_rooms, new_hallway)))
+      # @yield (cost, Home(new_rooms, new_hallway))
       push!(result, (cost, Home(new_rooms, new_hallway)))
     end
   end
@@ -109,19 +115,22 @@ function move_to_hallway(home, room_size)
   result
 end
 
-function possible_moves(home, room_size)
-  Channel() do channel
-    for (cost, new_home) in move_to_room(home, room_size)
-      put!(channel, (cost, new_home))
-    end
+# not used in this version but for the Channel version if above uncommented
+# function possible_moves(home, room_size)
+#   # Channel() do channel
+#   Channel{Tuple{Int64,Home}}(2) do channel
+#     for (cost, new_home) in move_to_room(home, room_size)
+#       put!(channel, (cost, new_home))
+#     end
 
-    for (cost, new_home) in move_to_hallway(home, room_size)
-      put!(channel, (cost, new_home))
-    end
-  end
-end
+#     for (cost, new_home) in move_to_hallway(home, room_size)
+#       put!(channel, (cost, new_home))
+#     end
+#   end
+# end
 
-@memoize Dict function solve(rooms::Vector, hallway::Vector, room_size::Int)
+# the Dict parameter memoizes arrays
+@memoize Dict function solve(rooms::Vector{Vector{Int64}}, hallway::Vector{Int64}, room_size::Int)
   done(rooms, room_size) && return 0
 
   best = Inf
@@ -132,6 +141,7 @@ end
   #     best = cost
   #   end
   # end
+
   for (cost, next_home) in move_to_room(Home(rooms, hallway), room_size)
     cost += solve(next_home.rooms, next_home.hallway, room_size)
 
@@ -150,20 +160,24 @@ end
   best
 end
 
-function part1(home::Home)
-  solve(home.rooms, home.hallway, 2)
-end
-
-function part2(input)
-  0
-end
-
-function read_input(input_file)
+function read_input(input_file::String, room_size = 2)
   APOD_IDS = "ABCD"
+  ROOM_START_LINE = 3
   lines = readlines(input_file)
 
-  room_occupants(loc) =
-    [findfirst(lines[3][loc], APOD_IDS), findfirst(lines[4][loc], APOD_IDS)]
+  function room_occupants(pos)
+    occ(n) = findfirst(lines[n][pos], APOD_IDS)
+
+    result = []
+    [result = [result...; occ(i)]
+     for i in ROOM_START_LINE:(ROOM_START_LINE+room_size-1)]
+
+    result
+  end
+
+  if room_size == 4
+    lines = [lines[1:3]...; "  #D#C#B#A#  "; "  #D#B#A#C#  "; lines[4:end]]
+  end
 
 
   hallway = fill(EMPTY, 7)
@@ -178,15 +192,23 @@ function read_input(input_file)
   Home(rooms, hallway)
 end
 
+function solve(input_file, room_size = 2)
+  home = read_input(input_file, room_size)
+  solve(home.rooms, home.hallway, room_size)
+end
+
+part1(input_file) = solve(input_file, 2)
+part2(input_file) = solve(input_file, 4)
+
 function main()
-  main_input = read_input("../data/day23.txt")
-  test_input = read_input("../data/day23-test.txt")
+  main_input = "../data/day23.txt"
+  test_input = "../data/day23-test.txt"
 
   @test part1(test_input) == 12521
-  # @test_skip part2(test_input) == 0 broken = true
+  @test part2(test_input) == 44169
 
   @show part1(main_input) # 16508
-  # @show part2(main_input) # 43626
+  @show part2(main_input) # 43626
 end
 
 @time main()
