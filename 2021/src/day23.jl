@@ -1,5 +1,5 @@
 using AdventOfCodeUtils
-using DelimitedFiles
+# using DelimitedFiles
 using Test
 using Memoize
 # using ResumableFunctions
@@ -11,7 +11,8 @@ using Memoize
 # https://github.com/mebeim/aoc/blob/master/2021/README.md#day-23---amphipod
 
 # The equivalent of Python generators is Julia channels or the ResumableFunctions
-# package. There are commented out sections that use channel and ResumableFunctions.
+# package. There are commented out sections (in the previous version)
+# that use channel and ResumableFunctions.
 # However, ResumableFunctions was similar speed to and channels much slower than 
 # using plain enumeration and passing the result.
 
@@ -37,7 +38,10 @@ function done(rooms::Vector{Vector{Int}}, room_size::Int)
 end
 
 #location is rooms or hallway
-function update_home(location, index, occupant)
+# function update_home(location, index, occupant)
+#  [location[begin:index-1];occupant;location[index+1:end]]
+# end
+function update_home(location::Vector, index::Int, occupant::Int)
   new_location = copy(location)
   new_location[index] = occupant
   new_location
@@ -66,8 +70,6 @@ function move_cost(room::Vector{Int64}, hallway::Vector{Int64}, r::Int, h::Int, 
 end
 
 function move_to_room(home::Home, room_size::Int)
-  # Channel() do channel
-  # Channel{Tuple{Int64,Home}}(2) do channel
   result = []
   for (h, obj) in enumerate(home.hallway)
     is_empty(obj) && continue # hallway spot empty
@@ -82,19 +84,14 @@ function move_to_room(home::Home, room_size::Int)
     new_rooms = update_home(home.rooms, obj, [obj, room...])
     new_hallway = update_home(home.hallway, h, EMPTY)
 
-    # put!(channel, (cost, Home(new_rooms, new_hallway)))
-    # @yield (cost, Home(new_rooms, new_hallway))
     push!(result, (cost, Home(new_rooms, new_hallway)))
   end
-  # end
   result
 end
 
 function move_to_hallway(home::Home, room_size::Int)
   result = []
 
-  # Channel() do channel
-  # Channel{Tuple{Int64,Home}}(2) do channel
   for (r, room) in enumerate(home.rooms)
     all(==(r), room) && continue # occupants correct
 
@@ -106,44 +103,21 @@ function move_to_hallway(home::Home, room_size::Int)
       new_rooms = update_home(home.rooms, r, [room[2:end]...])
       new_hallway = update_home(home.hallway, h, room[1])
 
-      # put!(channel, (cost, Home(new_rooms, new_hallway)))
-      # @yield (cost, Home(new_rooms, new_hallway))
       push!(result, (cost, Home(new_rooms, new_hallway)))
     end
   end
-  # end
   result
 end
 
-# not used in this version but for the Channel version if above uncommented
-# function possible_moves(home, room_size)
-#   # Channel() do channel
-#   Channel{Tuple{Int64,Home}}(2) do channel
-#     for (cost, new_home) in move_to_room(home, room_size)
-#       put!(channel, (cost, new_home))
-#     end
-
-#     for (cost, new_home) in move_to_hallway(home, room_size)
-#       put!(channel, (cost, new_home))
-#     end
-#   end
-# end
-
-# the Dict parameter memoizes arrays
-@memoize Dict function solve(rooms::Vector{Vector{Int64}}, hallway::Vector{Int64}, room_size::Int)
+# The Dict parameter memoizes arrays.
+# See https://github.com/JuliaCollections/Memoize.jl
+@memoize Dict function visit(rooms::Vector{Vector{Int64}}, hallway::Vector{Int64}, room_size::Int)
   done(rooms, room_size) && return 0
 
   best = Inf
-  # for (cost, next_home) in possible_moves(Home(rooms, hallway), room_size)
-  #   cost += solve(next_home.rooms, next_home.hallway, room_size)
-
-  #   if cost < best
-  #     best = cost
-  #   end
-  # end
 
   for (cost, next_home) in move_to_room(Home(rooms, hallway), room_size)
-    cost += solve(next_home.rooms, next_home.hallway, room_size)
+    cost += visit(next_home.rooms, next_home.hallway, room_size)
 
     if cost < best
       best = cost
@@ -151,7 +125,7 @@ end
   end
 
   for (cost, next_home) in move_to_hallway(Home(rooms, hallway), room_size)
-    cost += solve(next_home.rooms, next_home.hallway, room_size)
+    cost += visit(next_home.rooms, next_home.hallway, room_size)
 
     if cost < best
       best = cost
@@ -188,13 +162,12 @@ function read_input(input_file::String, room_size = 2)
   rooms[3] = room_occupants(8)
   rooms[4] = room_occupants(10)
 
-  # @show rooms, hallway
   Home(rooms, hallway)
 end
 
 function solve(input_file, room_size = 2)
   home = read_input(input_file, room_size)
-  solve(home.rooms, home.hallway, room_size)
+  visit(home.rooms, home.hallway, room_size)
 end
 
 part1(input_file) = solve(input_file, 2)
