@@ -7,7 +7,8 @@ using DelimitedFiles
 # Puzzle description: https://adventofcode.com/2021/day/11
 
 
-function adjacent(coord)
+# rename to avoid clash with AdventOfCodeUtils
+function adjacent2(coord)
   r, c = Tuple(coord)
   [
     CartesianIndex(r - 1, c),
@@ -27,7 +28,7 @@ function flash(octopuses, has_flashed = Vector())
 
   if length(flashers) > 0
     for coord in flashers
-      adj = intersect(adjacent(coord), octopus_coords)
+      adj = intersect(adjacent2(coord), octopus_coords)
       octopuses[CartesianIndex.(adj)] .+= 1
       push!(has_flashed, coord)
     end

@@ -42,7 +42,7 @@ function lowest_risk(cave, start, target)
       end
     end
   end
-  @show risk_so_far[target]
+  risk_so_far[target]
 end
 
 # input (10x10) = one tile, we need to create 25 tiles for a 50x50 cave

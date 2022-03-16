@@ -11,7 +11,7 @@ function part1(notes)
     output_segments = split(strip(l), ' ')
     [count1478 += 1 for s in output_segments if length(s) in [2, 3, 4, 7]]
   end
-  @show count1478
+  count1478
 end
 
 # element 1 is segment pattern for digit 0, element 2 is for digit 1, etc

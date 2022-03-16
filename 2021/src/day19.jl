@@ -199,8 +199,8 @@ function main()
   # @test part1(test_input) == 79
   # @test part2(test_input) == 3621
 
-  @time part1(main_input) # 338 
-  @time part2(main_input) # 9862
+  @show part1(main_input) # 338 
+  @show part2(main_input) # 9862
 end
 
 @time main()

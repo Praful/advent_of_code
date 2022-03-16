@@ -49,7 +49,7 @@ function solve(coords, folds)
 end
 
 function part1((coords, folds))
-  @show solve(coords, [folds[1]])[1]
+  solve(coords, [folds[1]])[1]
 end
 
 function part2((coords, folds))

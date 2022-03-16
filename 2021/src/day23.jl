@@ -38,10 +38,7 @@ function done(rooms::Vector{Vector{Int}}, room_size::Int)
 end
 
 #location is rooms or hallway
-# function update_home(location, index, occupant)
-#  [location[begin:index-1];occupant;location[index+1:end]]
-# end
-function update_home(location::Vector, index::Int, occupant::Int)
+function update_home(location, index, occupant)
   new_location = copy(location)
   new_location[index] = occupant
   new_location

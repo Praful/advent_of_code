@@ -1,4 +1,3 @@
-module Day12
 
 # To use this, add path of AdventOfCodeUtils.jl to 
 # ~/.julia/config.startup.jl, eg the line
@@ -59,7 +58,7 @@ end
 
 function solve(cave_system, part2 = false)
   empty!(visited)
-  @show traverse(cave_system[START], part2)
+  traverse(cave_system[START], part2)
 end
 
 function read_input(input_file)
@@ -94,4 +93,3 @@ function main()
 end
 
 @time main()
-end

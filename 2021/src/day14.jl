@@ -73,7 +73,7 @@ function solve(template, rules, steps = 10)
     pairs = new_pairs
   end
 
-  @show maximum(values(count)) - minimum(values(count))
+  maximum(values(count)) - minimum(values(count))
 end
 
 function part1((template, rules))

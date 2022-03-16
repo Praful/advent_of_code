@@ -16,12 +16,16 @@ export is_lowercase
 #   563565635
 #
 # and return, in this example, a 3x9 matrix of Ints.
-function read_string_matrix(input_file)
+function read_string_matrix(input_file, is_int = true)
   input = readdlm(input_file, String)
   # convert 1D matrix of strings to 2D matrix of ints
   # https://discourse.julialang.org/t/converting-a-array-of-strings-to-an-array-of-char/35123/2
   input = reduce(vcat, permutedims.(collect.(input)))
-  parse.(Int, input)
+  if is_int
+    return parse.(Int, input)
+  else
+    return input
+  end
 end
 export read_string_matrix
 
