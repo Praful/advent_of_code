@@ -1,0 +1,277 @@
+inp w     # w=i1
+
+mul x 0   # x=0
+add x z   # x=0
+mod x 26  # x=0
+div z 1   # z=0
+add x 11  # x=11
+eql x w   # x=0
+
+eql x 0   # x=1
+mul y 0   # y=0
+add y 25  # y=25
+mul y x   # y=25
+add y 1   # y=26
+
+mul z y   # z=0
+mul y 0   # y=0
+add y w   # y=i1
+add y 3   # y=i1+3
+mul y x   # y=i1+3
+add z y   # z=i1+3
+----------------------------------------------------------------------
+inp w     # w=i2
+
+mul x 0   # x=0
+add x z   # x=i1+3
+mod x 26  # x=i1+3
+div z 1   # z=i1+3
+add x 14  # x=i1+17
+eql x w   # x=0
+
+eql x 0   # x=1
+mul y 0   # y=0
+add y 25  # y=25
+mul y x   # y=25
+add y 1   # y=26
+
+mul z y   # z=(i1+3)*26
+mul y 0   # y=0
+add y w   # y=i2
+add y 7   # y=i2+7
+mul y x   # y=i2+7
+add z y   # z=((i1+3)*26) + (i2+7)
+----------------------------------------------------------------------
+inp w     # w=i3
+
+mul x 0   # x=0
+add x z   # x=((i2+3)*26) + (i2+7)
+mod x 26  # x=i2+7
+div z 1   # z=((i1+3)*26) + (i2+7)
+add x 13  # x=i2+20
+eql x w   # x=0
+
+eql x 0   # x=1
+mul y 0   # y=0
+add y 25  # y=25
+mul y x   # y=25
+add y 1   # y=26
+
+mul z y   # z=(((i1+3)*26) + (i2+7)) * 26
+mul y 0   # y=0
+add y w   # y=i3
+add y 1   # y=i3+1
+mul y x   # y=i3+1
+add z y   # z=((((i1+3)*26) + (i2+7)) * 26) + (i3+1)
+----------------------------------------------------------------------
+inp w     # w=i4
+
+mul x 0   # x=0
+add x z   # x=((((i1+3)*26) + (i2+7)) * 26) + (i3+1)
+mod x 26  # x=i3+1
+div z 26  # z=(((((i1+3)*26) + (i2+7)) * 26) + (i3+1)) / 26
+add x -4  # x=i3-3
+eql x w   # x= i4==i3-3 ? 1 : 0
+
+eql x 0   # x= i4 != i3-3
+mul y 0   # y=0
+add y 25  # y=25
+mul y x   # y=25x
+add y 1   # y=25x+1
+
+mul z y   # z= ((((((i1+3)*26) + (i2+7)) * 26) + (i3+1)) / 26) * (25x+1)
+mul y 0   # y=0
+add y w   # y=i4
+add y 6   # y=i4+6
+mul y x   # y=(i4+6)x
+add z y   # z= (((((((i1+3)*26) + (i2+7)) * 26) + (i3+1)) / 26) * (25x+1)) + (i4+6)x
+----------------------------------------------------------------------
+inp w
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 11
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 14
+mul y x
+add z y
+----------------------------------------------------------------------
+inp w
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 10
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 7
+mul y x
+add z y
+----------------------------------------------------------------------
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -4
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 9
+mul y x
+add z y
+----------------------------------------------------------------------
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -12
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 9
+mul y x
+add z y
+----------------------------------------------------------------------
+inp w
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 10
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 6
+mul y x
+add z y
+----------------------------------------------------------------------
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -11
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 4
+mul y x
+add z y
+----------------------------------------------------------------------
+inp w
+mul x 0
+add x z
+mod x 26
+div z 1
+add x 12
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 0
+mul y x
+add z y
+----------------------------------------------------------------------
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -1
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 7
+mul y x
+add z y
+----------------------------------------------------------------------
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x 0
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 12
+mul y x
+add z y
+----------------------------------------------------------------------
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -11
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 1
+mul y x
+add z y
