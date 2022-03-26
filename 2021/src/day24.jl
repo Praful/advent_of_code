@@ -26,15 +26,13 @@ const TOTAL_UNITS = 14
 const UNIT_TYPE_1 = 1
 const UNIT_TYPE_2 = 26
 
-# This is a simplied ALU based on my input. I don't know if it will
-# work with other input.
+# This is a simplied ALU based on my input. I don't know if it will work with other input.
+# return x register and Z
 function alu(w::Int, z::Int, offset1::Int, offset2::Int, type::Int)
   if type == UNIT_TYPE_1
-    return 26z + w + offset2
+    return nothing, 26z + w + offset2 
   elseif type == UNIT_TYPE_2
-    return (z % 26) + offset1 #x
-  else
-    throw("Invalid type $type")
+    return (z % 26) + offset1, z ÷ 26
   end
 end
 
@@ -52,7 +50,7 @@ function try_model(program, unit_number, model_number, z, digits)
     for w in digits
       push!(model_number, w)
 
-      z1 = alu(w, z, offset1, offset2, type)
+      _, z1 = alu(w, z, offset1, offset2, type)
       is_valid_digit = try_model(program, unit_number + 1, model_number, z1, digits)
       if is_valid_digit
         return is_valid_digit
@@ -64,13 +62,14 @@ function try_model(program, unit_number, model_number, z, digits)
 
     return false
   elseif type == UNIT_TYPE_2
-    w1 = alu(0, z, offset1, offset2, type)
-    # For w1 to be a valid digit in the model number, it must be 1-9.
-    # So for type 2, if w1 is valid it is our w, which we add to model_number.
-    # And if w1 is valid, our next z is z ÷ 26.
-    !(w1 in 1:9) && return false
-    push!(model_number, w1)
-    is_valid_digit = try_model(program, unit_number + 1, model_number, z ÷ 26, digits)
+    x1, z1 = alu(0, z, offset1, offset2, type)
+    # When x1 is 1-9, it's possibly equal to w.
+    # So for type 2, if x1 is in range, it is our w, which we add to model_number to try out.
+    !(x1 in 1:9) && return false
+
+    push!(model_number, x1)
+
+    is_valid_digit = try_model(program, unit_number + 1, model_number, z1, digits)
     !is_valid_digit && pop!(model_number)
     return is_valid_digit
   else
