@@ -1,7 +1,5 @@
 using AdventOfCodeUtils
 using Test
-# using Memoize
-# using Combinatorics
 
 # Puzzle description: https://adventofcode.com/2018/day/04
 
