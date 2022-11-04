@@ -42,7 +42,6 @@ class TrackPart(Enum):
 
 
 class Cart:
-    # last junction turn
     def __init__(self, x, y, direction, intersection_direction=Direction.LEFT):
         self.position = (x, y)
         self.direction = direction
@@ -141,18 +140,19 @@ def crash(carts, cart):
 
 def solve(grid, carts, exit_on_first_crash=True):
 
+    # take a copy since we amend carts
     moving_carts = copy.deepcopy(carts)
-    moves = 0
+
     while True:
         # sort carts by row then col
-        carts = sorted(moving_carts, key=lambda c: (
+        moving_carts = sorted(moving_carts, key=lambda c: (
             c.position[1], c.position[0]))
         # grid_copy = np.copy(grid)
 
-        for c in carts:
+        for c in moving_carts:
             if not c.has_crashed:
                 move_cart(grid, c)
-                if crash(carts, c):
+                if crash(moving_carts, c):
                     if exit_on_first_crash:
                         return c.position
                     else:
@@ -160,10 +160,14 @@ def solve(grid, carts, exit_on_first_crash=True):
 
                 # grid_copy[c.position[1], c.position[0]] = c.direction.value
 
-        active_carts = [c for c in carts if not c.has_crashed]
+        active_carts = [c for c in moving_carts if not c.has_crashed]
         if len(active_carts) == 1:
             return active_carts[0].position
 
+        # uncomment the two grid_copy lines above if you want to see the carts
+        # moving. Note that the original position of the carts is always visible
+        # since we use the original grid as read. We could replace the carts with
+        # the track part as an enhancement.
         # print_grid(grid_copy)
 
     return None
