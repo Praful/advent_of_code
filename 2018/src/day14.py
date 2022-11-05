@@ -7,7 +7,7 @@ import utils
 # Puzzle description: https://adventofcode.com/2018/day/14
 
 # Part2 is not the fastest solution but it was easy to add to the part1 solution. It
-# takes about 30s on i7-6700K CPU.
+# takes about 20s on i7-6700K CPU.
 
 
 def solve(recipe, input, extract_count, part1=True):
@@ -15,21 +15,22 @@ def solve(recipe, input, extract_count, part1=True):
     elf2 = 1
     first = int(input)
     max_recipes = first + extract_count
-    sequence = input
-    # while len(recipe) < total + 1:
+    target = input
+    target_len = len(target)
+
     while True:
-        r1 = recipe[elf1]
-        r2 = recipe[elf2]
-        recipe += str(int(r1) + int(r2))
-        elf1 = (elf1 + (1 + int(r1))) % len(recipe)
-        elf2 = (elf2 + (1 + int(r2))) % len(recipe)
+        r1 = int(recipe[elf1])
+        r2 = int(recipe[elf2])
+        recipe += str(r1 + r2)
+        recipe_len = len(recipe)
+        elf1 = (elf1 + (1 + r1)) % recipe_len
+        elf2 = (elf2 + (1 + r2)) % recipe_len
 
         if part1:
-            if len(recipe) > max_recipes:
+            if recipe_len > max_recipes:
                 return recipe[first: first + extract_count]
-
-        elif (index := recipe.rfind(sequence, len(recipe) - len(sequence) - 1)) > -1:
-            return index
+        elif recipe[recipe_len - target_len:recipe_len] == target:
+            return recipe_len - target_len
 
 
 def main():
