@@ -4,11 +4,14 @@ import numpy as np
 # return list of strings, one line per list entry
 
 
-def read_file_str(filename):
+def read_file_str(filename, strip=False):
     result = []
     with open(filename) as f:
         for line in f:
-            result.append(line)
+            l = line
+            if strip:
+                l = line.strip()
+            result.append(l)
 
     return result
 
