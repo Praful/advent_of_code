@@ -2,8 +2,6 @@ import os
 import sys
 sys.path.append(os.path.relpath("../../shared/python"))
 import utils
-from collections import defaultdict
-import numpy as np
 from functools import reduce
 import operator
 
