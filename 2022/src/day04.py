@@ -3,8 +3,6 @@ import sys
 sys.path.append(os.path.relpath("../../shared/python"))
 import utils
 import re
-import operator
-from functools import reduce
 
 # Puzzle description: https://adventofcode.com/2022/day/4
 
@@ -14,15 +12,15 @@ def check_containment(r):
 
 
 def check_overlap(r):
-    return len(range_overlap(r[0], r[1])) > 0
+    return len(range_overlap(*r)) > 0
 
 
 def part1(input):
-    return reduce(operator.add, [check_containment(e) for e in input], 0)
+    return sum([check_containment(e) for e in input])
 
 
 def part2(input):
-    return reduce(operator.add, [check_overlap(e) for e in input], 0)
+    return sum([check_overlap(e) for e in input])
 
 
 def range_overlap(range1, range2):
@@ -55,12 +53,12 @@ def read_input(input_file):
 
 def main():
     input = read_input("../data/day04.txt")
-    test_input = read_input("../data/day04-test.txt")
+    # test_input = read_input("../data/day04-test.txt")
 
     # print(f'Part 1 (test) {part1(test_input)}')  # 2
     print(f'Part 1 {part1(input)}')  # 503
 
-    # print(f'Part 2 (test) {part2(test_input)}')  # 4 
+    # print(f'Part 2 (test) {part2(test_input)}')  # 4
     print(f'Part 2 {part2(input)}')  # 827
 
 

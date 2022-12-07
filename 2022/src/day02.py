@@ -2,12 +2,11 @@ import os
 import sys
 sys.path.append(os.path.relpath("../../shared/python"))
 import utils
-from functools import reduce
 
 # Puzzle description: https://adventofcode.com/2022/day/2
 
 
-def play(acc, round):
+def play(round):
     shape1_scores = {'A': 1, 'B': 2, 'C': 3}
     shape2_scores = {'X': 1, 'Y': 2, 'Z': 3}
     rock = ['A', 'X']
@@ -28,7 +27,7 @@ def play(acc, round):
     elif shape1 in scissors and shape2 in rock:
         score += 6
 
-    return acc + score
+    return score
 
 
 # format part2 rounds to be same as part1
@@ -49,11 +48,11 @@ def create_rounds(input):
 
 
 def part1(input):
-    return reduce(play, input, 0)
+    return sum(map(play, input))
 
 
 def part2(input):
-    return reduce(play, map(create_rounds, input), 0)
+    return part1(map(create_rounds, input))
 
 
 def read_input(input_file):

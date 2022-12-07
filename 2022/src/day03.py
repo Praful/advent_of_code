@@ -2,8 +2,6 @@ import os
 import sys
 sys.path.append(os.path.relpath("../../shared/python"))
 import utils
-from functools import reduce
-import operator
 
 # Puzzle description: https://adventofcode.com/2022/day/3
 
@@ -29,11 +27,11 @@ def priority1(rucksack):
 
 
 def part1(input):
-    return reduce(operator.add, map(priority1, input), 0)
+    return sum(map(priority1, input))
 
 
 def part2(input):
-    return reduce(operator.add, [priority(input[slice(i, i + 3, 1)]) for i in range(0, len(input), 3)], 0)
+    return sum([priority(input[slice(i, i + 3, 1)]) for i in range(0, len(input), 3)])
 
 
 def read_input(input_file):
