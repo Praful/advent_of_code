@@ -61,12 +61,12 @@ def read_input(input_file):
 
 def main():
     input = read_input("../data/day02.txt")
-    # test_input = read_input("../data/day02-test.txt")
+    test_input = read_input("../data/day02-test.txt")
 
-    # print(f'Part 1 (test) {part1(test_input)}')  # 15
+    assert part1(test_input) == 15
     print(f'Part 1 {part1(input)}')  # 11666
 
-    # print(f'Part 2 (test) {part2(test_input)}')  # 12
+    assert part2(test_input) == 12
     print(f'Part 2 {part2(input)}')  # 12767
 
 

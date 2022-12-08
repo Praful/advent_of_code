@@ -34,12 +34,12 @@ def read_input(input_file):
 
 def main():
     totals = read_input("../data/day01.txt")
-    # test_totals = read_input("../data/day01-test.txt")
+    test_totals = read_input("../data/day01-test.txt")
 
-    # print(f'Part 1 (test) {part1(test_totals)}')  # 24000
+    assert part1(test_totals) == 24000
     print(f'Part 1 {part1(totals)}')  # 69883
 
-    # print(f'Part 2 (test) {part2(test_totals)}')  # 45000
+    assert part2(test_totals) == 45000
     print(f'Part 2 {part2(totals)}')  # 207576
 
 

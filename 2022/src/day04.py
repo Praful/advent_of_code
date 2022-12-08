@@ -41,10 +41,16 @@ def range_subset(range1, range2):
     return range1.start in range2 and range1[-1] in range2
 
 
+re_range = re.compile(r'(\d*)-(\d*)')
+
+
 def parse(s):
+    def v(i, j):
+        return int(match[i][j])
+
     # eg s:  2-14,6-8
-    match = re.findall(r'(\d*)-(\d*)', s)
-    return (range(int(match[0][0]), int(match[0][1]) + 1), range(int(match[1][0]), int(match[1][1]) + 1))
+    match = re.findall(re_range, s)
+    return (range(v(0, 0), v(0, 1) + 1), range(v(1, 0), v(1, 1) + 1))
 
 
 def read_input(input_file):
@@ -53,12 +59,12 @@ def read_input(input_file):
 
 def main():
     input = read_input("../data/day04.txt")
-    # test_input = read_input("../data/day04-test.txt")
+    test_input = read_input("../data/day04-test.txt")
 
-    # print(f'Part 1 (test) {part1(test_input)}')  # 2
+    assert part1(test_input) == 2
     print(f'Part 1 {part1(input)}')  # 503
 
-    # print(f'Part 2 (test) {part2(test_input)}')  # 4
+    assert part2(test_input) == 4
     print(f'Part 2 {part2(input)}')  # 827
 
 

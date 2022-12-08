@@ -58,12 +58,12 @@ def read_input(input_file):
 
 def main():
     input = read_input("../data/day05.txt")
-    # test_input = read_input("../data/day05-test.txt")
+    test_input = read_input("../data/day05-test.txt")
 
-    # print(f'Part 1 (test) {part1(test_input)}')  # CMZ
+    assert part1(test_input) == 'CMZ'
     print(f'Part 1 {part1(input)}')  # SPFMVDTZT
 
-    # print(f'Part 2 (test) {part2(test_input)}')  # MCD
+    assert part2(test_input) == 'MCD'
     print(f'Part 2 {part2(input)}')  # ZFSJBPRFP
 
 

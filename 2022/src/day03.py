@@ -22,7 +22,7 @@ def priority(rucksacks):
 
 
 def priority1(rucksack):
-    mid = int(len(rucksack) / 2)
+    mid = len(rucksack) // 2
     return priority([rucksack[0:mid], rucksack[mid:]])
 
 
@@ -40,12 +40,12 @@ def read_input(input_file):
 
 def main():
     input = read_input("../data/day03.txt")
-    # test_input = read_input("../data/day03-test.txt")
+    test_input = read_input("../data/day03-test.txt")
 
-    # print(f'Part 1 (test) {part1(test_input)}')  # 157
+    assert part1(test_input) == 157
     print(f'Part 1 {part1(input)}')  # 8176
 
-    # print(f'Part 2 (test) {part2(test_input)}')  # 70
+    assert part2(test_input) == 70
     print(f'Part 2 {part2(input)}')  # 2689
 
 
