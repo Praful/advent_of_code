@@ -29,7 +29,7 @@ def read_input(input_file):
             else:
                 food_calories.append(int(line.strip()))
 
-    return sorted([sum(food_calories) for food_calories in input.values()])
+    return sorted(sum(food_calories) for food_calories in input.values())
 
 
 def main():

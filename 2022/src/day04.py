@@ -16,11 +16,11 @@ def check_overlap(r):
 
 
 def part1(input):
-    return sum([check_containment(e) for e in input])
+    return sum(check_containment(e) for e in input)
 
 
 def part2(input):
-    return sum([check_overlap(e) for e in input])
+    return sum(check_overlap(e) for e in input)
 
 
 def range_overlap(range1, range2):

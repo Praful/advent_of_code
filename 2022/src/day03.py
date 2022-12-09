@@ -31,7 +31,7 @@ def part1(input):
 
 
 def part2(input):
-    return sum([priority(input[slice(i, i + 3, 1)]) for i in range(0, len(input), 3)])
+    return sum(priority(input[slice(i, i + 3, 1)]) for i in range(0, len(input), 3))
 
 
 def read_input(input_file):
