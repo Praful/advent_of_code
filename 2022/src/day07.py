@@ -52,9 +52,7 @@ def print_tree(dir, indent_level=1):
 # return tree sizes for dir and subdirs and sub-subdirs, and ,,,
 def all_dir_sizes(dir):
     sizes = [dir.tree_size]
-
-    for d in dir.subdirs:
-        sizes += all_dir_sizes(d)
+    [sizes.extend(all_dir_sizes(d)) for d in dir.subdirs]
 
     return sizes
 
