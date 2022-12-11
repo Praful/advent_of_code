@@ -7,35 +7,30 @@ import numpy as np
 # Puzzle description: https://adventofcode.com/2022/day/8
 
 
-# check if values either side of index i are less than tree height
-def in_tree_line(v, i, tree_height):
-    def lr_visible(subvector):
-        return len(subvector[subvector < tree_height]) == len(subvector)
+def is_visible(row, col, tree_row, tree_col, tree_height):
+    def in_tree_line(line, row_or_col, tree_height):
+        return all(line[0:row_or_col] < tree_height) or \
+            all(line[row_or_col + 1:] < tree_height)
 
-    return lr_visible(v[0:i]) or lr_visible(v[i + 1:])
-
-
-def is_visible(row, col, prow, pcol, tree_height):
-    return in_tree_line(row, pcol, tree_height) or \
-        in_tree_line(col, prow, tree_height)
-
-
-def calc_score(v, i, tree_height):
-    def sub_score(indexes):
-        score = 0
-        for j in indexes:
-            score += 1
-            if v[j] >= tree_height:
-                break
-        return score
-
-    left_range = range(i - 1, -1, -1)
-    right_range = range(i + 1, len(v))
-
-    return sub_score(left_range) * sub_score(right_range)
+    return in_tree_line(row, tree_col, tree_height) or \
+        in_tree_line(col, tree_row, tree_height)
 
 
 def score(row, col, tree_row, tree_col, tree_height):
+    def calc_score(line, row_or_col, tree_height):
+        def sub_score(indexes):
+            score = 0
+            for j in indexes:
+                score += 1
+                if line[j] >= tree_height:
+                    break
+            return score
+
+        left_range = range(row_or_col - 1, -1, -1)
+        right_range = range(row_or_col + 1, len(line))
+
+        return sub_score(left_range) * sub_score(right_range)
+
     return calc_score(row, tree_col, tree_height) * \
         calc_score(col, tree_row, tree_height)
 
@@ -46,9 +41,9 @@ def score(row, col, tree_row, tree_col, tree_height):
 # determined by the calc_function
 def calculate(forest, tree_row, tree_col, calc_function):
     tree_height = forest[tree_row, tree_col]
-
     row = forest[tree_row, :]
     col = forest[:, tree_col]
+
     return calc_function(row, col, tree_row, tree_col, tree_height)
 
 
