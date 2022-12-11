@@ -8,12 +8,11 @@ import numpy as np
 
 
 def part1(row, col, tree_row, tree_col, tree_height):
-    def visible_in_line(line, row_or_col):
+    def is_visible(line, row_or_col):
         return all(line[0:row_or_col] < tree_height) or \
             all(line[row_or_col + 1:] < tree_height)
 
-    return visible_in_line(row, tree_col) or \
-        visible_in_line(col, tree_row)
+    return is_visible(row, tree_col) or is_visible(col, tree_row)
 
 
 def part2(row, col, tree_row, tree_col, tree_height):
