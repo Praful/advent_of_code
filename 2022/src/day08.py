@@ -7,18 +7,18 @@ import numpy as np
 # Puzzle description: https://adventofcode.com/2022/day/8
 
 
-def is_visible(row, col, tree_row, tree_col, tree_height):
-    def in_tree_line(line, row_or_col, tree_height):
+def part1(row, col, tree_row, tree_col, tree_height):
+    def visible_in_line(line, row_or_col):
         return all(line[0:row_or_col] < tree_height) or \
             all(line[row_or_col + 1:] < tree_height)
 
-    return in_tree_line(row, tree_col, tree_height) or \
-        in_tree_line(col, tree_row, tree_height)
+    return visible_in_line(row, tree_col) or \
+        visible_in_line(col, tree_row)
 
 
-def score(row, col, tree_row, tree_col, tree_height):
-    def calc_score(line, row_or_col, tree_height):
-        def sub_score(indexes):
+def part2(row, col, tree_row, tree_col, tree_height):
+    def score(line, row_or_col):
+        def line_score(indexes):
             score = 0
             for j in indexes:
                 score += 1
@@ -26,13 +26,11 @@ def score(row, col, tree_row, tree_col, tree_height):
                     break
             return score
 
-        left_range = range(row_or_col - 1, -1, -1)
-        right_range = range(row_or_col + 1, len(line))
+        left = range(row_or_col - 1, -1, -1)
+        right = range(row_or_col + 1, len(line))
+        return line_score(left) * line_score(right)
 
-        return sub_score(left_range) * sub_score(right_range)
-
-    return calc_score(row, tree_col, tree_height) * \
-        calc_score(col, tree_row, tree_height)
+    return score(row, tree_col) * score(col, tree_row)
 
 
 # tree_row and tree_col are the y and x coords in forest
@@ -55,14 +53,15 @@ def solve(input):
 
     for r in range(1, h - 1):
         for c in range(1, w - 1):
-            visible_count += calculate(m, r, c, is_visible)
-            scores.append(calculate(m, r, c, score))
+            visible_count += calculate(m, r, c, part1)
+            scores.append(calculate(m, r, c, part2))
 
     return visible_count, max(scores)
 
 
 def read_input(input_file):
-    return [list(map(int, list(e))) for e in utils.read_file_str(input_file, True)]
+    return [list(map(int, list(s)))
+            for s in utils.read_file_str(input_file, True)]
 
 
 def main():
