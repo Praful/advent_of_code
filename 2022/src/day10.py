@@ -2,8 +2,6 @@ import os
 import sys
 sys.path.append(os.path.relpath("../../shared/python"))
 import utils
-from collections import defaultdict
-import numpy as np
 
 # Puzzle description: https://adventofcode.com/2022/day/10
 
@@ -36,7 +34,7 @@ def solve(input, target_cycles=None):
 
 
 def part1(input):
-    target_cycles = {20, 60, 100, 140, 180, 220}
+    target_cycles = [20, 60, 100, 140, 180, 220]
     x_register = solve(input, target_cycles)
     return sum(x_register[c] * c for c in target_cycles)
 

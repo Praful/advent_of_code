@@ -115,3 +115,13 @@ def is_adjacent(p1, p2, include_diagonal=True):
 ADJACENT = [point(0, 1), point(0, -1), point(1, 0), point(-1, 0)]
 ADJACENT_DIAG = [*ADJACENT,
                  point(1, 1), point(1, -1), point(-1, 1), point(-1, -1)]
+
+
+class ReprMixin:
+    def __repr__(self):
+        return "<{klass} @{id:x} {attrs}>".format(
+            klass=self.__class__.__name__,
+            id=id(self) & 0xFFFFFF,
+            attrs=" ".join("{}={!r}".format(k, v)
+                           for k, v in self.__dict__.items()),
+        )
