@@ -8,12 +8,6 @@ import math
 # Puzzle description: https://adventofcode.com/2022/day/12
 
 
-# Sabqponm
-# abcryxxl
-# accszExk
-# acctuvwj
-# abdefghi
-
 def read_input(input_file):
     start = ()
     end = ()
@@ -29,13 +23,13 @@ def read_input(input_file):
     return (input, start, end)
 
 
-def adjacent_squares(heightmap, p):
-    height = heightmap[p[0]][p[1]]
+def adjacent_squares(height_map, p):
+    height = height_map[p[0]][p[1]]
 
     def check(adj):
         r, c = p[0] + adj[0], p[1] + adj[1]
-        if 0 <= r < len(heightmap) and 0 <= c < len(heightmap[0]):
-            if ord(heightmap[r][c]) <= ord(height) + 1:
+        if 0 <= r < len(height_map) and 0 <= c < len(height_map[0]):
+            if ord(height_map[r][c]) <= ord(height) + 1:
                 return (r, c)
         return None
 
@@ -43,7 +37,7 @@ def adjacent_squares(heightmap, p):
                                             for delta in [(0, 1), (0, -1), (1, 0), (-1, 0)]])
 
 
-def solve(heightmap, start, end):
+def solve(height_map, start, end):
     # Use BFS, see https://en.wikipedia.org/wiki/Breadth-first_search
     q = queue.SimpleQueue()
     q.put((start, 0))
@@ -55,7 +49,7 @@ def solve(heightmap, start, end):
         if p == end:
             return steps
 
-        for adj in adjacent_squares(heightmap, p):
+        for adj in adjacent_squares(height_map, p):
             if adj not in visited:
                 visited.add(adj)
                 q.put((adj, steps + 1))
