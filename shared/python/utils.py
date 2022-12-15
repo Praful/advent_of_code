@@ -2,10 +2,9 @@
 import numpy as np
 import math
 
-# return list of strings, one line per list entry
-
 
 def read_file_str(filename, strip=False):
+    """ return list of strings, one line per list entry"""
     result = []
     with open(filename) as f:
         for line in f:
@@ -16,10 +15,9 @@ def read_file_str(filename, strip=False):
 
     return result
 
-# filename consists of a single row of numbers
-
 
 def read_file_int(filename):
+    """ filename consists of a single row of numbers"""
     result = []
     with open(filename) as f:
         line = f.readline()
@@ -33,20 +31,25 @@ def read_file_int(filename):
 NUMERIC_KINDS = set('buifc')
 NOT_NUMERIC = [object(), 'string', u'unicode', None]
 
-# Return true if string is not defined or empty
+
+def replace(s, index, new_char):
+    """ change single char in string s """
+    l = list(s)
+    l[index] = new_char
+    return ''.join(l)
 
 
 def is_blank(s):
+    """ Return true if string is not defined or empty"""
     return not (s and s.strip())
 
 
 def is_numeric(array):
     return np.asarray(array).dtype.kind in NUMERIC_KINDS
 
-# checks if s is a valid value for an enum class
-
 
 def is_valid(enum, s):
+    """ checks if s is a valid value for an enum class"""
     for l in list(enum):
         if l.value == s:
             return True
