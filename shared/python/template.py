@@ -1,15 +1,16 @@
+import re
+import copy
+import operator
+import numpy as np
+import math
+from collections import defaultdict
+from dataclasses import dataclass
+from pprint import pprint
 import os
 import sys
-sys.path.append(os.path.relpath("../../shared/python"))
-from utils import *
-from pprint import pprint
-from dataclasses import dataclass
-from collections import defaultdict
-import math
-import numpy as np
-import operator
-import copy
-import re
+
+# noqa stops autopep8 from reordering this import
+from utils import *  # noqa: E402
 
 # Puzzle description: https://adventofcode.com/2022/day/XX
 

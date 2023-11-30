@@ -1,8 +1,8 @@
-from utils import *
 import os
 import sys
 sys.path.append(os.path.relpath("../../shared/python"))
-
+from utils import *  # noqa: E402
+#
 # Puzzle description: https://adventofcode.com/2015/day/1
 
 

@@ -2,14 +2,14 @@ import re
 import os
 import sys
 sys.path.append(os.path.relpath("../../shared/python"))
-from utils import *
+# noqa stops autopep8 from reordering this import
+from utils import *  # noqa: E402
 
 # Puzzle description: https://adventofcode.com/2015/day/2
 
 
 def read_input(input_file):
-    input = read_file_str(input_file, True)
-    return input
+    return read_file_str(input_file, True)
 
 
 def solve(input, calc):
