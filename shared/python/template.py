@@ -9,6 +9,8 @@ from pprint import pprint
 import os
 import sys
 
+sys.path.append(os.path.relpath("../../shared/python"))
+
 # noqa stops autopep8 from reordering this import
 from utils import *  # noqa: E402
 
