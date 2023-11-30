@@ -43,6 +43,10 @@ for i, color in enumerate(colors):
 for color, greek in zip(colors, names):
     print(f'{color} - {greek}')
 
+# list comprehension
+a= [1,2,3,4]
+total = sum(n for n in a)
+print(a, total)
 
 # custom sort, instead of using a sort function
 print(sorted(colors, key=len))
