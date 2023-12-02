@@ -1,11 +1,4 @@
 import re
-import copy
-import operator
-import numpy as np
-import math
-from collections import defaultdict
-from dataclasses import dataclass
-from pprint import pprint
 import os
 import sys
 
@@ -17,9 +10,7 @@ from utils import *  # noqa: E402
 # Puzzle description: https://adventofcode.com/2023/day/1
 
 
-def read_input(input_file):
-    input = read_file_str(input_file, True)
-    return input
+def read_input(input_file): return read_file_str(input_file, True)
 
 
 numbers_as_words = ['one', 'two', 'three', 'four',
@@ -28,9 +19,9 @@ numbers_as_words = ['one', 'two', 'three', 'four',
 
 def to_digit(c, s):
     # if c is a digit eg "3", return it
-    # else if s starts with a number word eg "seven", return the number ("7" in this 
+    # else if s starts with a number word eg "seven", return the number ("7" in this
     # case)
-    
+
     if c.isdigit():
         return c
     else:
