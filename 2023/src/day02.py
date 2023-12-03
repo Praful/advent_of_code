@@ -34,7 +34,6 @@ def parse_input(input):
     games = []
     for game in input:
         id = int(re.findall(r'\d+', game.split(': ')[0])[0])
-        s = (game.split(': ')[1])
         cubes_str = (game.split(': ')[1]).split('; ')
         cubes = []
         for cube_sets in cubes_str:
@@ -56,10 +55,8 @@ def part1(input, rgb):
     result = 0
     
     for game in input:
-        playable_games=0
-        for cube in game.cubes:
-            if cube['red'] <= rgb[0] and cube['green'] <= rgb[1] and cube['blue'] <= rgb[2]:
-                playable_games += 1
+        playable_games = sum(1 for cube in game.cubes
+                            if cube['red'] <= rgb[0] and cube['green'] <= rgb[1] and cube['blue'] <= rgb[2])
 
         if len(game.cubes) == playable_games:
             result += game.id
