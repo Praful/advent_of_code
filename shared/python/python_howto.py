@@ -110,6 +110,7 @@ def fibonacci(n):
 
 print(fibonacci(7))
 
+# for example of data classes see ../../2023/src/day03.py
 
 # concatenating strings
 # use join() instead of looping and doing s += ', ' + name

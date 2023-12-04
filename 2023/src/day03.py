@@ -30,19 +30,19 @@ def read_input(input_file):
 
 
 def nearby_symbols(input, y_part, x_part_start, x_part_end):
-    def is_symbol(c): return not c.isnumeric() and c != '.'
     def is_in_grid(x, y): return 0 <= y < len(input) and 0 <= x < len(input[y])
 
-    def found_symbol(x, y):
+    def is_symbol(x, y):
         if is_in_grid(x, y):
-            return is_symbol(input[y][x])
+            c = input[y][x]
+            return not c.isnumeric() and c != '.'
         return False
 
     # look around part number for symbols
     result = []
     for y in range(y_part - 1, y_part + 2):
         for x in range(x_part_start - 1, x_part_end + 1):
-            if found_symbol(x, y):
+            if is_symbol(x, y):
                 result.append(Symbol(x, y, input[y][x]))
     return result
 
