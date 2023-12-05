@@ -1,5 +1,4 @@
 import re
-import math
 from collections import defaultdict
 import os
 import sys
@@ -27,8 +26,6 @@ def read_input(input_file):
         winning_cards[id] = winning_numbers
         my_cards[id] = my_numbers
 
-    #  pprint (winning_cards )
-    #  pprint ( my_cards)
     return (winning_cards, my_cards)
 
 
@@ -44,8 +41,8 @@ def part1(input):
         winning_numbers = winning_cards[id]
         my_winning_numbers = set(my_numbers) & set(winning_numbers)
         if len(my_winning_numbers) > 0:
-            result += math.pow(2, len(my_winning_numbers)-1)
-    return int(result)
+            result += 2 ** (len(my_winning_numbers)-1)
+    return result
 
 
 def part2(input):
