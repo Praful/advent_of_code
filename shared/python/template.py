@@ -8,6 +8,9 @@ from dataclasses import dataclass
 from pprint import pprint
 import os
 import sys
+from functools import reduce
+from itertools import product
+from operator import mul
 
 sys.path.append(os.path.relpath("../../shared/python"))
 
