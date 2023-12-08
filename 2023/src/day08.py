@@ -47,7 +47,7 @@ def part2(input):
     # For starting nodes S1, S2, ..., Sn (which end in 'A'), there is a unique end point
     # E1, ..., En (which ends in 'Z'). The steps to get from S1, S2, ..., Sn to
     # E1, E2, ..., En are different, say N1, ..., Nn. There is a cycle so eg S1 goes to E1
-    # after N1 steps. Then after another N1 steps, S1 goes to E2 again. The same for the
+    # after N1 steps. Then after another N1 steps, S1 goes to E1 again. The same for the
     # rest. This allows us to work out the number of steps to get to E1, E2, ..., En
     # independently. Then we can use the lcm to work out the number of steps
     # to get to E1, E2, ..., En at the same time.
