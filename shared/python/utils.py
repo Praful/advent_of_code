@@ -27,6 +27,14 @@ def read_file_int(filename):
     return result
 
 
+def lcm(l):
+    #  https://en.wikipedia.org/wiki/Least_common_multiple
+    result = 1
+    for n in l:
+        result = (n*result) // math.gcd(n, result)
+    return result
+
+
 # Boolean, unsigned integer, signed integer, float, complex.
 NUMERIC_KINDS = set('buifc')
 NOT_NUMERIC = [object(), 'string', u'unicode', None]
