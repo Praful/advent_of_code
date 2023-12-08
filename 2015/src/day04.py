@@ -1,11 +1,3 @@
-import re
-import copy
-import operator
-import numpy as np
-import math
-from collections import defaultdict
-from dataclasses import dataclass
-from pprint import pprint
 import os
 import sys
 import hashlib
@@ -14,7 +6,7 @@ sys.path.append(os.path.relpath("../../shared/python"))
 # noqa stops autopep8 from reordering this import
 from utils import *  # noqa: E402
 
-# Puzzle description: https://adventofcode.com/2022/day/XX
+# Puzzle description: https://adventofcode.com/2015/day/4
 
 
 def md5(x): return hashlib.md5(x.encode('utf-8')).hexdigest()

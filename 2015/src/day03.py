@@ -3,7 +3,7 @@ import sys
 sys.path.append(os.path.relpath("../../shared/python"))
 
 from utils import *  # noqa: E402
-# Puzzle description: https://adventofcode.com/2022/day/XX
+# Puzzle description: https://adventofcode.com/2015/day/3
 
 
 def read_input(input_file):
