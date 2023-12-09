@@ -17,12 +17,11 @@ def read_file_str(filename, strip=False):
 
 
 def read_file_int(filename):
-    """ filename consists of a single row of numbers"""
+    """ file consists of a rows of numbers"""
     result = []
     with open(filename) as f:
-        line = f.readline()
-        for s in line.split():
-            result.append(int(s))
+        for line in f:
+            result.append(list(map(int, line.split())))
 
     return result
 

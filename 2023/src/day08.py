@@ -1,7 +1,6 @@
 import re
 import os
 import sys
-from itertools import cycle
 
 sys.path.append(os.path.relpath("../../shared/python"))
 
@@ -26,14 +25,15 @@ LR_MAP = {'L': 0, 'R': 1}
 
 
 def solve(input, start_node, end_func):
+    def left_right(): return LR_MAP[instructions[steps % instr_len]]
+
     instructions, nodes = input
+    instr_len = len(instructions)
     steps = 0
     next_node = start_node
-    for lr in cycle(instructions):
-        next_node = nodes[next_node][LR_MAP[lr]]
+    while not end_func(next_node):
+        next_node = nodes[next_node][left_right()]
         steps += 1
-        if end_func(next_node):
-            break
 
     return steps
 

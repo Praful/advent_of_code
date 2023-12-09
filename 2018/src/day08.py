@@ -73,7 +73,7 @@ def build_tree(input, offset=0):
 
 def read_input(input_file):
     input = utils.read_file_int(input_file)
-    return build_tree(input)
+    return build_tree(input[0])
 
 
 def main():
