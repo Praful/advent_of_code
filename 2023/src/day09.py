@@ -1,6 +1,6 @@
 import os
 import sys
-
+from itertools import pairwise
 sys.path.append(os.path.relpath("../../shared/python"))
 
 # noqa stops autopep8 from reordering this import
@@ -13,18 +13,12 @@ def read_input(input_file): return read_file_int(input_file)
 
 
 def next_number(history, forward=True):
-    def diffs(): return [history[i+1] - history[i]
-                         for i in range(0, len(history)-1)]
+    def diffs(): return [b - a for a, b in pairwise(history)]
 
     if not any(history):
         return 0
 
-    if forward:
-        i = -1
-        add_minus = 1
-    else:
-        i = 0
-        add_minus = -1
+    i, add_minus = (-1, 1) if forward else (0, -1)
 
     return history[i] + (add_minus * next_number(diffs(), forward))
 
