@@ -136,9 +136,15 @@ def rgb_bg(r, g, b):
     # for printing coloured text in a terminal
     return f"\033[48;2;{r};{g};{b}m"
 
+
+# For example usage, see ../../2023/src/day10.py. For example output, see
+# ../../2023/data/day10-visualisation.txt
 COLOUR_BLACK = rgb(0, 0, 0)
+COLOUR_RED = rgb(255, 0, 0)
 COLOUR_GREEN_BACKGROUND = rgb_bg(0, 255, 0)
-COLOUR_RESET = "\033[0m"  # Important!
+COLOUR_RED_BACKGROUND = rgb_bg(255, 0, 0)
+COLOUR_RESET = "\033[0m"  # always reset after changing colour
+
 
 class ReprMixin:
     def __repr__(self):

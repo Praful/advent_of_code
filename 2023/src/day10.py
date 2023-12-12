@@ -28,13 +28,17 @@ def to_ascii_line(c):
         return u'\u2510'
 
 
-def print_loop(field, loop):
+def print_visualisation(field, loop, outside=None):
+    GROUND = '.'
     for y in range(len(field)):
         for x in range(len(field[y])):
             if (x, y) in loop:
                 print(to_ascii_line(field[y][x]), end='')
             else:
-                print(' ', end='')
+                if outside is not None and (x, y) not in outside:
+                    print(f'{COLOUR_RED_BACKGROUND}{GROUND}{COLOUR_RESET}', end='')
+                else:
+                    print(GROUND, end='')
         print()
 
 
@@ -53,6 +57,7 @@ def read_input(input_file):
 def whats_s(field, x, y):
     # work out what the starting pipe S is
 
+    # check which directions we can move
     north = field[y-1][x] in '|7F'
     east = field[y][x+1] in '-J7'
     south = field[y+1][x] in '|LJ'
@@ -185,6 +190,9 @@ def part2(input):
 
             if not inside:
                 outside.add((x, y))
+
+    # to visualise pipes
+    #  print_loop(field, loop, outside | loop)
 
     return (len(field) * len(field[0])) - len(outside | loop)
 
