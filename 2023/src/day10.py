@@ -9,6 +9,35 @@ from utils import *  # noqa: E402
 # Puzzle description: https://adventofcode.com/2023/day/10
 
 
+#  See https://www.w3.org/TR/xml-entity-names/025.html
+def to_ascii_line(c):
+    if c == 'S':
+        #  return 'S'
+        return f"{COLOUR_BLACK}{COLOUR_GREEN_BACKGROUND}S{COLOUR_RESET}"
+    if c == 'F':
+        return u'\u250C'
+    if c == 'J':
+        return u'\u2518'
+    if c == 'L':
+        return u'\u2514'
+    if c == '|':
+        return u'\u2502'
+    if c == '-':
+        return u'\u2500'
+    if c == '7':
+        return u'\u2510'
+
+
+def print_loop(field, loop):
+    for y in range(len(field)):
+        for x in range(len(field[y])):
+            if (x, y) in loop:
+                print(to_ascii_line(field[y][x]), end='')
+            else:
+                print(' ', end='')
+        print()
+
+
 def read_input(input_file):
     input = read_file_str(input_file, True)
 
@@ -113,6 +142,9 @@ def part1(input):
             loop.add(current)
             steps += 1
 
+    # to visualise pipes
+    #  print_loop(field, loop)
+
     return (steps+1)//2, loop
 
 
@@ -169,7 +201,9 @@ def main():
     test_input5 = read_input("../data/day10-test-5.txt")
 
     assert (res := part1(test_input1)[0]) == 4, f'Actual: {res}'
+
     assert (res := part1(test_input1a)[0]) == 4, f'Actual: {res}'
+
     assert (res := part1(test_input2)[0]) == 8, f'Actual: {res}'
     assert (res := part1(test_input2a)[0]) == 8, f'Actual: {res}'
 

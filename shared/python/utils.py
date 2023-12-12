@@ -127,6 +127,19 @@ ADJACENT_DIAG = [*ADJACENT,
                  point(1, 1), point(1, -1), point(-1, 1), point(-1, -1)]
 
 
+def rgb(r, g, b):
+    # for printing coloured text in a terminal
+    return f"\033[38;2;{r};{g};{b}m"
+
+
+def rgb_bg(r, g, b):
+    # for printing coloured text in a terminal
+    return f"\033[48;2;{r};{g};{b}m"
+
+COLOUR_BLACK = rgb(0, 0, 0)
+COLOUR_GREEN_BACKGROUND = rgb_bg(0, 255, 0)
+COLOUR_RESET = "\033[0m"  # Important!
+
 class ReprMixin:
     def __repr__(self):
         return "<{klass} @{id:x} {attrs}>".format(
