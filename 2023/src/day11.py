@@ -11,21 +11,18 @@ from utils import *  # noqa: E402
 # Puzzle description: https://adventofcode.com/2023/day/11
 
 
+GALAXY = '#'
+EMPTY = '.'
+
+
 def read_input(input_file):
-    input = read_file_str(input_file, True)
-
-    return input
+    return to_numpy_array(read_file_str(input_file, True))
 
 
-def solve(input):
-    pass
-
-
-# too slow for part 2
 def expand_2D(a, multiple=2):
-    # expand row by row
+    # add rows to cosmos map
+    # too slow for part 2
 
-    EMPTY = '.'
     result = None
     for row_index in range(a.shape[0]):
         row = a[row_index, :]
@@ -36,7 +33,7 @@ def expand_2D(a, multiple=2):
             result = np.vstack((result, row))
 
         if all(row == EMPTY):
-            for n in range(multiple-1):
+            for _ in range(multiple-1):
                 result = np.vstack((result, row))
 
     return result
@@ -45,8 +42,7 @@ def expand_2D(a, multiple=2):
 def empty_rows_column(a):
     # Return indices of empty rows.
     # For empty column indices, transpose column before calling.
-    
-    EMPTY = '.'
+
     empty_rows = []
     for row_index in range(a.shape[0]):
         row = a[row_index, :]
@@ -58,7 +54,6 @@ def empty_rows_column(a):
 
 
 def galaxy_coords(a):
-    GALAXY = '#'
     galaxies = []
     for y in range(a.shape[0]):
         for x in range(a.shape[1]):
@@ -75,18 +70,14 @@ def to_numpy_array(a):
 
 # Too slow for part 2
 def expand_galaxy(input, multiple=2):
-
-    cosmos = to_numpy_array(input)
-
-    rows_expanded = expand_2D(cosmos, multiple)
+    rows_expanded = expand_2D(input, multiple)
     cols_expanded = expand_2D(rows_expanded.T, multiple).T
+    return galaxy_coords(cols_expanded)
 
-    galaxies = galaxy_coords(cols_expanded)
-
-    return galaxies
 
 def solve(expanded_coords):
     return sum(map(lambda p: manhattan_distance(p[0], p[1]), combinations(expanded_coords, 2)))
+
 
 def part1(input, multiple=2):
     expanded_coords = expand_galaxy(input, multiple=multiple)
@@ -95,23 +86,23 @@ def part1(input, multiple=2):
 
 def part2(input, multiples=2):
     # Work out how many empty rows and columns are before each galaxy. Then expand
-    # each galaxy by that amount.
-    
-    cosmos = to_numpy_array(input)
-    galaxies = galaxy_coords(cosmos)
-    empty_row_indexes = empty_rows_column(cosmos)
-    empty_col_indexes = empty_rows_column(cosmos.T)
-    expanded_coords = []
+    # each galaxy's coordinates by that amount.
 
-    for (x, y) in galaxies:
-        empty_x_count = np.count_nonzero(empty_col_indexes < x)
-        empty_y_count = np.count_nonzero(empty_row_indexes < y)
+    def new_coord(p):
+        # calc expanded coordinate for p
 
-        x1 = x + empty_x_count * (multiples - 1)
-        y1 = y + empty_y_count * (multiples - 1)
+        x, y = p
+        empty_col_count = np.count_nonzero(empty_col_indexes < x)
+        empty_row_count = np.count_nonzero(empty_row_indexes < y)
 
-        expanded_coords.append((x1, y1))
+        x1 = x + empty_col_count * (multiples - 1)
+        y1 = y + empty_row_count * (multiples - 1)
 
+        return x1, y1
+
+    empty_row_indexes = empty_rows_column(input)
+    empty_col_indexes = empty_rows_column(input.T)
+    expanded_coords = list(map(new_coord, galaxy_coords(input)))
     return solve(expanded_coords)
 
 
