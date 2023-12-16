@@ -86,10 +86,10 @@ def matches2(record, damages):
     if next_ch == '#':
         if found_damaged_springs():
             if more_damaged_springs():
-                if not valid_next_spring():
-                    return 0
-                else:
+                if valid_next_spring():
                     result += matches2(record[next_grp+1:], damages[1:])
+                else:
+                    return 0
             else:
                 result += matches2(record[next_grp:], damages[1:])
 
