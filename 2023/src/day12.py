@@ -72,54 +72,50 @@ def matches1(record, damages):
     return count
 
 
-def unfold(input):
-    result = []
-    for record, damages in input:
-        new_record = (record+'?') * 5
-        new_damage = (damages) * 5
-        result.append((new_record[:-1], new_damage))
-
-    return result
-
-
-@lru_cache(maxsize=256)
+@lru_cache(maxsize=400)
 def matches2(record, damages):
     # Part 2 fast method using recursion and cache (memoization).
 
     def more_damaged_springs(): return len(damages) > 1
 
     def found_damaged_springs():
-        return re.findall(r'^[\#\?]{%i}' % damages[0], record)
+        return re.findall(r'^[\#\?]{%i}' % next_grp, record)
 
     def valid_next_spring(): return not(
-        (len(record) < damages[0]+1) or record[damages[0]] == '#')
+        (len(record) < next_grp + 1) or record[next_grp] == '#')
 
     if not damages:
-        return 0 if record.find('#') > -1 else 1
+        return 0 if '#' in record else 1
 
     if not record:
         return 0
 
     result = 0
+    next_ch = record[0]
+    next_grp = damages[0]
 
-    if record[0] == '#':
+    if next_ch == '#':
         if found_damaged_springs():
             if more_damaged_springs():
                 if not valid_next_spring():
                     return 0
                 else:
-                    result += matches2(record[damages[0]+1:], damages[1:])
+                    result += matches2(record[next_grp+1:], damages[1:])
             else:
-                result += matches2(record[damages[0]:], damages[1:])
+                result += matches2(record[next_grp:], damages[1:])
 
-    elif record[0] == '.':
+    elif next_ch == '.':
         result += matches2(record[1:], damages)
 
-    elif record[0] == '?':
+    elif next_ch == '?':
         result += matches2(record.replace('?', '#', 1), damages) + \
             matches2(record.replace('?', '.', 1), damages)
 
     return result
+
+
+def unfold(input):
+    return (('?'.join([record] * 5), damages * 5) for record, damages in input)
 
 
 def part1(input):
@@ -130,7 +126,7 @@ def part1(input):
 
 
 def part2(input):
-    return sum(matches2(record, damages) for record, damages in unfold(input))
+    return part1(unfold(input))
 
 
 def main():
