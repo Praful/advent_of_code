@@ -63,11 +63,6 @@ def galaxy_coords(a):
     return galaxies
 
 
-def to_numpy_array(a):
-    rows = [list(l) for l in a]
-    return np.array(rows, str)
-
-
 # Too slow for part 2
 def expand_galaxy(input, multiple=2):
     rows_expanded = expand_2D(input, multiple)

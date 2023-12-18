@@ -63,6 +63,11 @@ def is_valid(enum, s):
 
     return False
 
+# Turn list of strings into 2D numpy array with one character per cell
+def to_numpy_array(a):
+    rows = [list(l) for l in a]
+    return np.array(rows, str)
+
 
 def print_np_info(a):
     print('size: ', a.size)
