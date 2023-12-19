@@ -1,6 +1,20 @@
-
+from enum import Enum
 import numpy as np
 import math
+
+
+class Direction(Enum):
+    NORTH = 0
+    EAST = 1
+    SOUTH = 2
+    WEST = 3
+
+
+class Direction2(Enum):
+    UP = 0
+    RIGHT = 1
+    DOWN = 2
+    LEFT = 3
 
 
 def read_file_str(filename, strip=False):
@@ -64,6 +78,8 @@ def is_valid(enum, s):
     return False
 
 # Turn list of strings into 2D numpy array with one character per cell
+
+
 def to_numpy_array(a):
     rows = [list(l) for l in a]
     return np.array(rows, str)

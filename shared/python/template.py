@@ -45,13 +45,9 @@ def main():
     test_input = read_input("../data/dayXX-test.txt")
 
     assert (res := part1(test_input)) == 0, f'Actual: {res}'
-
-    # print(f'Part 1 (test) {part1(test_input)}')  #
     # print(f'Part 1 {part1(input)}')  #
 
     #  assert (res := part2(test_input)) == 0, f'Actual: {res}'
-
-    # print(f'Part 2 (test) {part2(test_input)}')  #
     # print(f'Part 2 {part2(input)}')  #
 
 
