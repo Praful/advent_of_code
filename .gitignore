@@ -10,3 +10,6 @@ doc/api/
 
 .fake
 .ionide
+# Don't upload personal input files. See
+# https://old.reddit.com/r/adventofcode/wiki/faqs/copyright/inputs
+**/data/day??.txt

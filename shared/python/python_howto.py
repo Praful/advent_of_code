@@ -9,6 +9,9 @@ from enum import Enum
 
 # some these are from Raymond Hettinger's talk:
 # https://www.youtube.com/watch?v=OSGv2VnC0go
+# 
+# Other resources:
+# - http://gto76.github.io/python-cheatsheet/
 
 # regular expressions
 # if multiple matches on line, use re.findall() then match[0][0], match[0][1], etc
