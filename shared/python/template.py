@@ -31,7 +31,7 @@ def solve(input):
 
 def part1(input):
     result = 0
-    print(input)
+    pprint(input)
     return result
 
 

@@ -11,6 +11,9 @@ from enum import Enum
 # https://www.youtube.com/watch?v=OSGv2VnC0go
 # 
 # Other resources:
+# - Using A*, BFS, and Djikstra algorithms:
+#       https://www.redblobgames.com/pathfinding/a-star/introduction.html#astar
+#
 # - http://gto76.github.io/python-cheatsheet/
 
 # regular expressions

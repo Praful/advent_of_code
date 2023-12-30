@@ -10,6 +10,26 @@ class Direction(Enum):
     WEST = 3
 
 
+DIRECTION_DELTAS = {
+    # (col, row)
+    Direction.EAST: (1, 0),
+    Direction.NORTH: (0, -1),
+    Direction.WEST: (-1, 0),
+    Direction.SOUTH: (0, 1),
+}
+
+
+def reverse_direction(direction):
+    if direction == Direction.EAST:
+        return Direction.WEST
+    if direction == Direction.WEST:
+        return Direction.EAST
+    if direction == Direction.NORTH:
+        return Direction.SOUTH
+    if direction == Direction.SOUTH:
+        return Direction.NORTH
+
+
 class Direction2(Enum):
     UP = 0
     RIGHT = 1
@@ -93,6 +113,35 @@ def print_np_info(a):
         print('min:', a.min(axis=0))
 
 
+def determinant(p1, p2):
+    #  print(p1, p2)
+    return p1[0] * p2[1] - p1[1] * p2[0]
+
+
+def internal_area(boundary_points, boundary_length):
+    # https://en.wikipedia.org/wiki/Pick%27s_theorem
+    # Pick's theorem: total area = internal_area + boundary_length/2 - 1
+    # We have the boundary points and need the internal area.
+    # Rearranging, we get: internal_area = area + 1 - boundary_length/2
+    # We use the shoelace formula to get the total area
+    return (shoelace_area(boundary_points) + 1 - boundary_length / 2)
+
+
+def shoelace_area(input):
+    # https://en.wikipedia.org/wiki/Shoelace_formula
+
+    area = 0
+    for i in range(len(input)):
+        p1 = input[i]
+        p2 = input[(i + 1) % len(input)]
+        area += determinant(p1, p2)
+
+    return abs(area)/2
+
+
+def hex_to_dec(s):
+    return int(s, 16)
+
 # class Point:
 #     def __init__(self, x=0, y=0):
 #         self.x = x
@@ -133,6 +182,7 @@ def print_np_info(a):
 #     def is_adjacent(self, p, include_diagonal=True):
 #         adj = ADJACENT_DIAG if include_diagonal else ADJACENT
 #         return any([self + a == p for a in adj])
+
 
 def point(x=0, y=0):
     return np.array([x, y])

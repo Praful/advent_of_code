@@ -1,16 +1,6 @@
-import re
-import copy
-import operator
-import numpy as np
-import math
-from collections import defaultdict
 from dataclasses import dataclass
-from pprint import pprint
 import os
 import sys
-from functools import reduce
-from itertools import product
-from operator import mul
 import queue
 
 sys.path.append(os.path.relpath("../../shared/python"))
@@ -30,17 +20,17 @@ DIRECTION_DELTAS = {
 
 @dataclass
 class Beam:
-    location: tuple
+    position: tuple
     direction: Direction
 
-    def next_location(self):
-        return self.location[0] + DIRECTION_DELTAS[self.direction][0], self.location[1] + DIRECTION_DELTAS[self.direction][1]
+    def next_position(self):
+        return self.position[0] + DIRECTION_DELTAS[self.direction][0], self.position[1] + DIRECTION_DELTAS[self.direction][1]
 
     def __repr__(self):
-        return f'Beam({self.location}, {self.direction})'
+        return f'Beam({self.position}, {self.direction})'
 
     def __hash__(self):
-        return hash((self.location, self.direction))
+        return hash((self.position, self.direction))
 
 
 def read_input(input_file):
@@ -51,17 +41,17 @@ def read_input(input_file):
 
 def next_step(grid, beam):
     def in_grid(b):
-        return 0 <= b.location[0] < len(grid[0]) and 0 <= b.location[1] < len(grid)
+        return 0 <= b.position[0] < len(grid[0]) and 0 <= b.position[1] < len(grid)
 
     def add_beam(b=None):
         if b is None:
-            b = Beam(beam.next_location(), beam.direction)
+            b = Beam(beam.next_position(), beam.direction)
 
         if in_grid(b):
             result.append(b)
 
     result = []
-    tile = grid[beam.location[1]][beam.location[0]]
+    tile = grid[beam.position[1]][beam.position[0]]
 
     match tile:
         case ".":
@@ -69,47 +59,47 @@ def next_step(grid, beam):
         case '|':
             if beam.direction in [Direction.EAST, Direction.WEST]:
                 # split beam
-                next_location = Beam(beam.location, Direction.NORTH).next_location()
-                add_beam(Beam(next_location, Direction.NORTH))
-                next_location = Beam(beam.location, Direction.SOUTH).next_location()
-                add_beam(Beam(next_location, Direction.SOUTH))
+                next_position = Beam(beam.position, Direction.NORTH).next_position()
+                add_beam(Beam(next_position, Direction.NORTH))
+                next_position = Beam(beam.position, Direction.SOUTH).next_position()
+                add_beam(Beam(next_position, Direction.SOUTH))
             else:
                 add_beam()
         case '-':
             if beam.direction in [Direction.NORTH, Direction.SOUTH]:
                 # split beam
-                next_location = Beam(beam.location, Direction.EAST).next_location()
-                add_beam(Beam(next_location, Direction.EAST))
-                next_location = Beam(beam.location, Direction.WEST).next_location()
-                add_beam(Beam(next_location, Direction.WEST))
+                next_position = Beam(beam.position, Direction.EAST).next_position()
+                add_beam(Beam(next_position, Direction.EAST))
+                next_position = Beam(beam.position, Direction.WEST).next_position()
+                add_beam(Beam(next_position, Direction.WEST))
             else:
                 add_beam()
         case '\\':
             if beam.direction  == Direction.NORTH:
-                next_location = Beam(beam.location, Direction.WEST).next_location()
-                add_beam(Beam(next_location, Direction.WEST))
+                next_position = Beam(beam.position, Direction.WEST).next_position()
+                add_beam(Beam(next_position, Direction.WEST))
             if beam.direction  == Direction.SOUTH:
-                next_location = Beam(beam.location, Direction.EAST).next_location()
-                add_beam(Beam(next_location, Direction.EAST))
+                next_position = Beam(beam.position, Direction.EAST).next_position()
+                add_beam(Beam(next_position, Direction.EAST))
             if beam.direction  == Direction.EAST:
-                next_location = Beam(beam.location, Direction.SOUTH).next_location()
-                add_beam(Beam(next_location, Direction.SOUTH))
+                next_position = Beam(beam.position, Direction.SOUTH).next_position()
+                add_beam(Beam(next_position, Direction.SOUTH))
             if beam.direction  == Direction.WEST:
-                next_location = Beam(beam.location, Direction.NORTH).next_location()
-                add_beam(Beam(next_location, Direction.NORTH))
+                next_position = Beam(beam.position, Direction.NORTH).next_position()
+                add_beam(Beam(next_position, Direction.NORTH))
         case '/':
             if beam.direction  == Direction.NORTH:
-                next_location = Beam(beam.location, Direction.EAST).next_location()
-                add_beam(Beam(next_location, Direction.EAST))
+                next_position = Beam(beam.position, Direction.EAST).next_position()
+                add_beam(Beam(next_position, Direction.EAST))
             if beam.direction  == Direction.SOUTH:
-                next_location = Beam(beam.location, Direction.WEST).next_location()
-                add_beam(Beam(next_location, Direction.WEST))
+                next_position = Beam(beam.position, Direction.WEST).next_position()
+                add_beam(Beam(next_position, Direction.WEST))
             if beam.direction  == Direction.EAST:
-                next_location = Beam(beam.location, Direction.NORTH).next_location()
-                add_beam(Beam(next_location, Direction.NORTH))
+                next_position = Beam(beam.position, Direction.NORTH).next_position()
+                add_beam(Beam(next_position, Direction.NORTH))
             if beam.direction  == Direction.WEST:
-                next_location = Beam(beam.location, Direction.SOUTH).next_location()
-                add_beam(Beam(next_location, Direction.SOUTH))
+                next_position = Beam(beam.position, Direction.SOUTH).next_position()
+                add_beam(Beam(next_position, Direction.SOUTH))
         case _:
             raise Exception(f'Unknown tile: {tile} for beam {beam}')
 
@@ -130,7 +120,7 @@ def energise_tiles(input, beam=Beam((0, 0), Direction.EAST)):
 
     while not q.empty():
         beam = q.get()
-        energised.add(beam.location)
+        energised.add(beam.position)
 
         for beam in next_step(input, beam):
             if beam in visited:
