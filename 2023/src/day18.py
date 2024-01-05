@@ -1,6 +1,6 @@
-from dataclasses import dataclass
 import os
 import sys
+from collections import namedtuple
 
 sys.path.append(os.path.relpath("../../shared/python"))
 
@@ -10,11 +10,8 @@ from utils import *  # noqa: E402
 # Puzzle description: https://adventofcode.com/2023/day/18
 
 
-@dataclass
-class DigInstruction:
-    direction: str
-    distance: int
-    colour: str
+DigInstruction = namedtuple(
+    'DigInstruction', ['direction', 'distance', 'colour'])
 
 
 def read_input(input_file):

@@ -10,13 +10,6 @@ from utils import *  # noqa: E402
 
 # Puzzle description: https://adventofcode.com/2023/day/16
 
-DIRECTION_DELTAS = {
-    # (col, row)
-    Direction.EAST: (1, 0),
-    Direction.NORTH: (0, -1),
-    Direction.WEST: (-1, 0),
-    Direction.SOUTH: (0, 1),
-}
 
 @dataclass
 class Beam:
