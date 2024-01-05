@@ -1,16 +1,7 @@
 import re
-import copy
 import operator
-import numpy as np
-import math
-from collections import defaultdict
-from dataclasses import dataclass
-from pprint import pprint
 import os
 import sys
-from functools import reduce
-from itertools import product
-from operator import mul
 from collections import namedtuple
 from queue import SimpleQueue
 
