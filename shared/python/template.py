@@ -4,6 +4,7 @@ import operator
 import numpy as np
 import math
 from collections import defaultdict
+from collections import namedtuple
 from dataclasses import dataclass
 from pprint import pprint
 import os
@@ -11,6 +12,7 @@ import sys
 from functools import reduce
 from itertools import product
 from operator import mul
+import queue
 
 sys.path.append(os.path.relpath("../../shared/python"))
 
