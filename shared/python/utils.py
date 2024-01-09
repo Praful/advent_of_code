@@ -19,6 +19,27 @@ DIRECTION_DELTAS = {
 }
 
 
+def into_range(x, n, m):
+    # for x returns value in range n-m (inclusive)
+    return ((x-n) % (m-n+1))+n
+
+
+def neighbours(position, grid, check_in_bounds=True, condition=lambda g, x: True):
+    def in_grid(p):
+        #  print('in grid', p, len(grid), len(grid[0]))
+        if check_in_bounds:
+            return 0 <= p[0] < len(grid[0]) and 0 <= p[1] < len(grid)
+        else:
+            return True
+
+    result = []
+    for d in DIRECTION_DELTAS.values():
+        new_position = (position[0] + d[0], position[1] + d[1])
+        if in_grid(new_position) and condition(grid, new_position):
+            result.append(new_position)
+    return result
+
+
 def reverse_direction(direction):
     if direction == Direction.EAST:
         return Direction.WEST
