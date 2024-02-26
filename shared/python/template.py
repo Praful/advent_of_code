@@ -15,6 +15,10 @@ import numpy as np
 import operator
 import queue
 
+# for profiling
+from cProfile import Profile
+from pstats import Stats, SortKey
+
 sys.path.append(os.path.relpath("../../shared/python"))
 
 # noqa stops autopep8 from reordering this import
@@ -56,3 +60,13 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+    #  with Profile() as profile:
+    #
+    #  main()
+    #  (
+    #  Stats(profile)
+    #  .strip_dirs()
+    #  .sort_stats(SortKey.TIME)
+    #  .print_stats()
+    #  )

@@ -18,10 +18,21 @@ DIRECTION_DELTAS = {
     Direction.SOUTH: (0, 1),
 }
 
+ARROWS_TO_DIRECTION = {
+    '>': Direction.EAST,
+    'v': Direction.SOUTH,
+    '<': Direction.WEST,
+    '^': Direction.NORTH,
+}
+
 
 def into_range(x, n, m):
     # for x returns value in range n-m (inclusive)
     return ((x-n) % (m-n+1))+n
+
+
+def next_neighbour(position, direction):
+    return (position[0] + DIRECTION_DELTAS[direction][0], position[1] + DIRECTION_DELTAS[direction][1])
 
 
 def neighbours(position, grid, check_in_bounds=True, condition=lambda g, x: True):
@@ -33,10 +44,11 @@ def neighbours(position, grid, check_in_bounds=True, condition=lambda g, x: True
             return True
 
     result = []
-    for d in DIRECTION_DELTAS.values():
-        new_position = (position[0] + d[0], position[1] + d[1])
+    for d in DIRECTION_DELTAS.keys():
+        new_position = next_neighbour(position, d)
         if in_grid(new_position) and condition(grid, new_position):
             result.append(new_position)
+
     return result
 
 
@@ -118,10 +130,10 @@ def is_valid(enum, s):
 
     return False
 
-# Turn list of strings into 2D numpy array with one character per cell
-
 
 def to_numpy_array(a):
+    # Turn list of strings into 2D numpy array with one character per cell
+
     rows = [list(l) for l in a]
     return np.array(rows, str)
 
@@ -224,6 +236,45 @@ def is_adjacent(p1, p2, include_diagonal=True):
 ADJACENT = [point(0, 1), point(0, -1), point(1, 0), point(-1, 0)]
 ADJACENT_DIAG = [*ADJACENT,
                  point(1, 1), point(1, -1), point(-1, 1), point(-1, -1)]
+
+# provide equation of line coefficients (A, B, C) for Ax+By=C
+
+
+def intersection_point(line1, line2):
+
+    A = np.array([line1[:2], line2[:2]])
+    b = np.array([line1[2], line2[2]])
+    try:
+        return np.linalg.solve(A, b)
+    except np.linalg.LinAlgError:
+        return None  # Lines are parallel
+
+
+# return A, B, C for Ax+By=C
+def equation_of_line_coefficients(point1, point2):
+    x1, y1 = point1
+    x2, y2 = point2
+
+    # m = slope
+    if x2 - x1 != 0:  # Avoid div by zero
+        m = (y2 - y1) / (x2 - x1)
+    else:
+        m = float('inf')  # Vertical line
+
+    # Use one of the points to find the equation
+    # For vertical lines (x2 - x1 == 0), the equation is x = x1
+    if m != float('inf'):
+        C = y1 - m * x1
+        #  equation = f'y = {m}x + {b}'
+        B = 1
+        A = -m
+    else:
+        C = 0
+        #  equation = f'x = {x1}'
+        B = 0
+        A = x1
+
+    return (A, B, C)
 
 
 def rgb(r, g, b):
