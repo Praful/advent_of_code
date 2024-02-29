@@ -3,6 +3,9 @@ import os
 import re
 import copy
 import math
+import itertools
+import functools
+import collections
 from collections import defaultdict
 from collections import namedtuple
 from dataclasses import dataclass
