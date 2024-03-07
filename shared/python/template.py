@@ -62,6 +62,8 @@ def main():
 
 
 if __name__ == '__main__':
+    #  sys.setrecursionlimit(999999)
+
     main()
 
     #  with Profile() as profile:
