@@ -16,17 +16,18 @@ def read_input(input_file):
 
 
 def part1(first_items, second_items):
-    sorted_first, sorted_second = sorted(first_items), sorted(second_items)
-    return sum([abs(first - second) for first, second in zip(sorted_first, sorted_second)])
+    return sum([abs(first - second) for first, second in zip(sorted(first_items), sorted(second_items))])
 
 
 def part2(first_items, second_items):
-
     # Create a dictionary to store counts of elements in second list
     count_dict = {second: second_items.count(
         second) for second in set(second_items)}
 
-    return sum(map(lambda first: first * count_dict.get(first, 0), first_items))
+    #  map:
+    #  return sum(map(lambda first: first * count_dict.get(first, 0), first_items))
+    #  list comprehension:
+    return sum(first * count_dict.get(first, 0) for first in first_items)
 
 
 def main():
