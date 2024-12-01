@@ -221,6 +221,11 @@ def point(x=0, y=0):
     return np.array([x, y])
 
 
+def make_grid(rows, cols, value=0):
+    #  return np.array([[point(x, y) for x in range(cols)] for y in range(rows)])
+    return [[value] * cols for _ in range(rows)]
+
+
 def manhattan_distance(point1, point2):
     x1, y1 = point1
     x2, y2 = point2
