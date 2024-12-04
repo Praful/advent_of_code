@@ -4,7 +4,7 @@ using Test
 # using Memoize
 # using Combinatorics
 
-# Puzzle description: https://adventofcode.com/2018/day/06
+# Puzzle description: https://adventofcode.com/2018/day/6
 
 manhattan_distance(x1, y1, x2, y2) = abs(x1 - x2) + abs(y1 - y2)
 

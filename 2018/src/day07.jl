@@ -2,7 +2,7 @@ using AdventOfCodeUtils
 using Test
 import Base: copy, deleteat!, isempty
 
-# Puzzle description: https://adventofcode.com/2018/day/07
+# Puzzle description: https://adventofcode.com/2018/day/7
 
 # Terminology:
 #  before - is the step that must be finished before 'after' can begin

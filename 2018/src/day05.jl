@@ -1,7 +1,7 @@
 using AdventOfCodeUtils
 using Test
 
-# Puzzle description: https://adventofcode.com/2018/day/05
+# Puzzle description: https://adventofcode.com/2018/day/5
 
 # I was expecting to have to use a linked list but Julia turns out to 
 # be fast deleting elements in large vectors. The total run time is 0.3 secs.

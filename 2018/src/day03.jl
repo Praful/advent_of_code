@@ -5,7 +5,7 @@ using DataStructures
 # using Memoize
 # using Combinatorics
 
-# Puzzle description: https://adventofcode.com/2018/day/03
+# Puzzle description: https://adventofcode.com/2018/day/3
 
 struct Claim
   id::Int

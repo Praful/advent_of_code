@@ -4,7 +4,7 @@ sys.path.append(os.path.relpath("../../shared/python"))
 import utils
 from collections import deque
 
-# Puzzle description: https://adventofcode.com/2018/day/09
+# Puzzle description: https://adventofcode.com/2018/day/9
 
 # For part 1, I used an array to insert and delete items. This looked
 # familiar: there was something like this in a later year. For both,

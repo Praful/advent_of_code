@@ -3,7 +3,7 @@ using Test
 using DataStructures
 using Combinatorics
 
-# Puzzle description: https://adventofcode.com/2018/day/02
+# Puzzle description: https://adventofcode.com/2018/day/2
 
 
 

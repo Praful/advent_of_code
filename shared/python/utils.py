@@ -10,6 +10,16 @@ class Direction(Enum):
     WEST = 3
 
 
+DIRECTIONS_ALL = [
+    (0, 1),
+    (0, -1),
+    (1, 0),
+    (-1, 0),
+    (1, 1),
+    (1, -1),
+    (-1, 1),
+    (-1, -1),]
+
 DIRECTION_DELTAS = {
     # (col, row)
     Direction.EAST: (1, 0),
@@ -34,19 +44,21 @@ def into_range(x, n, m):
 def next_neighbour(position, direction):
     return (position[0] + DIRECTION_DELTAS[direction][0], position[1] + DIRECTION_DELTAS[direction][1])
 
+def in_grid(p, grid):
+    return 0 <= p[0] < len(grid[0]) and 0 <= p[1] < len(grid)
+
 
 def neighbours(position, grid, check_in_bounds=True, condition=lambda g, x: True):
-    def in_grid(p):
-        #  print('in grid', p, len(grid), len(grid[0]))
+    def in_grid_bound(p):
         if check_in_bounds:
-            return 0 <= p[0] < len(grid[0]) and 0 <= p[1] < len(grid)
+            return in_grid(p, grid)
         else:
             return True
 
     result = []
     for d in DIRECTION_DELTAS.keys():
         new_position = next_neighbour(position, d)
-        if in_grid(new_position) and condition(grid, new_position):
+        if in_grid_bound(new_position) and condition(grid, new_position):
             result.append(new_position)
 
     return result

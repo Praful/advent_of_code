@@ -3,7 +3,7 @@ import sys
 sys.path.append(os.path.relpath("../../shared/python"))
 import utils
 
-# Puzzle description: https://adventofcode.com/2018/day/08
+# Puzzle description: https://adventofcode.com/2018/day/8
 
 
 class Node:

@@ -1,7 +1,7 @@
 using AdventOfCodeUtils
 using Test
 
-# Puzzle description: https://adventofcode.com/2018/day/01
+# Puzzle description: https://adventofcode.com/2018/day/1
 
 
 part1(input) = sum(input)

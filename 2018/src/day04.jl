@@ -1,7 +1,7 @@
 using AdventOfCodeUtils
 using Test
 
-# Puzzle description: https://adventofcode.com/2018/day/04
+# Puzzle description: https://adventofcode.com/2018/day/4
 
 
 mutable struct SleepRecord
