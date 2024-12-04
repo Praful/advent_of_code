@@ -14,6 +14,7 @@ def read_input(input_file):
     return input
 
 
+# Scan grid, looking for XMAS in all 8 directions from each point.
 def part1(input):
     result = 0
     FIND = "XMAS"
@@ -38,6 +39,7 @@ def part1(input):
     return result
 
 
+# Find A then check diagonal corners for MS or SM.
 def part2(input):
     result = 0
     FIND = "MS"
