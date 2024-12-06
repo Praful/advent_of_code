@@ -11,15 +11,9 @@ cd advent_of_code/2020/src
 python day06.py
 ```
 
-Generally, the programs will run for the test input file and the real input file. However, the 
-`data` directories contain only the test input files. These are copied from each day's problem 
-description. The real input files are personal to each user and the creator of Advent of Code has 
-asked not to share the files. If you haven't already, you'll need to register for Advent of Code. 
-Once registered, you can download your input files and place them in the right year's `data` 
-directory. Remember to rename the file to match the day's number. The filename format for the real input 
-files is `dayXX.txt` where XX is the day's number, starting at 01, 02, ..., 25.
+Generally, the programs will use the test input files and the real input files in the corresponding `data` directory. However, the `data` directories contain only the test input files. These are copied from each day's problem description. The real input files are personal to each user and the creator of Advent of Code has asked not to share the files. If you haven't already, you'll need to register for Advent of Code. Once registered, you can download your input files and place them in the right year's `data` directory. Remember to rename the file to match the day's number. The filename format for the real input files is `dayXX.txt` where XX is the day's number, starting at 01, 02, ..., 25.
 
-Since the real input files are not in the `data` directory, you will get an error if you try to run the programs unamended. To run the scripts without the real input files, comment out the parts that run with the real input files.
+Since the real input files are not in the `data` directory, you will get an error if you try to run the programs unamended. To run the scripts without the real input files, comment out the parts that use the real input files.
 
 You may need to install some Python libraries by running:
 
