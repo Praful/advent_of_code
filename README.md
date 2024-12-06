@@ -1,7 +1,14 @@
 # Advent of Code
 
 
-### Update 2
+### Update 3 (Dec 2024)
+
+At some point, I switched to Python. I learnt this for a machine learning course a few years ago. 
+For Advent of Code, I've switched from Dart to Julia to Python. At some point, I'll discover another interesting language and will try that out!
+
+These are the other languages, in no particular order, I've used over the years (not for Advent of Code): Fortran, Algol 68, Pascal, C, C#, Java, JavaScript, Ruby, SQL, PHP, Perl, Octave/Matlab, Visual Basic, Delphi, and various shell scripting languages.
+
+### Update 2 (Dec 2021)
 
 I have 1.5 problems remaining for Aoc 2019. However, AoC 2021 has arrived. I'm doing this in Julia, which I know nothing about; I haven't even read a tutorial! My solutions for 2021, therefore, are the first bits of code I've ever written in Julia. Initially, they will probably look generically procedural but hopefully will become more idiomatic Julia as I learn the language.
 
