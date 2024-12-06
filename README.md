@@ -3,7 +3,8 @@
 
 ### Update 3 (Dec 2024)
 
-At some point, I switched to Python. I learnt this for a machine learning course a few years ago. 
+At some point, I switched to Python for doing Advent of Code. I learnt this for a machine learning course a few years ago. 
+
 For Advent of Code, I've switched from Dart to Julia to Python. At some point, I'll discover another interesting language and will try that out!
 
 These are the other languages, in no particular order, I've used over the years (not for Advent of Code): Fortran, Algol 68, Pascal, C, C#, Java, JavaScript, Ruby, SQL, PHP, Perl, Octave/Matlab, Visual Basic, Delphi, and various shell scripting languages.
