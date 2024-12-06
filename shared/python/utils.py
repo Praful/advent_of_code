@@ -21,11 +21,11 @@ DIRECTIONS_ALL = [
     (-1, -1),]
 
 DIRECTION_DELTAS = {
-    # (col, row)
-    Direction.EAST: (1, 0),
-    Direction.NORTH: (0, -1),
-    Direction.WEST: (-1, 0),
-    Direction.SOUTH: (0, 1),
+    # (row, col)
+    Direction.EAST: (0, 1),
+    Direction.NORTH: (-1, 0),
+    Direction.WEST: (0, -1),
+    Direction.SOUTH: (1, 0),
 }
 
 ARROWS_TO_DIRECTION = {
@@ -44,8 +44,9 @@ def into_range(x, n, m):
 def next_neighbour(position, direction):
     return (position[0] + DIRECTION_DELTAS[direction][0], position[1] + DIRECTION_DELTAS[direction][1])
 
+
 def in_grid(p, grid):
-    return 0 <= p[0] < len(grid[0]) and 0 <= p[1] < len(grid)
+    return 0 <= p[0] < len(grid) and 0 <= p[1] < len(grid[0])
 
 
 def neighbours(position, grid, check_in_bounds=True, condition=lambda g, x: True):
@@ -73,6 +74,18 @@ def reverse_direction(direction):
         return Direction.SOUTH
     if direction == Direction.SOUTH:
         return Direction.NORTH
+
+
+# rotate 90 degrees clockwise or anticlockwise
+def next_direction(current_direction, anticlockwise=False):
+    directions = list(Direction)
+
+    # Determine the step: +1 for clockwise, -1 for anticlockwise
+    step = -1 if anticlockwise else 1
+
+    # Calculate the next index using modular arithmetic
+    next_index = (current_direction.value + step) % len(directions)
+    return directions[next_index]
 
 
 class Direction2(Enum):

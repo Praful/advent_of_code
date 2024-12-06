@@ -17,7 +17,7 @@ class Beam:
     direction: Direction
 
     def next_position(self):
-        return self.position[0] + DIRECTION_DELTAS[self.direction][0], self.position[1] + DIRECTION_DELTAS[self.direction][1]
+        return next_neighbour(self.position, self.direction)
 
     def __repr__(self):
         return f'Beam({self.position}, {self.direction})'
@@ -31,20 +31,17 @@ def read_input(input_file):
     return input
 
 
-
 def next_step(grid, beam):
-    def in_grid(b):
-        return 0 <= b.position[0] < len(grid[0]) and 0 <= b.position[1] < len(grid)
 
     def add_beam(b=None):
         if b is None:
             b = Beam(beam.next_position(), beam.direction)
 
-        if in_grid(b):
+        if in_grid(b.position, grid):
             result.append(b)
 
     result = []
-    tile = grid[beam.position[1]][beam.position[0]]
+    tile = grid[beam.position[0]][beam.position[1]]
 
     match tile:
         case ".":
@@ -52,62 +49,76 @@ def next_step(grid, beam):
         case '|':
             if beam.direction in [Direction.EAST, Direction.WEST]:
                 # split beam
-                next_position = Beam(beam.position, Direction.NORTH).next_position()
+                next_position = Beam(
+                    beam.position, Direction.NORTH).next_position()
                 add_beam(Beam(next_position, Direction.NORTH))
-                next_position = Beam(beam.position, Direction.SOUTH).next_position()
+                next_position = Beam(
+                    beam.position, Direction.SOUTH).next_position()
                 add_beam(Beam(next_position, Direction.SOUTH))
             else:
                 add_beam()
         case '-':
             if beam.direction in [Direction.NORTH, Direction.SOUTH]:
                 # split beam
-                next_position = Beam(beam.position, Direction.EAST).next_position()
+                next_position = Beam(
+                    beam.position, Direction.EAST).next_position()
                 add_beam(Beam(next_position, Direction.EAST))
-                next_position = Beam(beam.position, Direction.WEST).next_position()
+                next_position = Beam(
+                    beam.position, Direction.WEST).next_position()
                 add_beam(Beam(next_position, Direction.WEST))
             else:
                 add_beam()
         case '\\':
-            if beam.direction  == Direction.NORTH:
-                next_position = Beam(beam.position, Direction.WEST).next_position()
+            if beam.direction == Direction.NORTH:
+                next_position = Beam(
+                    beam.position, Direction.WEST).next_position()
                 add_beam(Beam(next_position, Direction.WEST))
-            if beam.direction  == Direction.SOUTH:
-                next_position = Beam(beam.position, Direction.EAST).next_position()
+            if beam.direction == Direction.SOUTH:
+                next_position = Beam(
+                    beam.position, Direction.EAST).next_position()
                 add_beam(Beam(next_position, Direction.EAST))
-            if beam.direction  == Direction.EAST:
-                next_position = Beam(beam.position, Direction.SOUTH).next_position()
+            if beam.direction == Direction.EAST:
+                next_position = Beam(
+                    beam.position, Direction.SOUTH).next_position()
                 add_beam(Beam(next_position, Direction.SOUTH))
-            if beam.direction  == Direction.WEST:
-                next_position = Beam(beam.position, Direction.NORTH).next_position()
+            if beam.direction == Direction.WEST:
+                next_position = Beam(
+                    beam.position, Direction.NORTH).next_position()
                 add_beam(Beam(next_position, Direction.NORTH))
         case '/':
-            if beam.direction  == Direction.NORTH:
-                next_position = Beam(beam.position, Direction.EAST).next_position()
+            if beam.direction == Direction.NORTH:
+                next_position = Beam(
+                    beam.position, Direction.EAST).next_position()
                 add_beam(Beam(next_position, Direction.EAST))
-            if beam.direction  == Direction.SOUTH:
-                next_position = Beam(beam.position, Direction.WEST).next_position()
+            if beam.direction == Direction.SOUTH:
+                next_position = Beam(
+                    beam.position, Direction.WEST).next_position()
                 add_beam(Beam(next_position, Direction.WEST))
-            if beam.direction  == Direction.EAST:
-                next_position = Beam(beam.position, Direction.NORTH).next_position()
+            if beam.direction == Direction.EAST:
+                next_position = Beam(
+                    beam.position, Direction.NORTH).next_position()
                 add_beam(Beam(next_position, Direction.NORTH))
-            if beam.direction  == Direction.WEST:
-                next_position = Beam(beam.position, Direction.SOUTH).next_position()
+            if beam.direction == Direction.WEST:
+                next_position = Beam(
+                    beam.position, Direction.SOUTH).next_position()
                 add_beam(Beam(next_position, Direction.SOUTH))
         case _:
             raise Exception(f'Unknown tile: {tile} for beam {beam}')
 
     return result
 
+
 def part1(input):
     return energise_tiles(input)
+
 
 def energise_tiles(input, beam=Beam((0, 0), Direction.EAST)):
     energised = set()
 
     # store beams so that we don't repeat their paths
     visited = set()
-    
-    # q contains the travelling beams 
+
+    # q contains the travelling beams
     q = queue.SimpleQueue()
     q.put(beam)
 
@@ -129,12 +140,16 @@ def part2(input):
     result = 0
 
     for col in range(len(input[0])):
-        result = max(result, energise_tiles(input, Beam((col, 0), Direction.SOUTH)))
-        result = max(result, energise_tiles(input, Beam((col, len(input)-1), Direction.NORTH)))
+        result = max(result, energise_tiles(
+            input, Beam((0, col), Direction.SOUTH)))
+        result = max(result, energise_tiles(
+            input, Beam((len(input)-1, col), Direction.NORTH)))
 
     for row in range(len(input)):
-        result = max(result, energise_tiles(input, Beam((0, row), Direction.EAST)))
-        result = max(result, energise_tiles(input, Beam((len(input[0])-1, row), Direction.WEST)))
+        result = max(result, energise_tiles(
+            input, Beam((row, 0), Direction.EAST)))
+        result = max(result, energise_tiles(
+            input, Beam((row, len(input[0])-1), Direction.WEST)))
 
     return result
 

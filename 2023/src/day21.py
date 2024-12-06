@@ -15,9 +15,9 @@ from utils import *  # noqa: E402
 def read_input(input_file):
     input = read_file_str(input_file, True)
     start = (0, 0)
-    for y, l in enumerate(input):
-        if (x := l.find('S')) > 0:
-            start = (x, y)
+    for r, l in enumerate(input):
+        if (c := l.find('S')) > 0:
+            start = (r, c)
             break
 
     return start, input
@@ -25,17 +25,17 @@ def read_input(input_file):
 
 # map coord outside our starting grid into grid to check if it's a rock
 def is_rock2(g, p):
-    x, y = p
-    if p[0] < 0 or p[0] >= len(g[0]):
-        x = into_range(p[0], 0, len(g[0])-1)
-    if p[1] < 0 or p[1] >= len(g):
-        y = into_range(p[1], 0, len(g)-1)
+    r, c = p
+    if p[1] < 0 or p[1] >= len(g[0]):
+        c = into_range(p[1], 0, len(g[0])-1)
+    if p[0] < 0 or p[0] >= len(g):
+        r = into_range(p[0], 0, len(g)-1)
 
-    return is_rock1(g, (x, y))
+    return is_rock1(g, (r, c))
 
 
 def is_rock1(g, p):
-    return g[p[1]][p[0]] != '#'
+    return g[p[0]][p[1]] != '#'
 
 
 def walk2(input, steps):

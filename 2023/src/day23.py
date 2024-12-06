@@ -70,7 +70,7 @@ def read_input(input_file):
 
 
 def is_wall(g, p):
-    return g[p[1]][p[0]] != '#'
+    return g[p[0]][p[1]] != '#'
 
 
 def neighbours_cache(position, grid, check_in_bounds=True, condition=lambda g, x: True):
@@ -91,8 +91,8 @@ cache = {}
 def solve1(grid, reverse=False, start=None, end=None):
     cache.clear()
 
-    start = (1, 0) if start is None else start  # column, row
-    end = (len(grid[0])-2, len(grid)-1) if end is None else end
+    start = (0, 1) if start is None else start  # row, col
+    end = (len(grid)-1, len(grid[0])-2) if end is None else end
 
     q = queue.SimpleQueue()  # position, steps, last position, position's Node
     visited = Node(start)
@@ -102,7 +102,7 @@ def solve1(grid, reverse=False, start=None, end=None):
 
     while not q.empty():
         pos, steps, last_pos, visited = q.get()
-        tile = grid[pos[1]][pos[0]]
+        tile = grid[pos[0]][pos[1]]
 
         if not reverse and tile in ">v<^":
             adjacent = [next_neighbour(pos, ARROWS_TO_DIRECTION[tile])]
@@ -144,11 +144,11 @@ def dfs(graph, start, end, steps=0, visited=None):
 def condensed_graph(grid, start, end):
     junctions = [start, end]
 
-    for y in range(len(grid)):
-        for x in range(len(grid[0])):
-            if grid[y][x] != '#':
-                if len(neighbours_cache((x, y), grid, True, is_wall)) > 2:
-                    junctions.append((x, y))
+    for r in range(len(grid)):
+        for c in range(len(grid[0])):
+            if grid[r][c] != '#':
+                if len(neighbours_cache((r, c), grid, True, is_wall)) > 2:
+                    junctions.append((r, c))
 
     graph = {j: {} for j in junctions}
 
@@ -175,8 +175,8 @@ def condensed_graph(grid, start, end):
 
 def solve2(grid):
     cache.clear()
-    start = (1, 0)  # column, row
-    end = (len(grid[0])-2, len(grid)-1)
+    start = (0, 1)  # row, column
+    end = (len(grid)-1, len(grid[0])-2)
     graph = condensed_graph(grid, start, end)
     return dfs(graph, start, end, 0, {start})
 

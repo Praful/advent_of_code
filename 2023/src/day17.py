@@ -34,19 +34,15 @@ def read_input(input_file):
 
 
 def adjacent_tiles(grid, crucible, min_blocks, max_blocks):
-    def in_grid(pos):
-        return 0 <= pos[0] < len(grid[0]) and 0 <= pos[1] < len(grid)
-
     result = []
 
     for new_dir in DIRECTION_DELTAS:
         if new_dir == reverse_direction(crucible.direction):
             continue
 
-        new_position = (crucible.position[0] + DIRECTION_DELTAS[new_dir][0],
-                        crucible.position[1] + DIRECTION_DELTAS[new_dir][1])
+        new_position = next_neighbour(crucible.position, new_dir)
 
-        if not in_grid(new_position):
+        if not in_grid(new_position, grid):
             continue
 
         blocks_moved = 1
@@ -60,7 +56,7 @@ def adjacent_tiles(grid, crucible, min_blocks, max_blocks):
         elif crucible.blocks_moved < min_blocks:
             continue
 
-        tile_heat_loss = int(grid[new_position[1]][new_position[0]])
+        tile_heat_loss = int(grid[new_position[0]][new_position[1]])
 
         result.append(Crucible(new_position, blocks_moved,
                       crucible.heat_loss + tile_heat_loss, new_dir))
@@ -70,18 +66,18 @@ def adjacent_tiles(grid, crucible, min_blocks, max_blocks):
 
 def bfs(input, min_blocks=0, max_blocks=3):
     # Using BFS algorithm:
-    # https://www.redblobgames.com/pathfinding/a-star/implementation.html#python-breadth-first 
+    # https://www.redblobgames.com/pathfinding/a-star/implementation.html#python-breadth-first
     # This is almost identical to A* below except that it finds all possible paths
-    # between start and finish by using a simple queue and storing heat loss results. The 
+    # between start and finish by using a simple queue and storing heat loss results. The
     # upshot is that it's extremely slow!
     # In contrast, A* priortises the lowest cost path during traversal and therefore
     # doesn't visit every node.
     # I wrote this to see how slow bfs is after solving using A*.
 
-    finish_pos = (len(input[0]) - 1, len(input) - 1)
+    finish_pos = (len(input) - 1, len(input[0]) - 1)
     heat_loss_so_far = {}
     result = []
-    
+
     q = SimpleQueue()
     q.put(Crucible((0, 0), 0, 0, Direction.EAST))
     q.put(Crucible((0, 0), 0, 0, Direction.SOUTH))
@@ -91,7 +87,7 @@ def bfs(input, min_blocks=0, max_blocks=3):
 
         for adj in adjacent_tiles(input, crucible, min_blocks, max_blocks):
             if adj.position == finish_pos and adj.blocks_moved >= min_blocks:
-                result.append(adj.heat_loss) 
+                result.append(adj.heat_loss)
                 continue
 
             key = (adj.position, adj.blocks_moved, adj.direction)
@@ -102,12 +98,13 @@ def bfs(input, min_blocks=0, max_blocks=3):
 
     return min(result)
 
+
 def traverse(input, min_blocks=0, max_blocks=3):
     # Using A* algorithm: https://www.redblobgames.com/pathfinding/a-star/introduction.html#astar
 
     #  return bfs(input, min_blocks, max_blocks)
 
-    finish_pos = (len(input[0]) - 1, len(input) - 1)
+    finish_pos = (len(input) - 1, len(input[0]) - 1)
 
     q = PriorityQueue()
     q.put(Crucible((0, 0), 0, 0, Direction.EAST))
