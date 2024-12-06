@@ -1,13 +1,32 @@
 # Advent of Code
 
-
 ### Update 3 (Dec 2024)
 
-At some point, I switched to Python for doing Advent of Code. I learnt this for a machine learning course a few years ago. 
+At some point, I switched to Python for doing Advent of Code. I learnt the language for a machine learning course a few years ago.
 
-For Advent of Code, I've switched from Dart to Julia to Python. At some point, I'll discover another interesting language and will try that out!
+To run the Python code, change to the `src` directory then run program. For example:
+
+```
+cd advent_of_code/2020/src
+python day06.py
+```
+
+The `data` directory contains test input files. These are copied from each day's problem description. The real input files are personal to each user and the 
+creator of Advent of Code has asked not to share the files. If you haven't already, you'll need to 
+register for Advent of Code. Once registered, you can download your input files and place them in the `data` directory.
+
+You may need to install some Python libraries by running:
+
+```
+python3 -m ensurepip --default-pip
+pip install numpy
+pip install matplotlib
+```
+
+For Advent of Code, I've switched from Dart to Julia to Python. At some point, I'll discover another interesting language and will try that out.
 
 These are the other languages, in no particular order, I've used over the years (not for Advent of Code): Fortran, Algol 68, Pascal, C, C#, Java, JavaScript, Ruby, SQL, PHP, Perl, Octave/Matlab, Visual Basic, Delphi, and various shell scripting languages.
+
 
 ### Update 2 (Dec 2021)
 
@@ -16,7 +35,7 @@ I have 1.5 problems remaining for Aoc 2019. However, AoC 2021 has arrived. I'm d
 ### Update 1
 
 Having completed AoC 2020, I'm slowly working my way through AoC 2019.
-This repository has solutions to the 2020 programming challenges on [Advent of Code](https://adventofcode.com). 
+This repository has solutions to the 2020 programming challenges on [Advent of Code](https://adventofcode.com).
 
 ### Original
 
@@ -29,6 +48,7 @@ Sometimes the solutions seem verbose but I like to write code that you can read 
 Please feel free to suggest improvements, especially to make the code more Dart-like instead of the hybrid Java/JavaScript it tends to be whilst I learn Dart.
 
 To run, go to directory `advent_of_code/2020/src` and run the day's program. For example, to run day 6's solution:
+
 ```
 cd advent_of_code/2020/src
 dart ./day06.dart
@@ -43,5 +63,3 @@ dart --enable-asserts ./day06.dart
 I wrote these on Windows 10 but Dart can run on Linux and macOS.
 
 The story of my Advent of Code 2020 is on my [blog](https://prafulkapadia.com/2021/01/05/advent-of-code-2020/).
-
-
