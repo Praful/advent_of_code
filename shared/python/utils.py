@@ -10,6 +10,11 @@ class Direction(Enum):
     WEST = 3
 
 
+# rotate 90 degrees clockwise
+ROTATE = {
+    (0, 1): (1, 0), (-1, 0): (0, 1), (1, 0): (0, -1), (0, -1): (-1, 0),
+}
+
 DIRECTIONS_ALL = [
     (0, 1),
     (0, -1),
@@ -45,8 +50,13 @@ def next_neighbour(position, direction):
     return (position[0] + DIRECTION_DELTAS[direction][0], position[1] + DIRECTION_DELTAS[direction][1])
 
 
-def in_grid(p, grid):
-    return 0 <= p[0] < len(grid) and 0 <= p[1] < len(grid[0])
+def next_neighbour2(position, direction):
+    # a faster version if direction is stored as tuple instead of enum
+    return (position[0] + direction[0], position[1] + direction[1])
+
+
+def in_grid(position, grid):
+    return 0 <= position[0] < len(grid) and 0 <= position[1] < len(grid[0])
 
 
 def neighbours(position, grid, check_in_bounds=True, condition=lambda g, x: True):
@@ -77,7 +87,7 @@ def reverse_direction(direction):
 
 
 # rotate 90 degrees clockwise or anticlockwise
-def next_direction(current_direction, anticlockwise=False):
+def rotate_direction(current_direction, anticlockwise=False):
     directions = list(Direction)
 
     # Determine the step: +1 for clockwise, -1 for anticlockwise
@@ -132,10 +142,14 @@ NOT_NUMERIC = [object(), 'string', u'unicode', None]
 
 
 def replace(s, index, new_char):
-    """ change single char in string s """
-    l = list(s)
-    l[index] = new_char
-    return ''.join(l)
+    """ change single char at index in string s """
+
+    return s[:index] + new_char + s[index + 1:]
+    #
+    #  old:
+    #  l = list(s)
+    #  l[index] = new_char
+    #  return ''.join(l)
 
 
 def is_blank(s):
