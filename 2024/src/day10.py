@@ -33,15 +33,15 @@ def solve(input, part2=False):
     visited = set()
 
     while not q.empty():
-        pos, height, start_pos = q.get()
+        pos, height, trailhead = q.get()
 
         for adj in neighbours(pos, grid, True, lambda g, x: int(g[x[0]][x[1]]) == height + 1):
             if grid[adj[0]][adj[1]] == '9':
-                if part2 or (start_pos, adj) not in visited:
+                if part2 or (trailhead, adj) not in visited:
                     result += 1
-                    visited.add((start_pos, adj))
+                    visited.add((trailhead, adj))
             else:
-                q.put((adj, height + 1, start_pos))
+                q.put((adj, height + 1, trailhead))
 
     return result
 
