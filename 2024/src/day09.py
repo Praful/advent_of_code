@@ -114,6 +114,9 @@ class Disk():
                 free_space.data = BlockInfo(free_space.data.index + file_size,
                                             free_space.data.size - file_size)
 
+    def checksum(self):
+        return checksum(self.data)
+
     @property
     def last_index(self):
         return len(self.data)
@@ -132,7 +135,7 @@ def part2(input):
 
     disk.defragment()
 
-    return checksum(disk.data)
+    return disk.checksum()
 
 
 def main():
