@@ -138,10 +138,8 @@ def part2(input):
 def main():
     input = read_input("../data/day09.txt")
     test_input = read_input("../data/day09-test.txt")
-    #  test_input2 = read_input("../data/day09-test2.txt")
 
     assert (res := part1(test_input)) == 1928, f'Actual: {res}'
-    #  assert (res := part1(test_input2)) == 5803, f'Actual: {res}'
     print(f'Part 1 {part1(input)}')  # 6310675819476
 
     assert (res := part2(test_input)) == 2858, f'Actual: {res}'
