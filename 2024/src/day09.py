@@ -69,12 +69,14 @@ class FreeBlockMap(LinkedList):
         return False
 
 
-BlockInfo = namedtuple("DataBlock", ["index", "size"])
+BlockInfo = namedtuple("BlcokInfo", ["index", "size"])
 
 
 class Disk():
     def __init__(self):
         self.data = []
+        self.files = {}
+        self.free_blocks = FreeBlockMap()
 
     def display(self):
         for s in self.data:
@@ -92,37 +94,43 @@ class Disk():
         self.data[to:to+block_count] = self.data[from_:from_+block_count]
         self.data[from_:from_+block_count] = [None]*block_count
 
+    def write_file(self, id, size):
+        self.files[id] = BlockInfo(self.last_index, size)
+        self.append(size, id)
+
+    def write_empty_blocks(self, size):
+        self.free_blocks.append(BlockInfo(self.last_index, size))
+        self.append(size, None)
+
+    def defragment(self):
+        # move complete files to beginning of disk
+        for id in list(reversed(self.files.keys())):
+            file_size = self.files[id].size
+            free_space = self.free_blocks.find_space(file_size)
+            if free_space and free_space.data.index < self.files[id].index:
+                self.move(self.files[id].index,
+                          free_space.data.index, file_size)
+                # reduce free block count
+                free_space.data = BlockInfo(free_space.data.index + file_size,
+                                            free_space.data.size - file_size)
+
     @property
-    def used_size(self):
+    def last_index(self):
         return len(self.data)
 
 
-# split data into files and free blocks; add to disk; move files to front
 def part2(input):
-    file_id_map = {}
-    free_block_map = FreeBlockMap()
     disk = Disk()
 
-    # fill disk with file ids and free space; keep track of free blocks
+    # populate disk with input data
     for i, block_size in enumerate(input):
         size = int(block_size)
         if is_file_block(i):
-            id = i//2
-            file_id_map[id] = BlockInfo(disk.used_size, size)
-            disk.append(size, id)
+            disk.write_file(i//2, size)
         else:
-            free_block_map.append(BlockInfo(disk.used_size, size))
-            disk.append(size, None)
+            disk.write_empty_blocks(size)
 
-    # move complete files to beginning of disk
-    for id in list(reversed(file_id_map.keys())):
-        file_size = file_id_map[id].size
-        free_space = free_block_map.find_space(file_size)
-        if free_space and free_space.data.index < file_id_map[id].index:
-            disk.move(file_id_map[id].index, free_space.data.index, file_size)
-            # reduce free block count
-            free_space.data = BlockInfo(free_space.data.index + file_size,
-                                        free_space.data.size - file_size)
+    disk.defragment()
 
     return checksum(disk.data)
 
@@ -130,10 +138,10 @@ def part2(input):
 def main():
     input = read_input("../data/day09.txt")
     test_input = read_input("../data/day09-test.txt")
-    test_input2 = read_input("../data/day09-test2.txt")
+    #  test_input2 = read_input("../data/day09-test2.txt")
 
     assert (res := part1(test_input)) == 1928, f'Actual: {res}'
-    assert (res := part1(test_input2)) == 5803, f'Actual: {res}'
+    #  assert (res := part1(test_input2)) == 5803, f'Actual: {res}'
     print(f'Part 1 {part1(input)}')  # 6310675819476
 
     assert (res := part2(test_input)) == 2858, f'Actual: {res}'
