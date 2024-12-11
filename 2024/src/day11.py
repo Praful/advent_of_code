@@ -23,13 +23,13 @@ def count_stones(stones, blinks):
     if blinks == 0:
         return 1
 
-    sdata = str(stones)
+    str_stones = str(stones)
     if stones == 0:
         return count_stones(1, blinks-1)
-    elif len(sdata) % 2 == 0:
-        mid = len(sdata) // 2
-        left = int(sdata[:mid])
-        right = int(sdata[mid:])
+    elif len(str_stones) % 2 == 0:
+        mid = len(str_stones) // 2
+        left = int(str_stones[:mid])
+        right = int(str_stones[mid:])
         return count_stones(left, blinks-1) + count_stones(right, blinks-1)
     else:
         return count_stones(stones * 2024, blinks-1)
