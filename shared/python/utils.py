@@ -373,10 +373,19 @@ class LinkedList:
             current = current.next
         current.next = new_node
 
+    def insert_after(self, prev_node, data):
+        new_node = Node(data)
+        new_node.next = prev_node.next
+        prev_node.next = new_node
+        return new_node
+
     def prepend(self, data):
         new_node = Node(data)
         new_node.next = self.head
         self.head = new_node
+
+    def update(self, node, data):
+        node.data = data
 
     def delete(self, data):
         current = self.head
@@ -397,6 +406,15 @@ class LinkedList:
                 return True
             current = current.next
         return False
+
+    @property
+    def count(self):
+        count = 0
+        current = self.head
+        while current:
+            count += 1
+            current = current.next
+        return count
 
     def display(self):
         current = self.head
