@@ -74,6 +74,7 @@ def corner_count(pos, neighbours, garden):
             assert False, "Unexpected number of neighbours"
 
 
+# Use BFS to find region
 def find_region(garden, p, regions_found):
     q = SimpleQueue()
     MAX_NEIGHBOURS = 4
@@ -114,7 +115,7 @@ def solve(input):
         for c, _ in enumerate(row):
             region, perimeter, corners = find_region(
                 input, (r, c), regions_found)
-            if region is not None:
+            if region:
                 regions_found |= region
                 part1 += len(region) * perimeter
                 part2 += len(region) * corners
