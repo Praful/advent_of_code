@@ -9,28 +9,37 @@ class Direction(Enum):
     SOUTH = 2
     WEST = 3
 
+NORTH     = (-1, 0)
+EAST      = (0, 1)
+SOUTH     = (1, 0)
+WEST      = (0, -1)
+NORTHEAST = (-1, 1)
+SOUTHEAST = (1, 1)
+SOUTHWEST = (1, -1)
+NORTHWEST = (-1, -1)
 
-# rotate 90 degrees clockwise
 ROTATE = {
-    (0, 1): (1, 0), (-1, 0): (0, 1), (1, 0): (0, -1), (0, -1): (-1, 0),
+    EAST: SOUTH, SOUTH: WEST, WEST: NORTH, NORTH: EAST
 }
 
+
 DIRECTIONS_ALL = [
-    (0, 1),
-    (0, -1),
-    (1, 0),
-    (-1, 0),
-    (1, 1),
-    (1, -1),
-    (-1, 1),
-    (-1, -1),]
+    NORTH,
+    EAST,
+    SOUTH,
+    WEST,
+    NORTHEAST,
+    SOUTHEAST,
+    SOUTHWEST,
+    NORTHWEST,
+]
 
 DIRECTION_DELTAS = {
     # (row, col)
-    Direction.EAST: (0, 1),
-    Direction.NORTH: (-1, 0),
-    Direction.WEST: (0, -1),
-    Direction.SOUTH: (1, 0),
+    Direction.EAST: EAST,
+    Direction.NORTH: NORTH,
+    Direction.WEST: WEST,
+    Direction.SOUTH: SOUTH
 }
 
 ARROWS_TO_DIRECTION = {
@@ -58,6 +67,8 @@ def next_neighbour2(position, direction):
 def in_grid(position, grid):
     return 0 <= position[0] < len(grid) and 0 <= position[1] < len(grid[0])
 
+def add_pos(p1, p2):
+    return (p1[0] + p2[0], p1[1] + p2[1])
 
 def neighbours(position, grid, check_in_bounds=True, condition=lambda g, x: True):
     def in_grid_bound(p):
@@ -368,6 +379,7 @@ class LinkedList:
         if not self.head:
             self.head = new_node
             return
+
         current = self.head
         while current.next:
             current = current.next

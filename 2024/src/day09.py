@@ -14,7 +14,7 @@ def read_input(input_file):
     return read_file_str(input_file, True)[0]
 
 
-def is_file_block(x): return x % 2 == 0
+def is_file(x): return x % 2 == 0
 
 
 def checksum(disk): return sum(i*v for i, v in enumerate(disk) if v)
@@ -33,9 +33,8 @@ def part1(input):
 
     while fill_block_index < move_block_index:
         fill_block_size = int(input[fill_block_index])
-        if is_file_block(fill_block_index):
-            for _ in range(fill_block_size):
-                disk.append(file_id(fill_block_index))
+        if is_file(fill_block_index):
+            disk.extend([file_id(fill_block_index)]*fill_block_size)
         else:  # free block: fill it
             for _ in range(fill_block_size):
                 if move_block_size < 1:  # grab next block to move
@@ -50,8 +49,7 @@ def part1(input):
 
     # mop up the remaining blocks if any
     if move_block_index >= fill_block_index and move_block_size > 0:
-        for _ in range(move_block_size):
-            disk.append(move_block_index//2)
+        disk.extend([move_block_index//2]*move_block_size)
 
     return checksum(disk)
 
@@ -87,8 +85,7 @@ class Disk():
         print()
 
     def append(self, block_count, value):
-        for _ in range(block_count):
-            self.data.append(value)
+        self.data.extend([value]*block_count)
 
     def move(self, from_, to, block_count):
         self.data[to:to+block_count] = self.data[from_:from_+block_count]
@@ -128,7 +125,7 @@ def part2(input):
     # populate disk with input data
     for i, block_size in enumerate(input):
         size = int(block_size)
-        if is_file_block(i):
+        if is_file(i):
             disk.write_file(i//2, size)
         else:
             disk.write_empty_blocks(size)
