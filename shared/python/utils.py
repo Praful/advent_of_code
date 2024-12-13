@@ -9,6 +9,8 @@ class Direction(Enum):
     SOUTH = 2
     WEST = 3
 
+# Unless otherwise specified, all directions are represented by a tuple (row, col) ie y, x. 
+# This to make it easier to reference lists.
 NORTH     = (-1, 0)
 EAST      = (0, 1)
 SOUTH     = (1, 0)
@@ -18,6 +20,7 @@ SOUTHEAST = (1, 1)
 SOUTHWEST = (1, -1)
 NORTHWEST = (-1, -1)
 
+# Clockwise 90 degrees
 ROTATE = {
     EAST: SOUTH, SOUTH: WEST, WEST: NORTH, NORTH: EAST
 }
