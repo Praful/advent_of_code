@@ -73,8 +73,8 @@ def solve(input, grid_dims, time=100):
     min_safety_factor = 3e10
     part2_robots = None
 
-    ts = []
-    sfs = []
+    #  ts = []
+    #  sfs = []
     for t in range(10200):
         #  print(f'Time {t+1}', '-'*150)
         for i, robot in enumerate(input):
@@ -90,8 +90,8 @@ def solve(input, grid_dims, time=100):
         if t+1 == time:
             part1 = sf
 
-        ts.append(t)
-        sfs.append(sf)
+        #  ts.append(t)
+        #  sfs.append(sf)
 
     #  plot_2D(ts, sfs)
 
