@@ -274,6 +274,10 @@ def point(x=0, y=0):
     return np.array([x, y])
 
 
+def print_grid(grid):
+    for row in grid:
+        print(''.join(row))
+
 def make_grid(rows, cols, value=0):
     #  return np.array([[point(x, y) for x in range(cols)] for y in range(rows)])
     return [[value] * cols for _ in range(rows)]
