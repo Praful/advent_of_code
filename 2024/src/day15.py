@@ -90,14 +90,17 @@ def move(grid, from_pos, dir, obj):
     return from_pos
 
 
-# part 2
+# part 2 is conceptually the same as part 1: quit if wall, recurse until we 
+# find object(s) that can move, move object(s).
+# The new type of box [] causes the complexity.
 def move2(grid, from_pos, dir, obj):
     to_pos = [add_pos(p, dir) for p in from_pos]
 
-    if any(tile(grid, p) == WALL for p in to_pos):  # can't move
+    # hit wall
+    if any(tile(grid, p) == WALL for p in to_pos):  
         return from_pos
 
-    # for boxes or objects that can't move N/S
+    # for boxes or robot can't move 
     if obj in BOX2 or not all(tile(grid, p) == FREE for p in to_pos):
         if dir in [NORTH, SOUTH]:
             to_pos = [p for p in to_pos if tile(grid, p) != FREE]
@@ -114,13 +117,14 @@ def move2(grid, from_pos, dir, obj):
             if not all(tile(grid, add_pos(p, dir)) == FREE for p in from_pos if tile(grid, p) != FREE):
                 move2(grid, to_pos, dir, obj)
 
-    if dir in [EAST, WEST]:  # as part 1
+    # E/W processing is as part 1
+    if dir in [EAST, WEST]:  
         assert len(
             to_pos) == 1, f'Expecing one pos, found multiple pos: {to_pos}'
         if tile(grid, to_pos[0]) in BOX2:
             move2(grid, to_pos, dir, tile(grid, to_pos[0]))
 
-    # do move
+    # we have space to move
     if all(tile(grid, p) == FREE for p in to_pos if tile(grid, p) != FREE):
         if dir in [EAST, WEST]:  
             assert len(to_pos) == 1, f'Expecing one pos, found multiple pos: {to_pos}'
@@ -164,8 +168,7 @@ def main():
         test_input3[0]) + test_input3[2:], move2)) == 618, f'Actual: {res}'
     assert (res := solve(part2_grid(
         test_input2[0]) + test_input2[2:], move2)) == 9021, f'Actual: {res}'
-    # 1446175
-    print(f'Part 2 {solve(part2_grid(input[0]) + input[2:], move2)}')
+    print(f'Part 2 {solve(part2_grid(input[0]) + input[2:], move2)}') # 1446175
 
 
 if __name__ == '__main__':
