@@ -7,17 +7,12 @@ sys.path.append(os.path.relpath("../../shared/python"))
 # noqa stops autopep8 from reordering this import
 from utils import *  # noqa: E402
 
-# Puzzle description: https://adventofcode.com/2022/day/10
+# Puzzle description: https://adventofcode.com/2024/day/10
 
 
 def read_input(input_file):
     input = read_file_str(input_file, True)
-    trailheads = []
-    for r, row in enumerate(input):
-        for c, _ in enumerate(row):
-            if row[c] == '0':
-                trailheads.append((r, c))
-    return input, trailheads
+    return input, find_in_grid(input, '0')
 
 
 # use bfs to find all trails: part 1 requires unique destinations from trailheads

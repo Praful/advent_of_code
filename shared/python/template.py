@@ -27,16 +27,15 @@ sys.path.append(os.path.relpath("../../shared/python"))
 # noqa stops autopep8 from reordering this import
 from utils import *  # noqa: E402
 
-# Puzzle description: https://adventofcode.com/2022/day/XX
+# Puzzle description: https://adventofcode.com/2024/day/XX
+
+DEBUG = True
+print_debug = print if DEBUG else lambda *a, **k: None
 
 
 def read_input(input_file):
     input = read_file_str(input_file, True)
     return input
-
-
-def solve(input):
-    pass
 
 
 def part1(input):

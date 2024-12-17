@@ -11,7 +11,7 @@ sys.path.append(os.path.relpath("../../shared/python"))
 from utils import *  # noqa: E402
 from visualisations import *  # noqa: E402
 
-# Puzzle description: https://adventofcode.com/2022/day/14
+# Puzzle description: https://adventofcode.com/2024/day/14
 
 Robot = namedtuple('Robot', 'p v')
 

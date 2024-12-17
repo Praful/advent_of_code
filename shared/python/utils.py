@@ -9,12 +9,13 @@ class Direction(Enum):
     SOUTH = 2
     WEST = 3
 
-# Unless otherwise specified, all directions are represented by a tuple (row, col) ie y, x. 
+
+# Unless otherwise specified, all directions are represented by a tuple (row, col) ie y, x.
 # This to make it easier to reference lists.
-NORTH     = (-1, 0)
-EAST      = (0, 1)
-SOUTH     = (1, 0)
-WEST      = (0, -1)
+NORTH = (-1, 0)
+EAST = (0, 1)
+SOUTH = (1, 0)
+WEST = (0, -1)
 NORTHEAST = (-1, 1)
 SOUTHEAST = (1, 1)
 SOUTHWEST = (1, -1)
@@ -52,6 +53,20 @@ ARROWS_TO_DIRECTION = {
     '^': Direction.NORTH,
 }
 
+ARROWS_TO_DIRECTION2 = {
+    '>': EAST,
+    'v': SOUTH,
+    '<': WEST,
+    '^': NORTH,
+}
+
+DIRECTION2_TO_ARROWS = {
+    EAST: '>',
+    SOUTH: 'v',
+    WEST: '<',
+    NORTH: '^',
+}
+
 
 def into_range(x, n, m):
     # for x returns value in range n-m (inclusive)
@@ -70,8 +85,40 @@ def next_neighbour2(position, direction):
 def in_grid(position, grid):
     return 0 <= position[0] < len(grid) and 0 <= position[1] < len(grid[0])
 
+
+def tile(grid, p):
+    return grid[p[0]][p[1]]
+
+
 def add_pos(p1, p2):
     return (p1[0] + p2[0], p1[1] + p2[1])
+
+
+def print_grid(grid, axis=False):
+    if axis:
+        print('  ' + ''.join([str(i % 10) for i in range(len(grid[0]))]))
+
+    for r, row in enumerate(grid):
+        if axis:
+            print(r % 10, end=' ')
+        print(''.join(row))
+
+
+def make_grid(rows, cols, value=0):
+    #  return np.array([[point(x, y) for x in range(cols)] for y in range(rows)])
+    return [[value] * cols for _ in range(rows)]
+
+
+# return all positions of value in grid
+def find_in_grid(grid, value):
+    result = []
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j] == value:
+                result.append((i, j))
+
+    return result
+
 
 def neighbours(position, grid, check_in_bounds=True, condition=lambda g, x: True):
     def in_grid_bound(p):
@@ -157,13 +204,7 @@ NOT_NUMERIC = [object(), 'string', u'unicode', None]
 
 def replace(s, index, new_char):
     """ change single char at index in string s """
-
     return s[:index] + new_char + s[index + 1:]
-    #
-    #  old:
-    #  l = list(s)
-    #  l[index] = new_char
-    #  return ''.join(l)
 
 
 def is_blank(s):
@@ -272,15 +313,6 @@ def hex_to_dec(s):
 
 def point(x=0, y=0):
     return np.array([x, y])
-
-
-def print_grid(grid):
-    for row in grid:
-        print(''.join(row))
-
-def make_grid(rows, cols, value=0):
-    #  return np.array([[point(x, y) for x in range(cols)] for y in range(rows)])
-    return [[value] * cols for _ in range(rows)]
 
 
 def manhattan_distance(point1, point2):

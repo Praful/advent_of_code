@@ -7,7 +7,7 @@ sys.path.append(os.path.relpath("../../shared/python"))
 # noqa stops autopep8 from reordering this import
 from utils import *  # noqa: E402
 
-# Puzzle description: https://adventofcode.com/2022/day/13
+# Puzzle description: https://adventofcode.com/2024/day/13
 
 
 def read_input(input_file):
