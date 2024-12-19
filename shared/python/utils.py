@@ -94,6 +94,13 @@ def add_pos(p1, p2):
     return (p1[0] + p2[0], p1[1] + p2[1])
 
 
+def subtract_pos(p1, p2):
+    return (p1[0] - p2[0], p1[1] - p2[1])
+
+
+direction = subtract_pos
+
+
 def print_grid(grid, axis=False):
     if axis:
         print('  ' + ''.join([str(i % 10) for i in range(len(grid[0]))]))
