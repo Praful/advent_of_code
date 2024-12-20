@@ -143,37 +143,43 @@ def part1(input):
 # The last three bits of A determine the output; so we find the right-hand digit
 # of the program then shift A three bits and try another value 0-7; we
 # continue this until we've found all values in program.
-def part2(input, A, compare_index, possible=set()):
+def part2(input, A, compare_index):
     _, B, C, program = input
-
+    result = set()
     computer = Computer()
+
     for n in range(8):
         A2 = (A << 3) | n
         output = computer.run(A2, B, C, program)
         if output == program[-compare_index:]:
             if output == program:
-                possible.add(A2)
+                result.add(A2)
             else:
-                part2(input, A2, compare_index+1, possible)
-             
-    if len(possible) > 0:
-        return min(possible)
+                possible = part2(input, A2, compare_index+1)
+                if possible:
+                    result.add(possible)
+
+    if len(result) > 0:
+        return min(result)
     else:
         return 0
 
+
 def main():
-    input=read_input("../data/day17.txt")
-    test_input=read_input("../data/day17-test.txt")
+    input = read_input("../data/day17.txt")
+    test_input = read_input("../data/day17-test.txt")
     #  solve(0, 1, input)
 
-    part1((0,0,9,[2,6]))
-    part1((10,0,0,[5,0,5,1,5,4]))
-    part1((2024,0,0,[0,1,5,4,3,0]))
+    part1((0, 0, 9, [2, 6]))
+    part1((10, 0, 0, [5, 0, 5, 1, 5, 4]))
+    part1((2024, 0, 0, [0, 1, 5, 4, 3, 0]))
 
-    assert (res := part1(test_input)) == '4,6,3,5,6,3,5,2,1,0', f'Actual: {res}'
+    assert (res := part1(test_input)
+            ) == '4,6,3,5,6,3,5,2,1,0', f'Actual: {res}'
     print(f'Part 1 {part1(input)}')  # 1,0,2,0,5,7,2,1,3
 
     print(f'Part 2 {part2(input, 0, 1)}')  # 265652340990875
+
 
 if __name__ == '__main__':
     main()

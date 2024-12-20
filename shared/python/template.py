@@ -17,6 +17,7 @@ from pprint import pprint
 import numpy as np
 import operator
 import queue
+from queue import SimpleQueue
 
 # for profiling
 from cProfile import Profile
