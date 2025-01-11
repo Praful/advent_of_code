@@ -239,6 +239,9 @@ def to_numpy_array(a):
     return np.array(rows, str)
 
 
+def chunk_string(s, chunk_size):
+    return [s[i:i + chunk_size] for i in range(0, len(s), chunk_size)]
+
 def print_np_info(a):
     print('size: ', a.size)
     print('shape: ', a.shape)
@@ -405,6 +408,39 @@ class ReprMixin:
             attrs=" ".join("{}={!r}".format(k, v)
                            for k, v in self.__dict__.items()),
         )
+
+
+class TreeNode:
+    def __init__(self, value):
+        self.value = value  # Value of the node
+        self.children = []  # List to hold child nodes
+
+    def add_child(self, child_value):
+        """Adds a child to the current node."""
+        child = TreeNode(child_value)
+        self.children.append(child)
+        return child  # Return the child node for further operations
+
+    def traverse(self, level=0):
+        """Recursively traverse the tree and print it."""
+        print("  " * level + str(self.value))  # Indent based on tree level
+        for child in self.children:
+            child.traverse(level + 1)  # Traverse children with increased level
+
+    def get_all_paths(self, path=""):
+        """Returns all paths from root to each leaf as a list of strings."""
+        current_path = path + self.value
+        if not self.children:
+            # Leaf node, return the path as a single-item list
+            return [current_path]
+
+        paths = []
+        for child in self.children:
+            paths.extend(child.get_all_paths(current_path))
+        return paths
+
+    def __str__(self):
+        return self.value
 
 
 class Node:
