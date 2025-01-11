@@ -2,7 +2,6 @@ import sys
 import os
 import copy
 from itertools import pairwise
-import numpy as np
 from queue import SimpleQueue
 
 sys.path.append(os.path.relpath("../../shared/python"))
@@ -44,7 +43,6 @@ def map_pad(pad):
 
 
 def read_input(input_file):
-    global NUMPAD_GRID, DIRPAD_GRID, NUMPAD_MAP, DIRPAD_MAP
     input = read_file_str(input_file, True)
     NUMPAD_MAP = map_pad(["789", "456", "123", "#0A"])
     DIRPAD_MAP = map_pad(["#^A", "<v>"])
@@ -124,8 +122,8 @@ def buttons1(code, map, grid):
     return shortest_keypresses(top.get_all_paths())
 
 
-# Return all combinations of buttons presses for a code eg for 1234, find buttons pressed
-# for 1 to 2, 2 to 3, 3 to 4
+# Return all combinations of button presses for a code eg for 1234, find all button
+# press combinations for 1 to 2, 2 to 3, 3 to 4
 def buttons(code, map, grid, is_numpad=False):
     if (key := (is_numpad, code)) in cache2:
         return cache2[key]
@@ -150,7 +148,7 @@ def buttons(code, map, grid, is_numpad=False):
 # DFS each pair of buttons
 def button_count(all_keypresses, map, grid, robots, is_numpad=False):
     if robots == 0:
-        return sum(len(keypress[0]) for keypress in all_keypresses)
+        return sum(len(keypresses[0]) for keypresses in all_keypresses)
 
     result = 0
     for keypresses in all_keypresses:
