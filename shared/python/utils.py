@@ -231,6 +231,36 @@ def is_valid(enum, s):
 
     return False
 
+# Example:
+#  sequence = (-9, 0, 5, 9, -1)  # Example sequence of length n = 5
+#  encoded = encode_sequence(sequence, 18, 9)
+#  print(f"Encoded: {encoded}")
+
+#  decoded = decode_sequence(encoded, len(sequence), 18, 9)
+#  print(f"Decoded: {decoded}")
+
+
+# Encodes a sequence of n numbers into a single integer.
+def encode_sequence(sequence, base, offset):
+    encoded = 0
+    n = len(sequence)
+    for i, num in enumerate(sequence):
+        # Add (num + offset) at the appropriate base position
+        encoded += (num + offset) * (base ** (n - i - 1))
+    return encoded
+
+
+#  Decodes a single integer back into the original sequence of n numbers.
+def decode_sequence(encoded, n, base, offset):
+
+    sequence = []
+    for i in range(n):
+        # Extract the digit at the current position
+        digit = (encoded // (base ** (n - i - 1))) % BASE
+        # Shift back to the original range
+        sequence.append(digit - offset)
+    return tuple(sequence)
+
 
 def to_numpy_array(a):
     # Turn list of strings into 2D numpy array with one character per cell
@@ -241,6 +271,7 @@ def to_numpy_array(a):
 
 def chunk_string(s, chunk_size):
     return [s[i:i + chunk_size] for i in range(0, len(s), chunk_size)]
+
 
 def print_np_info(a):
     print('size: ', a.size)
