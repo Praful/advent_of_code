@@ -1,6 +1,7 @@
 from enum import Enum
 import numpy as np
 import math
+import re
 
 
 class Direction(Enum):
@@ -194,6 +195,10 @@ def read_file_int(filename):
             result.append(list(map(int, line.split())))
 
     return result
+
+
+def extract_ints(s):
+    return map(int, re.findall(r'\d+', s))
 
 
 def lcm(l):
