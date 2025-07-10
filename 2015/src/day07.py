@@ -1,27 +1,8 @@
 import sys
 import os
 import re
-import copy
-import math
-import itertools
-import functools
-import collections
-from collections import defaultdict
 from collections import namedtuple
-from dataclasses import dataclass
-from functools import lru_cache
-from functools import reduce
-from itertools import product
-from operator import mul
-from pprint import pprint
-import numpy as np
 import operator
-import queue
-from queue import SimpleQueue
-
-# for profiling
-from cProfile import Profile
-from pstats import Stats, SortKey
 
 sys.path.append(os.path.relpath("../../shared/python"))
 
@@ -41,40 +22,33 @@ def convert(s):
     return int(s) if s.isnumeric() else s
 
 
+def create_expression(e, operator):
+    return Expression(convert(e[0]), convert(e[2]), operator, e[4])
+
+
+def parse(s):
+    assignment = r'^\w+\s*->\s*\w+$'
+    e = s.split(' ')
+
+    if 'AND' in s:
+        return create_expression(e, operator.and_)
+    elif 'OR' in s:
+        return create_expression(e, operator.or_)
+    elif 'LSHIFT' in s:
+        return create_expression(e, operator.lshift)
+    elif 'RSHIFT' in s:
+        return create_expression(e, operator.rshift)
+    elif 'NOT' in s:
+        return Expression(convert(e[1]), None, operator.not_, e[3])
+    elif re.match(assignment, s):
+        return Expression(convert(e[0]), None, None, e[2])
+    else:
+        assert False, f'Unknown expression {s}'
+
+
 def read_input(input_file):
     input = read_file_str(input_file, True)
-
-    #  assignment = r'^\d+\s*->\s*\w$'
-    assignment = r'^\w+\s*->\s*\w+$'
-
-    result = []
-    for s in input:
-        if 'AND' in s:
-            e = s.split(' ')
-            result.append(Expression(
-                convert(e[0]), convert(e[2]), operator.and_, e[4]))
-        elif 'OR' in s:
-            e = s.split(' ')
-            result.append(Expression(
-                convert(e[0]), convert(e[2]), operator.or_, e[4]))
-        elif 'LSHIFT' in s:
-            e = s.split(' ')
-            result.append(Expression(
-                convert(e[0]), convert(e[2]), operator.lshift, e[4]))
-        elif 'RSHIFT' in s:
-            e = s.split(' ')
-            result.append(Expression(
-                convert(e[0]), convert(e[2]), operator.rshift, e[4]))
-        elif 'NOT' in s:
-            e = s.split(' ')
-            result.append(Expression(convert(e[1]), None, operator.not_, e[3]))
-        elif re.match(assignment, s):
-            e = s.split(' ')
-            result.append(Expression(convert(e[0]), None, None, e[2]))
-        else:
-            assert False, f'Unknown expression {s}'
-
-    return result
+    return list(map(parse, input))
 
 
 def can_evaluate(wires, e):
@@ -88,16 +62,17 @@ def can_evaluate(wires, e):
         assert False, f'Unknown operator {e.operator}'
 
 
-def part1(input):
+def solve(input, wires=None):
+    if wires is None:
+        wires = {}
+
     def value(operand):
         if isinstance(operand, int):
             return operand
         else:
             return wires[operand]
 
-    result = 0
-    #  pprint(input)
-    wires = {}
+    part2 = len(wires) > 0
 
     while True:
         all_evaluated = True
@@ -107,8 +82,9 @@ def part1(input):
                 continue
 
             match e.operator:
-                case None:
-                    wires[e.output] = value(e.operand1)
+                case None:  # assignment
+                    if not part2 or (part2 and e.output != 'b'):
+                        wires[e.output] = value(e.operand1)
                 case operator.not_:
                     wires[e.output] = ~value(wires[e.operand1])
                 case operator.and_ | operator.or_ | operator.lshift | operator.rshift:
@@ -117,43 +93,33 @@ def part1(input):
                 case _:
                     assert False, f'Unknown operator {e.operator}'
 
+            # handle overflow for 16-bit integers 0 to 65535
             if wires[e.output] < 0:
                 wires[e.output] += 65536
 
         if all_evaluated:
             break
 
-    #  print(wires)
     return wires
 
 
+def part1(input):
+    return solve(input)
+
+
 def part2(input):
-    result = 0
-    return result
+    wires = solve(input)
+    return solve(input, {'b': wires['a']})
 
 
 def main():
     input = read_input("../data/day07.txt")
-    test_input = read_input("../data/day07-test.txt")
+    #  test_input = read_input("../data/day07-test.txt")
 
-    print(part1(test_input))
+    #  print(part1(test_input))
     print(f'Part 1 {part1(input)["a"]}')  # 46065
-
-    #  assert (res := part2(test_input)) == 0, f'Actual: {res}'
-    # print(f'Part 2 {part2(input)}')  #
+    print(f'Part 2 {part2(input)["a"]}')  # 14134
 
 
 if __name__ == '__main__':
-    #  sys.setrecursionlimit(999999)
-
     main()
-
-    #  with Profile() as profile:
-    #
-    #  main()
-    #  (
-    #  Stats(profile)
-    #  .strip_dirs()
-    #  .sort_stats(SortKey.TIME)
-    #  .print_stats()
-    #  )
