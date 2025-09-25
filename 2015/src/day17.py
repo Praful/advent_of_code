@@ -8,7 +8,7 @@ sys.path.append(os.path.relpath("../../shared/python"))
 # noqa stops autopep8 from reordering this import
 from utils import *  # noqa: E402
 
-# Puzzle description: https://adventofcode.com/2024/day/17
+# Puzzle description: https://adventofcode.com/2015/day/17
 
 DEBUG = True
 print_debug = print if DEBUG else lambda *a, **k: None
