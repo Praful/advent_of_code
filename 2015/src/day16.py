@@ -25,7 +25,7 @@ ALL_POSSESSIONS = {
 }
 
 
-def possessions(s):
+def possession_item(s):
     e = s.split(':')
     return (e[0].strip(), int(e[1]))
 
@@ -33,8 +33,8 @@ def possessions(s):
 def parse(s):
     # intput eg Sue 1: goldfish: 6, trees: 9, akitas: 0
     e = s.partition(':')
-    sue_id = e[0].split(' ')[1]
-    return (sue_id, dict(map(possessions, e[2].split(','))))
+    aunt_id = e[0].split(' ')[1]
+    return (aunt_id, dict(map(possession_item, e[2].split(','))))
 
 
 def read_input(input_file):

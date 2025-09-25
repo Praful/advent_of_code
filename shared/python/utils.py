@@ -27,12 +27,15 @@ ROTATE = {
     EAST: SOUTH, SOUTH: WEST, WEST: NORTH, NORTH: EAST
 }
 
-
-DIRECTIONS_ALL = [
+DIRECTIONS = [
     NORTH,
     EAST,
     SOUTH,
     WEST,
+]
+
+# include diagonals
+DIRECTIONS_ALL = DIRECTIONS + [
     NORTHEAST,
     SOUTHEAST,
     SOUTHWEST,
@@ -128,7 +131,32 @@ def find_in_grid(grid, value):
     return result
 
 
+#  def neighbours(position, grid, check_in_bounds=True, condition=lambda g, x: True):
+#
+    #  def in_grid_bound(p):
+        #  if check_in_bounds:
+            #  return in_grid(p, grid)
+        #  else:
+            #  return True
+
+    #  result = []
+    #  for d in DIRECTION_DELTAS.keys():
+        #  new_position = next_neighbour(position, d)
+        #  if in_grid_bound(new_position) and condition(grid, new_position):
+            #  result.append(new_position)
+
+    #  return result
+
+
+# Original version that excluded diagonals; refactor to use new version.
+# return the coordinates of the neighbours. Optionally include diagonals.
 def neighbours(position, grid, check_in_bounds=True, condition=lambda g, x: True):
+    return neighbours2(position, grid, check_in_bounds, condition, False)
+
+
+# return the coordinates of the neighbours. Optionally include diagonals.
+def neighbours2(position, grid, check_in_bounds=True, condition=lambda g, x: True, include_diagonals=True):
+
     def in_grid_bound(p):
         if check_in_bounds:
             return in_grid(p, grid)
@@ -136,13 +164,13 @@ def neighbours(position, grid, check_in_bounds=True, condition=lambda g, x: True
             return True
 
     result = []
-    for d in DIRECTION_DELTAS.keys():
-        new_position = next_neighbour(position, d)
+    directions = DIRECTIONS if not include_diagonals else DIRECTIONS_ALL
+    for d in directions:
+        new_position = next_neighbour2(position, d)
         if in_grid_bound(new_position) and condition(grid, new_position):
             result.append(new_position)
 
     return result
-
 
 def reverse_direction(direction):
     if direction == Direction.EAST:
