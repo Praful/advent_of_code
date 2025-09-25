@@ -3,8 +3,7 @@ import sys
 import os
 import math
 from itertools import product
-from pprint import pprint
-
+from collections import defaultdict
 
 sys.path.append(os.path.relpath("../../shared/python"))
 
@@ -99,13 +98,14 @@ def play(boss, player, player_points=100):
 
 
 def create_player(combo):
-    cost = damage = armor = 0
-    for item in combo.values():
-        cost += item[0]
-        damage += item[1]
-        armor += item[2]
+    player = defaultdict(int)
 
-    return {COST: cost, DAMAGE: damage, ARMOR: armor}
+    for item in combo.values():
+        player[COST] += item[0]
+        player[DAMAGE] += item[1]
+        player[ARMOR] += item[2]
+
+    return player
 
 
 def part1(boss):
