@@ -9,7 +9,7 @@ from enum import Enum
 
 # some these are from Raymond Hettinger's talk:
 # https://www.youtube.com/watch?v=OSGv2VnC0go
-# 
+#
 # Other resources:
 # - Using A*, BFS, and Djikstra algorithms:
 #       https://www.redblobgames.com/pathfinding/a-star/introduction.html#astar
@@ -27,6 +27,10 @@ for s in l:
     if match:
         [print(match.group(i)) for i in range(4)]
 
+# using compile to speed up matching
+#  regex = re.compile(r"^(\d+?)\1$") //look for repeating digit sequences
+#  if regex.search(s):
+#       process_match()
 
 # loops
 colors = ['red', 'green', 'blue', 'yellow']
@@ -50,7 +54,7 @@ for color, greek in zip(colors, names):
     print(f'{color} - {greek}')
 
 # list comprehension
-a= [1,2,3,4]
+a = [1, 2, 3, 4]
 total = sum(n for n in a)
 print(a, total)
 
