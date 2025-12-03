@@ -77,6 +77,10 @@ def into_range(x, n, m):
     return ((x-n) % (m-n+1))+n
 
 
+def list_to_int(l):
+    return int(''.join([str(i) for i in l]))
+
+
 def next_neighbour(position, direction):
     return (position[0] + DIRECTION_DELTAS[direction][0], position[1] + DIRECTION_DELTAS[direction][1])
 
@@ -134,16 +138,16 @@ def find_in_grid(grid, value):
 #  def neighbours(position, grid, check_in_bounds=True, condition=lambda g, x: True):
 #
     #  def in_grid_bound(p):
-        #  if check_in_bounds:
-            #  return in_grid(p, grid)
-        #  else:
-            #  return True
+    #  if check_in_bounds:
+    #  return in_grid(p, grid)
+    #  else:
+    #  return True
 
     #  result = []
     #  for d in DIRECTION_DELTAS.keys():
-        #  new_position = next_neighbour(position, d)
-        #  if in_grid_bound(new_position) and condition(grid, new_position):
-            #  result.append(new_position)
+    #  new_position = next_neighbour(position, d)
+    #  if in_grid_bound(new_position) and condition(grid, new_position):
+    #  result.append(new_position)
 
     #  return result
 
@@ -171,6 +175,7 @@ def neighbours2(position, grid, check_in_bounds=True, condition=lambda g, x: Tru
             result.append(new_position)
 
     return result
+
 
 def reverse_direction(direction):
     if direction == Direction.EAST:
