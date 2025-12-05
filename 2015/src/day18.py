@@ -25,7 +25,7 @@ def next_state(input, row, col):
         return ON if is_on else OFF
 
     is_on = input[row][col] == ON
-    adj = neighbours2((row, col), input)
+    adj = neighbours((row, col), input, include_diagonal=True)
     neighbours_on = sum(1 for (r, c) in adj if input[r][c] == ON)
 
     if is_on:
