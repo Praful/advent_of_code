@@ -37,30 +37,30 @@ def range_union(r1, r2):
 
 
 def merge_ranges(ranges):
-    candidates = ranges[0:]
+    candidates = ranges
     result = []
 
     while candidates:
-        remove = []
-        merged = []
+        remove_indexes = []
+        merged_ranges = []
 
         was_merged = False
         to_check = candidates[0]
         for i in range(1, len(candidates)):
             if range_overlaps(to_check, candidates[i]):
-                merged.append(range_union(to_check, candidates[i]))
+                merged_ranges.append(range_union(to_check, candidates[i]))
                 was_merged = True
-                remove.append(0)
-                remove.append(i)
+                remove_indexes.append(0)
+                remove_indexes.append(i)
                 break
 
         if not was_merged:
             result.append(to_check)
-            remove.append(0)
+            remove_indexes.append(0)
 
         candidates = [candidates[i]
-                      for i in range(1, len(candidates)) if i not in remove]
-        candidates = candidates + merged
+                      for i in range(1, len(candidates)) if i not in remove_indexes]
+        candidates += merged_ranges
 
     return result
 
