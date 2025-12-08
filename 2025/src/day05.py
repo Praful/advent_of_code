@@ -21,8 +21,7 @@ def read_input(input_file):
         r = s.split('-')
         return range(int(r[0]), int(r[1]))
 
-    with open(input_file) as f:
-        input = [l.strip().split('\n') for l in f.read().split('\n\n')]
+    input = read_file_str_sections(input_file)
 
     # return ranges, ids
     return list(map(parse, input[0])), list(map(int, input[1]))

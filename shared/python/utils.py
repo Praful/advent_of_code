@@ -183,6 +183,21 @@ class Direction2(Enum):
     LEFT = 3
 
 
+def read_file_str_sections(filename, strip=True, sep1='\n', sep2='\n\n'):
+    """ return list of strings, where file has multiple sections 
+        separated by sep2 and lines separated by sep1
+    """
+    result = []
+    with open(filename) as f:
+        for l in f.read().split(sep2):
+            if strip:
+                result.append(l.strip().split(sep1))
+            else:
+                result.append(l.split(sep1))
+
+    return result
+
+
 def read_file_str(filename, strip=False):
     """ return list of strings, one line per list entry"""
     result = []
