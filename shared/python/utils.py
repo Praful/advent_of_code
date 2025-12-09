@@ -392,6 +392,10 @@ def manhattan_distance(point1, point2):
     return abs(x2 - x1) + abs(y2 - y1)
 
 
+# not required: in math.dist
+#  def euclidean_distance(p, q):
+    #  return math.sqrt(sum((qi - pi)**2 for pi, qi in zip(p, q)))
+
 def is_adjacent(p1, p2, include_diagonal=True):
     adj = ADJACENT_DIAG if include_diagonal else ADJACENT
     return any([np.array_equal(p1 + a, p2) for a in adj])
