@@ -22,8 +22,8 @@ def read_input(input_file):
 
 
 def calc_part1(circuits, points):
-    active_circuits = {k: v for k, v in circuits.items() if k in set(points.values())}
-    return prod(map(len, sorted(active_circuits.values(), key=len, reverse=True)[:3]))
+    active_circuits = [v for k, v in circuits.items() if k in set(points.values())]
+    return prod(map(len, sorted(active_circuits, key=len, reverse=True)[:3]))
 
 
 def solve(input, connections=1000):
