@@ -221,6 +221,12 @@ def read_file_int(filename):
     return result
 
 
+def read_file_point(filename):
+    """ file consists of a rows of points: x,y,... """
+    input = read_file_str(filename, True)
+    return [tuple(map(int, l)) for l in map(lambda s: re.findall(r'\d+', s), input)]
+
+
 def extract_ints(s):
     return map(int, re.findall(r'\d+', s))
 

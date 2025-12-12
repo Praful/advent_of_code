@@ -17,12 +17,12 @@ print_debug = print if DEBUG else lambda *a, **k: None
 
 
 def read_input(input_file):
-    input = read_file_str(input_file, True)
-    return [tuple(map(int, l)) for l in map(lambda s: re.findall(r'\d+', s), input)]
+    return read_file_point(input_file)
 
 
 def calc_part1(circuits, points):
-    active_circuits = [v for k, v in circuits.items() if k in set(points.values())]
+    active_circuits = [
+        v for k, v in circuits.items() if k in set(points.values())]
     return prod(map(len, sorted(active_circuits, key=len, reverse=True)[:3]))
 
 
@@ -42,7 +42,8 @@ def solve(input, connections=1000):
         i += 1
 
         p_circuit_id, q_circuit_id = points[p], points[q]
-        p_circuit, q_circuit = circuit(p, p_circuit_id), circuit(q, q_circuit_id)
+        p_circuit, q_circuit = circuit(
+            p, p_circuit_id), circuit(q, q_circuit_id)
 
         circuit_id += 1
         circuits[circuit_id] = p_circuit | q_circuit

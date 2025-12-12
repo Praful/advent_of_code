@@ -113,3 +113,63 @@ def fit_polynomial(x_values, y_values):
     plt.title('Quadratic Regression Fit')
     plt.legend()
     plt.show()
+
+
+def plot_polygon_plus(poly, rect=None, other=None):
+    """
+    poly: list of (x, y) vertex tuples, polygon will be closed automatically
+    rect: tuple (p1, p2) where each p is (x, y), diagonal corners of rectangle
+    other: list of (x, y) points to plot as a connected polyline
+    """
+
+    fig, ax = plt.subplots()
+
+    # Plot polygon
+    xs = [p[0] for p in poly] + [poly[0][0]]
+    ys = [p[1] for p in poly] + [poly[0][1]]
+    ax.plot(xs, ys, '-o', label="Polygon")
+
+    # Plot rectangle if given
+    if rect:
+        x1, y1, x2, y2 = rect
+        rect_points = [
+            (min(x1, x2), min(y1, y2)),
+            (min(x1, x2), max(y1, y2)),
+            (max(x1, x2), max(y1, y2)),
+            (max(x1, x2), min(y1, y2)),
+            (min(x1, x2), min(y1, y2)),
+        ]
+        rx = [p[0] for p in rect_points]
+        ry = [p[1] for p in rect_points]
+        ax.plot(rx, ry, '-s', label="Rectangle")
+
+    # Plot other polyline or point sequence
+    if other:
+        ox = [p[0] for p in other]
+        oy = [p[1] for p in other]
+        ax.plot(ox, oy, '-x', label="Other")
+
+    ax.set_aspect('equal', 'box')
+    ax.grid(True)
+    ax.legend()
+    plt.show()
+
+
+def plot_polygon(poly, show_points=False, color='black'):
+    """
+    poly: list of (x, y) vertices in order
+    show_points: mark the vertices
+    color: line color
+    """
+    xs = [p[0] for p in poly] + [poly[0][0]]
+    ys = [p[1] for p in poly] + [poly[0][1]]
+
+    plt.figure(figsize=(6, 6))
+    plt.plot(xs, ys, color=color)
+    if show_points:
+        plt.scatter(xs, ys)
+        for i, (x, y) in enumerate(poly):
+            plt.text(x, y, f'{i}', fontsize=9)
+    plt.gca().set_aspect('equal', adjustable='box')
+    plt.grid(True)
+    plt.show()
