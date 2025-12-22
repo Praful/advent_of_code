@@ -47,7 +47,7 @@ def read_input(input_file):
 def combos_for_lights(lights, buttons):
     light_count = len(lights)
     result = []
-    #  for r in range(1, len(buttons) + 1):
+
     for r in range(len(buttons) + 1):
         for combo in combinations(buttons, r):
             acc = [0]*light_count
@@ -83,7 +83,8 @@ def min_joltage(joltage, buttons):
 
         new_joltage = tuple(j//2 for j in starting_joltage)
         new_joltage_press_count = min_joltage(new_joltage, buttons)
-        starting_joltage_press_count = len(combo) + (2 * new_joltage_press_count)
+        starting_joltage_press_count = len(
+            combo) + (2 * new_joltage_press_count)
 
         result = min(result, starting_joltage_press_count)
 
