@@ -1,4 +1,3 @@
-from collections import deque
 import sys
 import os
 import re
