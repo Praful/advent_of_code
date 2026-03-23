@@ -109,6 +109,22 @@ def subtract_pos(p1, p2):
 direction = subtract_pos
 
 
+def print_points(points, filled='#', empty='.'):
+    rs = [r for r, _ in points]
+    cs = [c for _, c in points]
+
+    min_r, max_r = min(rs), max(rs)
+    min_c, max_c = min(cs), max(cs)
+
+    point_set = set(points)
+
+    for r in range(min_r, max_r + 1):
+        print("".join(
+            filled if (r, c) in point_set else empty
+            for c in range(min_c, max_c + 1)
+        ))
+
+
 def print_grid(grid, axis=False):
     if axis:
         print('  ' + ''.join([str(i % 10) for i in range(len(grid[0]))]))
