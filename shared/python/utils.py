@@ -2,6 +2,7 @@ from enum import Enum
 import numpy as np
 import math
 import re
+from itertools import dropwhile
 
 
 class Direction(Enum):
@@ -255,6 +256,16 @@ def lcm(l):
     return result
 
 
+def nearest_power_of(b, n):
+    assert n >= 0, "nearest_power_of: n must be >= 0"
+
+    p = 0
+    while b ** (p + 1) <= n:
+        p += 1
+
+    return p, b ** p
+
+
 # Boolean, unsigned integer, signed integer, float, complex.
 NUMERIC_KINDS = set('buifc')
 NOT_NUMERIC = [object(), 'string', u'unicode', None]
@@ -322,6 +333,10 @@ def to_numpy_array(a):
 
 def chunk_string(s, chunk_size):
     return [s[i:i + chunk_size] for i in range(0, len(s), chunk_size)]
+
+
+def strip_leading_char(l, char):
+    return list(dropwhile(lambda x: x == char, l))
 
 
 def print_np_info(a):
