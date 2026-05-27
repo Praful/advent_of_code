@@ -181,12 +181,12 @@ def reverse_direction(direction):
         return Direction.NORTH
 
 
-# rotate 90 degrees clockwise or anticlockwise
-def rotate_direction(current_direction, anticlockwise=False):
+# rotate 90 degrees clockwise (True) or anticlockwise (False)
+def rotate_direction(current_direction, clockwise=True):
     directions = list(Direction)
 
     # Determine the step: +1 for clockwise, -1 for anticlockwise
-    step = -1 if anticlockwise else 1
+    step = 1 if clockwise else -1
 
     # Calculate the next index using modular arithmetic
     next_index = (current_direction.value + step) % len(directions)

@@ -24,7 +24,8 @@ def solve(input, part2=False):
     found = False
 
     for move in input:
-        dir = rotate_direction(dir, move[0] == "L")
+        dir = rotate_direction(dir, move[0] == "R")
+
         blocks = int(move[1:])
         for _ in range(blocks):
             pos = add_pos(pos, DIRECTION_DELTAS[dir])
@@ -49,8 +50,7 @@ def main():
     assert (res := solve(["R5", "L5", "R5", "R3"])) == 12, f'Actual: {res}'
     print(f'Part 1 {solve(input)}')  # 298
 
-    assert (res := solve(["R8", "R4", "R4", "R8"], True)
-            ) == 4, f'Actual: {res}'
+    assert (res := solve(["R8", "R4", "R4", "R8"], True)) == 4, f'Actual: {res}'
     print(f'Part 2 {solve(input, True)}')  # 158
 
 

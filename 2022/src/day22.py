@@ -92,7 +92,7 @@ def part1(input):
 
     for p in path:
         if str(p) in 'LR':
-            dir = rotate_direction(dir, p == 'L')
+            dir = rotate_direction(dir, p == 'R')
         else:
             for _ in range(p):
                 new_pos = next_pos(board, pos, dir)
@@ -216,7 +216,7 @@ def part2(input):
 
     for p in path:
         if str(p) in 'LR':
-            dir = rotate_direction(dir, p == 'L')
+            dir = rotate_direction(dir, p == 'R')
         else:
             for _ in range(p):
                 new_pos, new_dir, new_face_id = next_pos_cube(board, pos, dir, face_id, navigation)
