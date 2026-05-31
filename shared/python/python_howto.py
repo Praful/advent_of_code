@@ -17,7 +17,10 @@ from enum import Enum
 # - http://gto76.github.io/python-cheatsheet/
 
 # regular expressions
-# if multiple matches on line, use re.findall() then match[0][0], match[0][1], etc
+# re.search() finds first match anywhere in the string and returns Match object
+# re.match() finds first match at the beginning of the string and returns Match object
+# re.findall() finds all matches but returns the first character of the match not Match object
+# re.finditer() finds for all matches and returns an iterable of Match objects, one for each match
 l = ['Valve AA has flow rate=0; tunnels lead to valves DD, II, BB',
      'Valve BB has flow rate=13; tunnels lead to valves CC, AA',
      'Valve CC has flow rate=2; tunnels lead to valves DD, BB']

@@ -18,12 +18,12 @@ def read_input(input_file):
     return input
 
 
-def extract_char_part1(c):
-    return Counter(c).most_common(1)[0][0]
+def extract_char_part1(s):
+    return Counter(s).most_common(1)[0][0]
 
 
-def extract_char_part2(c):
-    return Counter(c).most_common()[-1][0]
+def extract_char_part2(s):
+    return Counter(s).most_common()[-1][0]
 
 
 def solve(input, extract_char):
@@ -33,7 +33,7 @@ def solve(input, extract_char):
         for i, c in enumerate(s):
             columns[i] += c
 
-    return "".join([extract_char(c) for c in columns])
+    return "".join([extract_char(s) for s in columns])
 
 
 def main():
