@@ -4,6 +4,8 @@ import math
 import re
 from itertools import dropwhile
 
+BLOCK = '\u2588'  # = █
+
 
 class Direction(Enum):
     NORTH = 0
