@@ -17,14 +17,18 @@ def read_input(input_file):
     return read_file_str(input_file, True)[0]
 
 
+RE_MARKER = r'\((\d+)x(\d+)\)'
+
+def marker(s):
+        return re.search(RE_MARKER, s)
+
 def decompress1(s):
     remaining = s
-    RE_MARKER = r'\((\d+)x(\d+)\)'
 
     result = ""
 
     while len(remaining) > 0:
-        m = re.search(RE_MARKER, remaining)
+        m = marker(remaining)
         if m is None:
             result += remaining
             break
@@ -45,12 +49,10 @@ def decompress1(s):
 
 def decompress2(s):
     remaining = s
-    RE_MARKER = r'\((\d+)x(\d+)\)'
-
     result = 0
 
     while len(remaining) > 0:
-        m = re.search(RE_MARKER, remaining)
+        m = marker(remaining)
         if m is None:
             result += len(remaining)
             break
@@ -63,7 +65,7 @@ def decompress2(s):
 
         section = remaining[m.end():m.end() + count]
 
-        if re.search(RE_MARKER, section):
+        if marker(section) is not None:
             result += repeat * decompress2(section)
         else:
             result += repeat * len(section)
