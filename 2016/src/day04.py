@@ -1,8 +1,4 @@
-import sys
-import os
 from collections import Counter
-
-sys.path.append(os.path.relpath("../../shared/python"))
 
 # noqa stops autopep8 from reordering this import
 from utils import *  # noqa: E402
@@ -22,7 +18,7 @@ def read_input(input_file):
         sector_id = int(s3[-1])
         return name, checksum, sector_id
 
-    input = map(parse, read_file_str(input_file, True))
+    input = map(parse, read_file_str(aoc_input_file(__file__, input_file), True))
     return list(input)
 
 
@@ -74,8 +70,8 @@ def part2(input):
 
 
 def main():
-    input = read_input("../data/day04.txt")
-    test_input = read_input("../data/day04-test.txt")
+    input = read_input("day04.txt")
+    test_input = read_input("day04-test.txt")
 
     assert (res := part1(test_input)) == 1514, f'Actual: {res}'
     print(f'Part 1 {part1(input)}')  # 158835

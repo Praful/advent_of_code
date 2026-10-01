@@ -1,8 +1,3 @@
-import sys
-import os
-
-sys.path.append(os.path.relpath("../../shared/python"))
-
 # noqa stops autopep8 from reordering this import
 from utils import *  # noqa: E402
 
@@ -16,7 +11,7 @@ def read_input(input_file):
     def parse(s):
         return list(map(int, s.split()))
 
-    input = map(parse, read_file_str(input_file, True))
+    input = map(parse, read_file_str(aoc_input_file(__file__, input_file), True))
     return list(input)
 
 
@@ -48,7 +43,7 @@ def part2(input):
 
 
 def main():
-    input = read_input("../data/day03.txt")
+    input = read_input("day03.txt")
 
     print(f'Part 1 {part1(input)}')  # 983
     print(f'Part 2 {part2(input)}')  # 1836

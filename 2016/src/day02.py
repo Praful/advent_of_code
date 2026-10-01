@@ -1,7 +1,3 @@
-import sys
-import os
-
-sys.path.append(os.path.relpath("../../shared/python"))
 
 # noqa stops autopep8 from reordering this import
 from utils import *  # noqa: E402
@@ -28,8 +24,7 @@ DIR_MAP = {
 
 
 def read_input(input_file):
-    input = read_file_str(input_file, True)
-    return input
+    return read_file_str(aoc_input_file(__file__, input_file), True)
 
 
 def solve(input, keypad=KEYPAD1, start=(1, 1)):
@@ -48,8 +43,8 @@ def solve(input, keypad=KEYPAD1, start=(1, 1)):
 
 
 def main():
-    input = read_input("../data/day02.txt")
-    test_input = read_input("../data/day02-test.txt")
+    input = read_input("day02.txt")
+    test_input = read_input("day02-test.txt")
 
     assert (res := solve(test_input)) == "1985", f'Actual: {res}'
     print(f'Part 1 {solve(input)}')  # 52981

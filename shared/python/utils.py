@@ -3,6 +3,7 @@ import numpy as np
 import math
 import re
 from itertools import dropwhile
+from pathlib import Path
 
 BLOCK = '\u2588'  # = █
 
@@ -216,6 +217,11 @@ def read_file_str_sections(filename, strip=True, sep1='\n', sep2='\n\n'):
 
     return result
 
+def aoc_input_dir(script: str) -> Path:
+    return Path(script).resolve().parent.parent / "data"
+
+def aoc_input_file(script: str, filename) -> Path:
+    return aoc_input_dir(script) / filename
 
 def read_file_str(filename, strip=False):
     """ return list of strings, one line per list entry"""

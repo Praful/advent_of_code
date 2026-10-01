@@ -4,6 +4,12 @@
 
 At some point, I switched to Python for doing Advent of Code. I learnt the language for a machine learning course a few years ago.
 
+From the project root, install the utils with:
+
+```
+uv pip install -e shared/python/
+```
+
 To run the Python code, change to the `src` directory then run program. For example:
 
 ```

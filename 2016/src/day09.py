@@ -1,8 +1,4 @@
-import sys
-import os
 import re
-
-sys.path.append(os.path.relpath("../../shared/python"))
 
 # noqa stops autopep8 from reordering this import
 from utils import *  # noqa: E402
@@ -14,7 +10,7 @@ print_debug = print if DEBUG else lambda *a, **k: None
 
 
 def read_input(input_file):
-    return read_file_str(input_file, True)[0]
+    return read_file_str(aoc_input_file(__file__, input_file), True)[0]
 
 
 RE_MARKER = r'\((\d+)x(\d+)\)'
@@ -84,7 +80,7 @@ def part2(input):
 
 
 def main():
-    input = read_input("../data/day09.txt")
+    input = read_input("day09.txt")
 
     assert (res := part1("ADVENT")) == 6, f'Actual: {res}'
     assert (res := part1("(3x3)XYZ")) == 9, f'Actual: {res}'

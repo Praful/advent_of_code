@@ -1,10 +1,6 @@
-import sys
-import os
 import re
 
 from hashlib import md5
-
-sys.path.append(os.path.relpath("../../shared/python"))
 
 # noqa stops autopep8 from reordering this import
 from utils import *  # noqa: E402
@@ -13,11 +9,6 @@ from utils import *  # noqa: E402
 
 DEBUG = True
 print_debug = print if DEBUG else lambda *a, **k: None
-
-
-def read_input(input_file):
-    input = read_file_str(input_file, True)
-    return input
 
 
 def hex_hash(s):

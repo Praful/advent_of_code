@@ -1,11 +1,7 @@
-import sys
-import os
 import math
 from collections import defaultdict
 from collections import namedtuple
 import queue
-
-sys.path.append(os.path.relpath("../../shared/python"))
 
 # noqa stops autopep8 from reordering this import
 from utils import *  # noqa: E402
@@ -22,7 +18,7 @@ Value = namedtuple('Values', ['value', 'bot'])
 def read_input(input_file):
     bots_giving = {}
     values = []
-    for line in read_file_str(input_file, True):
+    for line in read_file_str(aoc_input_file(__file__, input_file), True):
         if line.startswith("value"):
             words = line.split(" ")
             n = list(extract_ints(line))
@@ -91,8 +87,8 @@ def solve(input, comparing=None):
 
 
 def main():
-    input = read_input("../data/day10.txt")
-    test_input = read_input("../data/day10-test.txt")
+    input = read_input("day10.txt")
+    test_input = read_input("day10-test.txt")
 
     assert (res := solve(test_input, [2, 5])) == 2, f'Actual: {res}'
     print(f'Part 1 {solve(input, [17, 61])}')  # 141

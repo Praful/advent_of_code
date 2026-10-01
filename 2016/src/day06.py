@@ -1,8 +1,4 @@
-import sys
-import os
 from collections import Counter
-
-sys.path.append(os.path.relpath("../../shared/python"))
 
 # noqa stops autopep8 from reordering this import
 from utils import *  # noqa: E402
@@ -14,7 +10,7 @@ print_debug = print if DEBUG else lambda *a, **k: None
 
 
 def read_input(input_file):
-    input = read_file_str(input_file, True)
+    input = read_file_str(aoc_input_file(__file__, input_file), True)
     return input
 
 
@@ -37,8 +33,8 @@ def solve(input, extract_char):
 
 
 def main():
-    input = read_input("../data/day06.txt")
-    test_input = read_input("../data/day06-test.txt")
+    input = read_input("day06.txt")
+    test_input = read_input("day06-test.txt")
 
     assert (res := solve(test_input, extract_char_part1)
             ) == "easter", f'Actual: {res}'

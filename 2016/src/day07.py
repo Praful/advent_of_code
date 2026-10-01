@@ -1,8 +1,4 @@
-import sys
-import os
 import re
-
-sys.path.append(os.path.relpath("../../shared/python"))
 
 # noqa stops autopep8 from reordering this import
 from utils import *  # noqa: E402
@@ -14,7 +10,7 @@ print_debug = print if DEBUG else lambda *a, **k: None
 
 
 def read_input(input_file):
-    input = read_file_str(input_file, True)
+    input = read_file_str(aoc_input_file(__file__, input_file), True)
     return input
 
 RE_BRACKETED_TEXT = r"\[.*?\]"
@@ -91,9 +87,9 @@ def part2(input):
 
 
 def main():
-    input = read_input("../data/day07.txt")
-    test_input = read_input("../data/day07-test.txt")
-    test_input2 = read_input("../data/day07-test2.txt")
+    input = read_input("day07.txt")
+    test_input = read_input("day07-test.txt")
+    test_input2 = read_input("day07-test2.txt")
 
     assert (res := part1(test_input)) == 2, f'Actual: {res}'
     print(f'Part 1 {part1(input)}')  # 115

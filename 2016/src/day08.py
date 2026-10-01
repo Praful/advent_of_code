@@ -1,10 +1,6 @@
-import sys
-import os
 import re
 
 from collections import namedtuple
-
-sys.path.append(os.path.relpath("../../shared/python"))
 
 # noqa stops autopep8 from reordering this import
 from utils import *  # noqa: E402
@@ -137,7 +133,7 @@ def parse_instruction(line):
 
 
 def read_input(input_file):
-    return list(map(parse_instruction, read_file_str(input_file, True)))
+    return list(map(parse_instruction, read_file_str(aoc_input_file(__file__, input_file), True)))
 
 #  def print_grid(screen):
     #  print("\n".join("".join("#" if v else "." for v in row) for row in screen))
@@ -167,8 +163,8 @@ def solve(input, num_rows, num_cols, part2=False):
 def main():
     #  test_rotatable_grid()
 
-    input = read_input("../data/day08.txt")
-    test_input = read_input("../data/day08-test.txt")
+    input = read_input("day08.txt")
+    test_input = read_input("day08-test.txt")
 
     assert (res := solve(test_input, 3, 7)) == 6, f'Actual: {res}'
     print(f'Part 1 {solve(input, 6, 50, True)}')  # 110, ZJHRKCPLYJ
