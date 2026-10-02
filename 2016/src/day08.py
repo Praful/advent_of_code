@@ -1,9 +1,7 @@
 import re
-
 from collections import namedtuple
 
-# noqa stops autopep8 from reordering this import
-from utils import *  # noqa: E402
+from utils import BLOCK, aoc_input_file, make_grid, read_file_str
 
 # Puzzle description: https://adventofcode.com/2016/day/8
 
@@ -13,7 +11,7 @@ print_debug = print if DEBUG else lambda *a, **k: None
 # if Instruction is rect, arg1 is width (columns), arg2 is height (rows)
 # if Instruction is rotate_row, arg1 is row, arg2 is shift
 # if Instruction is rotate_column, arg1 is column, arg2 is shift
-Instruction = namedtuple('Instruction', ['op', 'arg1', 'arg2'])
+Instruction = namedtuple("Instruction", ["op", "arg1", "arg2"])
 
 
 class RotatableGrid:
@@ -79,11 +77,7 @@ class RotatableGrid:
 
 
 def test_rotatable_grid():
-    data = [
-        [1, 2, 3, 4],
-        [5, 6, 7, 8],
-        [9, 10, 11, 12]
-    ]
+    data = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]]
 
     grid = RotatableGrid(data)
 
@@ -123,20 +117,25 @@ def test_rotatable_grid():
 
 def parse_instruction(line):
     if "rect" in line:
-        return Instruction("rect", *map(int, re.findall(r'\d+', line)))
+        return Instruction("rect", *map(int, re.findall(r"\d+", line)))
     elif "rotate row" in line:
-        return Instruction("rotate_row", *map(int, re.findall(r'\d+', line)))
+        return Instruction("rotate_row", *map(int, re.findall(r"\d+", line)))
     elif "rotate column" in line:
-        return Instruction("rotate_column", *map(int, re.findall(r'\d+', line)))
+        return Instruction("rotate_column", *map(int, re.findall(r"\d+", line)))
     else:
         raise ValueError
 
 
 def read_input(input_file):
-    return list(map(parse_instruction, read_file_str(aoc_input_file(__file__, input_file), True)))
+    return list(
+        map(
+            parse_instruction, read_file_str(aoc_input_file(__file__, input_file), True)
+        )
+    )
+
 
 #  def print_grid(screen):
-    #  print("\n".join("".join("#" if v else "." for v in row) for row in screen))
+#  print("\n".join("".join("#" if v else "." for v in row) for row in screen))
 
 
 def solve(input, num_rows, num_cols, part2=False):
@@ -166,9 +165,9 @@ def main():
     input = read_input("day08.txt")
     test_input = read_input("day08-test.txt")
 
-    assert (res := solve(test_input, 3, 7)) == 6, f'Actual: {res}'
-    print(f'Part 1 {solve(input, 6, 50, True)}')  # 110, ZJHRKCPLYJ
+    assert (res := solve(test_input, 3, 7)) == 6, f"Actual: {res}"
+    print(f"Part 1 {solve(input, 6, 50, True)}")  # 110, ZJHRKCPLYJ
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

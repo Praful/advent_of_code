@@ -1,18 +1,16 @@
 import math
-from collections import defaultdict
-from collections import namedtuple
 import queue
+from collections import defaultdict, namedtuple
 
-# noqa stops autopep8 from reordering this import
-from utils import *  # noqa: E402
+from utils import aoc_input_file, extract_ints, read_file_str
 
 # Puzzle description: https://adventofcode.com/2016/day/10
 
 DEBUG = True
 print_debug = print if DEBUG else lambda *a, **k: None
 
-Gives = namedtuple('Gives', ['low', 'high'])
-Value = namedtuple('Values', ['value', 'bot'])
+Gives = namedtuple("Gives", ["low", "high"])
+Value = namedtuple("Values", ["value", "bot"])
 
 
 def read_input(input_file):
@@ -22,12 +20,13 @@ def read_input(input_file):
         if line.startswith("value"):
             words = line.split(" ")
             n = list(extract_ints(line))
-            values.append(Value(n[0], f'{words[4]} {n[1]}'))
+            values.append(Value(n[0], f"{words[4]} {n[1]}"))
         elif line.startswith("bot"):
             n = list(extract_ints(line))
             words = line.split(" ")
-            bots_giving[f'{words[0]} {n[0]}'] = Gives(
-                f'{words[5]} {n[1]}', f'{words[10]} {n[2]}')
+            bots_giving[f"{words[0]} {n[0]}"] = Gives(
+                f"{words[5]} {n[1]}", f"{words[10]} {n[2]}"
+            )
         else:
             raise ValueError(line)
 
@@ -68,7 +67,6 @@ def solve(input, comparing=None):
             q.put(value.bot)
 
     while not q.empty():
-
         bot = q.get()
         if comparing:  # part 1
             if sorted(holding[bot]) == target:
@@ -90,10 +88,10 @@ def main():
     input = read_input("day10.txt")
     test_input = read_input("day10-test.txt")
 
-    assert (res := solve(test_input, [2, 5])) == 2, f'Actual: {res}'
-    print(f'Part 1 {solve(input, [17, 61])}')  # 141
-    print(f'Part 2 {solve(input)}')  # 1209
+    assert (res := solve(test_input, [2, 5])) == 2, f"Actual: {res}"
+    print(f"Part 1 {solve(input, [17, 61])}")  # 141
+    print(f"Part 2 {solve(input)}")  # 1209
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

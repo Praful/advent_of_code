@@ -1,5 +1,4 @@
-# noqa stops autopep8 from reordering this import
-from utils import *  # noqa: E402
+from utils import aoc_input_file, read_file_str
 
 # Puzzle description: https://adventofcode.com/2016/day/3
 
@@ -16,9 +15,11 @@ def read_input(input_file):
 
 
 def possible_triangle(sides):
-    return sides[0] + sides[1] > sides[2] and \
-        sides[1] + sides[2] > sides[0] and \
-        sides[2] + sides[0] > sides[1]
+    return (
+        sides[0] + sides[1] > sides[2]
+        and sides[1] + sides[2] > sides[0]
+        and sides[2] + sides[0] > sides[1]
+    )
 
 
 def part1(input):
@@ -45,9 +46,9 @@ def part2(input):
 def main():
     input = read_input("day03.txt")
 
-    print(f'Part 1 {part1(input)}')  # 983
-    print(f'Part 2 {part2(input)}')  # 1836
+    print(f"Part 1 {part1(input)}")  # 983
+    print(f"Part 2 {part2(input)}")  # 1836
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

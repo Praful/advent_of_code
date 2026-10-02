@@ -1,7 +1,6 @@
 import re
 
-# noqa stops autopep8 from reordering this import
-from utils import *  # noqa: E402
+from utils import aoc_input_file, read_file_str
 
 # Puzzle description: https://adventofcode.com/2016/day/7
 

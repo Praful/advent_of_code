@@ -1,7 +1,6 @@
 from collections import Counter
 
-# noqa stops autopep8 from reordering this import
-from utils import *  # noqa: E402
+from utils import aoc_input_file, read_file_str
 
 # Puzzle description: https://adventofcode.com/2016/day/6
 
@@ -36,14 +35,12 @@ def main():
     input = read_input("day06.txt")
     test_input = read_input("day06-test.txt")
 
-    assert (res := solve(test_input, extract_char_part1)
-            ) == "easter", f'Actual: {res}'
-    print(f'Part 1 {solve(input, extract_char_part1)}')  # xhnqpqql
+    assert (res := solve(test_input, extract_char_part1)) == "easter", f"Actual: {res}"
+    print(f"Part 1 {solve(input, extract_char_part1)}")  # xhnqpqql
 
-    assert (res := solve(test_input, extract_char_part2)
-            ) == "advent", f'Actual: {res}'
-    print(f'Part 2 {solve(input, extract_char_part2)}')  # brhailro
+    assert (res := solve(test_input, extract_char_part2)) == "advent", f"Actual: {res}"
+    print(f"Part 2 {solve(input, extract_char_part2)}")  # brhailro
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
