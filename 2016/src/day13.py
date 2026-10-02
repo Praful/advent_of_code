@@ -1,22 +1,12 @@
 from functools import partial
 from queue import SimpleQueue
 
-from utils import (
-    DIRECTIONS,
-    aoc_input_file,
-    next_neighbour2,
-    read_file_str,
-)
+from utils import DIRECTIONS, next_neighbour2
 
 # Puzzle description: https://adventofcode.com/2016/day/13
 
 DEBUG = True
 print_debug = print if DEBUG else lambda *a, **k: None
-
-
-def read_input(input_file):
-    input = read_file_str(aoc_input_file(__file__, input_file), True)
-    return input
 
 
 def print_grid(rows, cols, is_wall_func):
