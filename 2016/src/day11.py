@@ -15,6 +15,7 @@ ORDINAL_TO_CARDINAL = {"first": 1, "second": 2, "third": 3, "fourth": 4}
 GEN_INDEX = 0
 CHIP_INDEX = 1
 
+
 # Return the initial state.
 #
 # State data structure is:
@@ -27,8 +28,6 @@ CHIP_INDEX = 1
 #     )
 #  )
 #
-
-
 def read_input(input_file):
     elevator_floor = 1
     locations = defaultdict(lambda: [0, 0])
@@ -89,8 +88,6 @@ def is_valid(state):
 #   LG on 3st floor and LC on 1st floor
 # where H is hydrogen, L is lithium and G is generator, C is chip
 # Canonicalise (sorting) reduces the unique states in the BFS
-
-
 def canonicalise(state):
     elevator, pairs = state
 
@@ -98,8 +95,6 @@ def canonicalise(state):
 
 
 # Update the floor for new elevator load
-
-
 def move(state, load, direction):
     elevator, pairs = state
     new_floor = elevator + direction
