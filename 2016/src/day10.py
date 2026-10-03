@@ -19,10 +19,10 @@ def read_input(input_file):
     for line in read_file_str(aoc_input_file(__file__, input_file), True):
         if line.startswith("value"):
             words = line.split(" ")
-            n = list(extract_ints(line))
+            n = extract_ints(line)
             values.append(Value(n[0], f"{words[4]} {n[1]}"))
         elif line.startswith("bot"):
-            n = list(extract_ints(line))
+            n = extract_ints(line)
             words = line.split(" ")
             bots_giving[f"{words[0]} {n[0]}"] = Gives(
                 f"{words[5]} {n[1]}", f"{words[10]} {n[2]}"
@@ -70,7 +70,7 @@ def solve(input, comparing=None):
         bot = q.get()
         if comparing:  # part 1
             if sorted(holding[bot]) == target:
-                return list(extract_ints(bot))[0]
+                return extract_ints(bot)[0]
 
         low_bot, high_bot = process_gives(bot)
         if low_bot:

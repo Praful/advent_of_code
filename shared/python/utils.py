@@ -267,7 +267,7 @@ def read_file_point(filename):
 
 
 def extract_ints(s):
-    return map(int, re.findall(r"\d+", s))
+    return list(map(int, re.findall(r"\d+", s)))
 
 
 def lcm(l):
@@ -276,7 +276,6 @@ def lcm(l):
     for n in l:
         result = (n * result) // math.gcd(n, result)
     return result
-
 
 def nearest_power_of(b, n):
     assert n >= 0, "nearest_power_of: n must be >= 0"
