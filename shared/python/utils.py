@@ -1,11 +1,13 @@
-from enum import Enum
-import numpy as np
 import math
 import re
+from enum import Enum
 from itertools import dropwhile
 from pathlib import Path
+from hashlib import md5
 
-BLOCK = '\u2588'  # = █
+import numpy as np
+
+BLOCK = "\u2588"  # = █
 
 
 class Direction(Enum):
@@ -27,9 +29,7 @@ SOUTHWEST = (1, -1)
 NORTHWEST = (-1, -1)
 
 # Clockwise 90 degrees
-ROTATE = {
-    EAST: SOUTH, SOUTH: WEST, WEST: NORTH, NORTH: EAST
-}
+ROTATE = {EAST: SOUTH, SOUTH: WEST, WEST: NORTH, NORTH: EAST}
 
 DIRECTIONS = [
     NORTH,
@@ -51,42 +51,45 @@ DIRECTION_DELTAS = {
     Direction.EAST: EAST,
     Direction.NORTH: NORTH,
     Direction.WEST: WEST,
-    Direction.SOUTH: SOUTH
+    Direction.SOUTH: SOUTH,
 }
 
 ARROWS_TO_DIRECTION = {
-    '>': Direction.EAST,
-    'v': Direction.SOUTH,
-    '<': Direction.WEST,
-    '^': Direction.NORTH,
+    ">": Direction.EAST,
+    "v": Direction.SOUTH,
+    "<": Direction.WEST,
+    "^": Direction.NORTH,
 }
 
 ARROWS_TO_DIRECTION2 = {
-    '>': EAST,
-    'v': SOUTH,
-    '<': WEST,
-    '^': NORTH,
+    ">": EAST,
+    "v": SOUTH,
+    "<": WEST,
+    "^": NORTH,
 }
 
 DIRECTION2_TO_ARROWS = {
-    EAST: '>',
-    SOUTH: 'v',
-    WEST: '<',
-    NORTH: '^',
+    EAST: ">",
+    SOUTH: "v",
+    WEST: "<",
+    NORTH: "^",
 }
 
 
 def into_range(x, n, m):
     # for x returns value in range n-m (inclusive)
-    return ((x-n) % (m-n+1))+n
+    return ((x - n) % (m - n + 1)) + n
 
 
 def list_to_int(l):
-    return int(''.join([str(i) for i in l]))
+    return int("".join([str(i) for i in l]))
 
 
 def next_neighbour(position, direction):
-    return (position[0] + DIRECTION_DELTAS[direction][0], position[1] + DIRECTION_DELTAS[direction][1])
+    return (
+        position[0] + DIRECTION_DELTAS[direction][0],
+        position[1] + DIRECTION_DELTAS[direction][1],
+    )
 
 
 def next_neighbour2(position, direction):
@@ -113,7 +116,7 @@ def subtract_pos(p1, p2):
 direction = subtract_pos
 
 
-def print_points(points, filled='#', empty='.'):
+def print_points(points, filled="#", empty="."):
     rs = [r for r, _ in points]
     cs = [c for _, c in points]
 
@@ -123,20 +126,22 @@ def print_points(points, filled='#', empty='.'):
     point_set = set(points)
 
     for r in range(min_r, max_r + 1):
-        print("".join(
-            filled if (r, c) in point_set else empty
-            for c in range(min_c, max_c + 1)
-        ))
+        print(
+            "".join(
+                filled if (r, c) in point_set else empty
+                for c in range(min_c, max_c + 1)
+            )
+        )
 
 
 def print_grid(grid, axis=False):
     if axis:
-        print('  ' + ''.join([str(i % 10) for i in range(len(grid[0]))]))
+        print("  " + "".join([str(i % 10) for i in range(len(grid[0]))]))
 
     for r, row in enumerate(grid):
         if axis:
-            print(r % 10, end=' ')
-        print(''.join(row))
+            print(r % 10, end=" ")
+        print("".join(row))
 
 
 def make_grid(rows, cols, value=0):
@@ -156,7 +161,13 @@ def find_in_grid(grid, value):
 
 
 # return the coordinates of the neighbours. Optionally include diagonals.
-def neighbours(position, grid, check_in_bounds=True, condition=lambda g, x: True, include_diagonal=False):
+def neighbours(
+    position,
+    grid,
+    check_in_bounds=True,
+    condition=lambda g, x: True,
+    include_diagonal=False,
+):
     def in_grid_bound(p):
         if check_in_bounds:
             return in_grid(p, grid)
@@ -203,9 +214,9 @@ class Direction2(Enum):
     LEFT = 3
 
 
-def read_file_str_sections(filename, strip=True, sep1='\n', sep2='\n\n'):
-    """ return list of strings, where file has multiple sections 
-        separated by sep2 and lines separated by sep1
+def read_file_str_sections(filename, strip=True, sep1="\n", sep2="\n\n"):
+    """return list of strings, where file has multiple sections
+    separated by sep2 and lines separated by sep1
     """
     result = []
     with open(filename) as f:
@@ -217,14 +228,17 @@ def read_file_str_sections(filename, strip=True, sep1='\n', sep2='\n\n'):
 
     return result
 
+
 def aoc_input_dir(script: str) -> Path:
     return Path(script).resolve().parent.parent / "data"
+
 
 def aoc_input_file(script: str, filename) -> Path:
     return aoc_input_dir(script) / filename
 
+
 def read_file_str(filename, strip=False):
-    """ return list of strings, one line per list entry"""
+    """return list of strings, one line per list entry"""
     result = []
     with open(filename) as f:
         for line in f:
@@ -237,7 +251,7 @@ def read_file_str(filename, strip=False):
 
 
 def read_file_int(filename):
-    """ file consists of a rows of numbers"""
+    """file consists of a rows of numbers"""
     result = []
     with open(filename) as f:
         for line in f:
@@ -247,20 +261,20 @@ def read_file_int(filename):
 
 
 def read_file_point(filename):
-    """ file consists of a rows of points: x,y,... """
+    """file consists of a rows of points: x,y,..."""
     input = read_file_str(filename, True)
-    return [tuple(map(int, l)) for l in map(lambda s: re.findall(r'\d+', s), input)]
+    return [tuple(map(int, l)) for l in map(lambda s: re.findall(r"\d+", s), input)]
 
 
 def extract_ints(s):
-    return map(int, re.findall(r'\d+', s))
+    return map(int, re.findall(r"\d+", s))
 
 
 def lcm(l):
     #  https://en.wikipedia.org/wiki/Least_common_multiple
     result = 1
     for n in l:
-        result = (n*result) // math.gcd(n, result)
+        result = (n * result) // math.gcd(n, result)
     return result
 
 
@@ -271,21 +285,21 @@ def nearest_power_of(b, n):
     while b ** (p + 1) <= n:
         p += 1
 
-    return p, b ** p
+    return p, b**p
 
 
 # Boolean, unsigned integer, signed integer, float, complex.
-NUMERIC_KINDS = set('buifc')
-NOT_NUMERIC = [object(), 'string', u'unicode', None]
+NUMERIC_KINDS = set("buifc")
+NOT_NUMERIC = [object(), "string", "unicode", None]
 
 
 def replace(s, index, new_char):
-    """ change single char at index in string s """
-    return s[:index] + new_char + s[index + 1:]
+    """change single char at index in string s"""
+    return s[:index] + new_char + s[index + 1 :]
 
 
 def is_blank(s):
-    """ Return true if string is not defined or empty"""
+    """Return true if string is not defined or empty"""
     return not (s and s.strip())
 
 
@@ -294,12 +308,13 @@ def is_numeric(array):
 
 
 def is_valid(enum, s):
-    """ checks if s is a valid value for an enum class"""
+    """checks if s is a valid value for an enum class"""
     for l in list(enum):
         if l.value == s:
             return True
 
     return False
+
 
 # Example:
 #  sequence = (-9, 0, 5, 9, -1)  # Example sequence of length n = 5
@@ -332,6 +347,10 @@ def decode_sequence(encoded, n, base, offset):
     return tuple(sequence)
 
 
+def md5_hash(x):
+    return md5(x.encode("utf-8")).hexdigest()
+
+
 def to_numpy_array(a):
     # Turn list of strings into 2D numpy array with one character per cell
 
@@ -340,7 +359,7 @@ def to_numpy_array(a):
 
 
 def chunk_string(s, chunk_size):
-    return [s[i:i + chunk_size] for i in range(0, len(s), chunk_size)]
+    return [s[i : i + chunk_size] for i in range(0, len(s), chunk_size)]
 
 
 def strip_leading_char(l, char):
@@ -348,11 +367,11 @@ def strip_leading_char(l, char):
 
 
 def print_np_info(a):
-    print('size: ', a.size)
-    print('shape: ', a.shape)
+    print("size: ", a.size)
+    print("shape: ", a.shape)
     if is_numeric(a):
-        print('max:', a.max(axis=0))
-        print('min:', a.min(axis=0))
+        print("max:", a.max(axis=0))
+        print("min:", a.min(axis=0))
 
 
 def determinant(p1, p2):
@@ -366,7 +385,7 @@ def internal_area(boundary_points, boundary_length):
     # We have the boundary points and need the internal area.
     # Rearranging, we get: internal_area = area + 1 - boundary_length/2
     # We use the shoelace formula to get the total area
-    return (shoelace_area(boundary_points) + 1 - boundary_length / 2)
+    return shoelace_area(boundary_points) + 1 - boundary_length / 2
 
 
 def shoelace_area(input):
@@ -378,11 +397,12 @@ def shoelace_area(input):
         p2 = input[(i + 1) % len(input)]
         area += determinant(p1, p2)
 
-    return abs(area)/2
+    return abs(area) / 2
 
 
 def hex_to_dec(s):
     return int(s, 16)
+
 
 # class Point:
 #     def __init__(self, x=0, y=0):
@@ -439,7 +459,8 @@ def manhattan_distance(point1, point2):
 
 # not required: in math.dist
 #  def euclidean_distance(p, q):
-    #  return math.sqrt(sum((qi - pi)**2 for pi, qi in zip(p, q)))
+#  return math.sqrt(sum((qi - pi)**2 for pi, qi in zip(p, q)))
+
 
 def is_adjacent(p1, p2, include_diagonal=True):
     adj = ADJACENT_DIAG if include_diagonal else ADJACENT
@@ -447,8 +468,7 @@ def is_adjacent(p1, p2, include_diagonal=True):
 
 
 ADJACENT = [point(0, 1), point(0, -1), point(1, 0), point(-1, 0)]
-ADJACENT_DIAG = [*ADJACENT,
-                 point(1, 1), point(1, -1), point(-1, 1), point(-1, -1)]
+ADJACENT_DIAG = [*ADJACENT, point(1, 1), point(1, -1), point(-1, 1), point(-1, -1)]
 
 # provide equation of line coefficients (A, B, C) for Ax+By=C
 
@@ -472,11 +492,11 @@ def equation_of_line_coefficients(point1, point2):
     if x2 - x1 != 0:  # Avoid div by zero
         m = (y2 - y1) / (x2 - x1)
     else:
-        m = float('inf')  # Vertical line
+        m = float("inf")  # Vertical line
 
     # Use one of the points to find the equation
     # For vertical lines (x2 - x1 == 0), the equation is x = x1
-    if m != float('inf'):
+    if m != float("inf"):
         C = y1 - m * x1
         #  equation = f'y = {m}x + {b}'
         B = 1
@@ -514,8 +534,7 @@ class ReprMixin:
         return "<{klass} @{id:x} {attrs}>".format(
             klass=self.__class__.__name__,
             id=id(self) & 0xFFFFFF,
-            attrs=" ".join("{}={!r}".format(k, v)
-                           for k, v in self.__dict__.items()),
+            attrs=" ".join("{}={!r}".format(k, v) for k, v in self.__dict__.items()),
         )
 
 
