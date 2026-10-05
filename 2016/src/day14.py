@@ -10,7 +10,7 @@ DEBUG = False
 print_debug = print if DEBUG else lambda *a, **k: None
 
 
-def has_three_matches(s):
+def find_three_matches(s):
     match = re.search(r"(.)\1{2}", s)
 
     if match:
@@ -19,14 +19,14 @@ def has_three_matches(s):
     return None
 
 
-def five_matches(s):
+def find_five_matches(s):
     return re.findall(r"(.)\1{4}", s)
 
 
 def generate_keys(salt, part2=False):
 
     def finished():
-        # We can just wait until we've found 64 keys because candidate keys are not
+        # We can't just wait until we've found 64 keys because candidate keys are not
         # found in order eg candidate index 200 could be found before candidate index 100.
         # Therefore we have to make sure a lower candidate index is not going to be a key.
         # We do that by waiting until a 1000 index gap has passed
@@ -43,14 +43,15 @@ def generate_keys(salt, part2=False):
             for _ in range(2016):
                 hash = md5_hash(hash)
 
-        for five_ch in five_matches(hash):
+        for five_ch in find_five_matches(hash):
             for threes in three_matches[five_ch]:
                 if index - threes[1] <= 1000:
                     found_key_indexes.append(threes[1])
+
             found_key_indexes.sort()
             three_matches[five_ch] = []
 
-        three_ch = has_three_matches(hash)
+        three_ch = find_three_matches(hash)
         if three_ch is not None:
             print_debug("triple", index, three_ch, hash)
             three_matches[three_ch].append((three_ch, index))
