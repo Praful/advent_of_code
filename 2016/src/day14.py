@@ -3,7 +3,7 @@ from collections import defaultdict
 
 from utils import md5_hash
 
-# Puzzle description: https://adventofcode.com/2024/day/XX
+# Puzzle description: https://adventofcode.com/2016/day/14
 
 #  DEBUG = True
 DEBUG = False
