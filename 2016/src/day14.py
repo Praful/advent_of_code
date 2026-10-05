@@ -30,7 +30,7 @@ def generate_keys(salt, part2=False):
         # found in order eg candidate index 200 could be found before candidate index 100.
         # Therefore we have to make sure a lower candidate index is not going to be a key.
         # We do that by waiting until a 1000 index gap has passed
-        return len(found_key_indexes) >= 64 and index - found_key_indexes[0] > 1000
+        return len(found_key_indexes) >= 64 and index - found_key_indexes[63] > 1000
 
     index = 0
     three_matches = defaultdict(list)
