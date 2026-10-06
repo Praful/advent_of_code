@@ -1,9 +1,9 @@
 import math
 import re
 from enum import Enum
+from hashlib import md5
 from itertools import dropwhile
 from pathlib import Path
-from hashlib import md5
 
 import numpy as np
 
@@ -18,7 +18,7 @@ class Direction(Enum):
 
 
 # Unless otherwise specified, all directions are represented by a tuple (row, col) ie y, x.
-# This to make it easier to reference lists.
+# This is to make it easier to reference list objects.
 NORTH = (-1, 0)
 EAST = (0, 1)
 SOUTH = (1, 0)
@@ -276,6 +276,7 @@ def lcm(l):
     for n in l:
         result = (n * result) // math.gcd(n, result)
     return result
+
 
 def nearest_power_of(b, n):
     assert n >= 0, "nearest_power_of: n must be >= 0"
