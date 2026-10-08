@@ -15,15 +15,15 @@ def solve(input, max_valid=0, part2=False):
     result = 0
     highest = input[0][1]
 
-    for n in input:
-        if n[0] <= highest + 1:
-            highest = max(highest, n[1])
+    for (lower, upper) in input:
+        if lower <= highest + 1:
+            highest = max(highest, upper)
         else:
             if not part2:
-                return n[0] - 1
+                return lower - 1
             else:
-                result += n[0] - highest - 1
-                highest = n[1]
+                result += lower - highest - 1
+                highest = upper
 
     result += max_valid - highest
 
