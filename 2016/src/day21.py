@@ -42,7 +42,7 @@ def parse(s):
         r = re.search(r"move position (\d+) to position (\d+)", s)
         return Op.MOVE, int(r.group(1)), int(r.group(2))
     else:
-        assert False, f"Unknown instruction: {s}"
+        raise ValueError(f"Unknown operation: {s}")
 
 
 def read_input(input_file):
@@ -85,7 +85,7 @@ def rotate_based_on_position_inverse(s, a):
         if rotate_based_on_position(result, a) == s:
             return result
 
-    assert False, f"Could not find rotate based inverse for {a} in {s}"
+    raise ValueError(f"Could not find rotate based inverse for {a} in {s}")
 
 
 def reverse(s, a, b):
@@ -118,7 +118,7 @@ def part1(input, start):
             case Op.MOVE:
                 result = move(result, operation[1], operation[2])
             case _:
-                assert False, f"Unknown instruction: {operation}"
+                raise ValueError(f"Unknown operation: {operation}")
 
     return result
 
@@ -145,7 +145,7 @@ def part2(input, start):
             case Op.MOVE:  # switch a and b
                 result = move(result, operation[2], operation[1])
             case _:
-                assert False, f"Unknown instruction: {operation}"
+                raise ValueError(f"Unknown operation: {operation}")
 
     return result
 

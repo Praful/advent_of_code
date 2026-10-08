@@ -79,7 +79,7 @@ def solve(input, comparing=None):
             q.put(high_bot)
 
     if comparing:  # part 1: we shouldn't get to this point
-        assert False
+        raise RuntimeError("Unknown state")
     else:  # part 2: return output after all holdings have been processed
         return math.prod(holding[f"output {i}"][0] for i in range(3))
 

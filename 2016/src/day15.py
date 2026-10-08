@@ -39,7 +39,7 @@ def original_solve(input):
         if all(final_positions):
             return t
 
-    assert False, "Not found"
+    raise Exception("Solution not found")
 
 
 def part1(input):

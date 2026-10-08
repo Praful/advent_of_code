@@ -62,7 +62,7 @@ def part2(input):
             if decrypt(name, sector_id) == "northpole object storage":
                 return sector_id
 
-    assert False, "Not found"
+    raise Exception("Solution not found")
 
 
 def main():
