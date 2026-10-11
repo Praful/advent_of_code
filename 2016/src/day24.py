@@ -12,10 +12,10 @@ print_debug = print if DEBUG else lambda *a, **k: None
 
 def numbers(grid):
     result = {}
-    for i in range(len(grid)):
-        for j in range(len(grid[0])):
-            if (grid[i][j]).isdigit():
-                result[int(grid[i][j])] = (i, j)
+    for r in range(len(grid)):
+        for c in range(len(grid[0])):
+            if (grid[r][c]).isdigit():
+                result[int(grid[r][c])] = (r, c)
     return result
 
 
@@ -35,7 +35,6 @@ def bfs(grid, start, end):
         if p == end:
             return steps
 
-        # for adj in neighbours(p, grid):
         for adj in neighbours(p, grid, True, lambda g, p: g[p[0]][p[1]] != "#"):
             if adj not in visited:
                 visited.add(adj)
@@ -51,17 +50,17 @@ def solve(input, part2=False):
     pairs = list(itertools.combinations(range(num_count), 2))
 
     # for each pair, find shortest distance between them using bfs
-    for pair in pairs:
-        start = locations[pair[0]]
-        end = locations[pair[1]]
+    for nodes in pairs:
+        start = locations[nodes[0]]
+        end = locations[nodes[1]]
         distance = bfs(grid, start, end)
-        distances[pair[0]][pair[1]] = distance
-        distances[pair[1]][pair[0]] = distance
+        distances[nodes[0]][nodes[1]] = distance
+        distances[nodes[1]][nodes[0]] = distance
 
-    # find all perms of 1..num distances
+    # find all perms of nodes (1..n)
     perms = list(itertools.permutations(range(1, num_count)))
 
-    # shortest path to visit all the numbers for each perm
+    # shortest path to visit all the nodes for each perm
     result = math.inf
     for path in perms:
         path_steps = 0
