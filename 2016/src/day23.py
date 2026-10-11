@@ -37,16 +37,18 @@ def try_optimisation(input, ptr, registers):
     if (
         input[ptr : ptr + 6]
         == ["cpy b c", "inc a", "dec c", "jnz c -2", "dec d", "jnz d -5"]
-        and registers["b"] != 0
-        and registers["d"] != 0
+        and registers["b"] > 0
+        and registers["d"] > 0
     ):
         registers["a"] += registers["b"] * registers["d"]
+        registers["c"] = 0
+        registers["d"] = 0
         return ptr + 6
     else:
         return None
 
 
-def solve(input, register_a=None, part2=False):
+def solve(input, register_a=None):
     registers = defaultdict(int)
     input = input.copy()
 
@@ -57,11 +59,10 @@ def solve(input, register_a=None, part2=False):
     while ptr < len(input):
         try:
             print_debug("--------", ptr, input[ptr], registers)
-            if part2:
-                new_ptr = try_optimisation(input, ptr, registers)
-                if new_ptr is not None:
-                    ptr = new_ptr
-                    continue
+            new_ptr = try_optimisation(input, ptr, registers)
+            if new_ptr is not None:
+                ptr = new_ptr
+                continue
             cmd = input[ptr].split()
             if cmd[0] == "cpy":
                 if cmd[1].isalpha():
@@ -108,16 +109,17 @@ def main():
     test_input = read_input("day23-test.txt")
 
     assert (res := solve(test_input)) == 3, f"Actual: {res}"
-    print(f"Part 1 {solve(input, register_a=7)}")  # 12663
+    print(f"Part 1 {solve(input, 7)}")  # 12663
 
-    # While I was working out the optimisation, I got the answer by
-    # leaving the program running and it popped out after about an hour.
-    # My optimisation solves part 2 instantly for my input.
-    # Afterwards on reddit, I saw someone say that the input is a formula:
+    # While I was working out the optimisation, I ran the program
+    # and the answer popped out after about an hour.
+    # The optimisation solves part 2 instantly for my input.
+    # Afterwards on reddit, I saw someone said that the input is a formula:
+    #       math.factorial(e) + (x * y)
+    # where e is the number of eggs, and x and y come from the input. My answer is:
     #       12! + (99 * 77)
-    # where 12 is the number of eggs, and 99 & 77 come from my input. Other input
-    # might have different numbers.
-    print(f"Part 2 {solve(input, 12, True)}")  # 479009223
+    # Other input might have different numbers for x and y.
+    print(f"Part 2 {solve(input, 12)}")  # 479009223
 
 
 if __name__ == "__main__":
