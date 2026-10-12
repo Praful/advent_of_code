@@ -8,6 +8,10 @@ from utils import aoc_input_file, read_file_str
 DEBUG = False
 print_debug = print if DEBUG else lambda *a, **k: None
 
+# were looking for 0101010101... or 01010101010 since we may quit when
+# we have "enough" output.
+REGEX_PATTERN = r"^(01)+0?$"
+
 
 def read_input(input_file):
     input = read_file_str(aoc_input_file(__file__, input_file), True)
@@ -59,6 +63,10 @@ def solve(input, register_a=None):
                     result += str(registers[cmd[1]])
                 else:
                     result += cmd[1]
+
+                if len(result) > 2 and not re.search(REGEX_PATTERN, result):
+                    return ""
+
         except Exception as e:
             # ignore invalid instructions created by tgl
             print(
@@ -75,7 +83,7 @@ def part1(input):
     for i in range(1000000):
         result = solve(input, i)
         print_debug(i, result)
-        if re.search(r"^(01)+0?$", result):
+        if re.search(REGEX_PATTERN, result):
             return i
 
 
