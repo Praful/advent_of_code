@@ -10,7 +10,7 @@ DEBUG = False
 print_debug = print if DEBUG else lambda *a, **k: None
 
 
-def numbers(grid):
+def find_numbers(grid):
     result = {}
     for r in range(len(grid)):
         for c in range(len(grid[0])):
@@ -21,7 +21,7 @@ def numbers(grid):
 
 def read_input(input_file):
     grid = read_file_str(aoc_input_file(__file__, input_file), True)
-    return grid, numbers(grid)
+    return grid, find_numbers(grid)
 
 
 def bfs(grid, start, end):
@@ -44,15 +44,15 @@ def bfs(grid, start, end):
 
 
 def solve(input, part2=False):
-    grid, locations = input
-    num_count = len(locations)
+    grid, number_locations = input
+    num_count = len(number_locations)
     distances = make_grid(num_count, num_count, 0)
     pairs = list(itertools.combinations(range(num_count), 2))
 
     # for each pair, find shortest distance between them using bfs
     for nodes in pairs:
-        start = locations[nodes[0]]
-        end = locations[nodes[1]]
+        start = number_locations[nodes[0]]
+        end = number_locations[nodes[1]]
         distance = bfs(grid, start, end)
         distances[nodes[0]][nodes[1]] = distance
         distances[nodes[1]][nodes[0]] = distance
