@@ -85,6 +85,10 @@ def list_to_int(l):
     return int("".join([str(i) for i in l]))
 
 
+def flatten_list(l):
+    return [item for sublist in l for item in sublist]
+
+
 def next_neighbour(position, direction):
     return (
         position[0] + DIRECTION_DELTAS[direction][0],

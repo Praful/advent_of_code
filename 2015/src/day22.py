@@ -1,6 +1,6 @@
 from heapq import heappop, heappush
 
-from utils import aoc_input_file, extract_ints, read_file_str
+from utils import aoc_input_file, extract_ints, read_file_str, flatten_list
 
 # Puzzle description: https://adventofcode.com/2015/day/22
 
@@ -13,7 +13,8 @@ def read_input(input_file):
         return extract_ints(s)[0]
 
     input = read_file_str(aoc_input_file(__file__, input_file), True)
-    return list(map(parse, input))
+    return flatten_list(map(extract_ints, input))
+
 
 
 SPELLS = {
