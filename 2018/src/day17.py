@@ -10,7 +10,7 @@ print_debug = print if DEBUG else lambda *a, **k: None
 
 SOURCE = "+"
 CLAY = "#"
-WATER_STATIC = "~"
+WATER_SETTLED = "~"
 WATER_FLOWING = "|"
 SAND = "."
 
@@ -85,12 +85,12 @@ def solve(input):
         return (r, c) in water and water[(r, c)] == WATER_FLOWING
 
     def is_settled_water(r, c):
-        return (r, c) in water and water[(r, c)] == WATER_STATIC
+        return (r, c) in water and water[(r, c)] == WATER_SETTLED
 
     def can_flow_to(r, c):
         return not is_clay(r, c) and not is_settled_water(r, c)
 
-    def can_settle(r, c):
+    def is_settle_base(r, c):
         return is_clay(r, c) or is_settled_water(r, c)
 
     def find_clay_wall(r, c, direction):
@@ -100,7 +100,7 @@ def solve(input):
             if is_clay(r, ic):
                 return ic
 
-            if not can_settle(r + 1, ic):
+            if not is_settle_base(r + 1, ic):
                 break
 
             ic += direction
@@ -116,7 +116,7 @@ def solve(input):
             return False
 
         for ic in range(left + 1, right):
-            water[(r, ic)] = WATER_STATIC
+            water[(r, ic)] = WATER_SETTLED
 
         return True
 
@@ -132,7 +132,7 @@ def solve(input):
                     water[(r, ic)] = WATER_FLOWING
                     result.add((r, ic))
 
-                if not can_settle(r + 1, ic):
+                if not is_settle_base(r + 1, ic):
                     break
 
                 ic += direction
@@ -150,19 +150,20 @@ def solve(input):
         r, c = q.popleft()
 
         print_debug(r, c, "------------------------")
+
+        if r > max_r:
+            print_debug("out of bounds")
+            continue
+
         if is_settled_water(r, c):
-            print_debug("already water")
-            # re-evaluate above in case new static water has appeared
+            print_debug("settled water")
+            # re-evaluate above in case new settled water has appeared
             if is_flowing_water(r - 1, c):
                 q.append((r - 1, c))
             continue
 
         if is_clay(r, c):
-            print_debug("already clay")
-            continue
-
-        if r > max_r:
-            print_debug("out of bounds")
+            print_debug("is clay")
             continue
 
         if can_flow_to(r + 1, c):
@@ -170,10 +171,10 @@ def solve(input):
             water[(r, c)] = WATER_FLOWING
             q.append((r + 1, c))
 
-        if can_settle(r + 1, c):
-            print_debug("settle")
+        if is_settle_base(r + 1, c):
+            print_debug("attempt to settle")
             if settle(r, c):
-                # re-evaluate above item to let water fill upwards
+                # re-evaluate cell above to let water fill upwards
                 q.append((r - 1, c))
             else:
                 for p in add_flowing_water(r, c):
@@ -185,7 +186,7 @@ def solve(input):
     print_grid(input, water)
 
     p1 = sum(1 for k in water if min_r <= k[0] <= max_r)
-    p2 = sum(1 for v in water.values() if v == WATER_STATIC)
+    p2 = sum(1 for v in water.values() if v == WATER_SETTLED)
 
     return p1, p2
 
