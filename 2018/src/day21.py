@@ -62,11 +62,13 @@ def operation(opcode, arg, before_registers):
     return result
 
 
-# this is a translaton of the input program into Python; it
-# represents my input and likely won't work for other input
+# This is a translaton of the input program into Python. It
+# represents my input and likely won't work for other input.
+# However, I've extracted r5 from the program, which may be
+# the only variable in inputs. So this may work for others.
 def solve(input):
     _, program = input
-    r5_original = program[7][1][0]  # r5 = r0
+    r5_original = program[7][1][0]
     r5 = 0
     seen = set()
     prev = 0
